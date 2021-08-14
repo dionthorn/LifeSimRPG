@@ -20,9 +20,12 @@ public class Job extends Entity {
     private String[] titleRequirements;
     private String currentTitle;
     private final String name;
+    private final boolean fromFile;
 
     // used for unemployed job creation
     public Job(String name, int salary) {
+        super();
+        this.fromFile = false;
         this.name = name;
         this.salary = salary;
         this.titleRequirements = new String[1];
@@ -39,6 +42,8 @@ public class Job extends Entity {
 
     // used for loading jobs from file
     public Job(String jobName) {
+        super();
+        this.fromFile = true;
         this.name = jobName.split("\\.")[0];
         String[] fileLines;
         if(FileOpUtils.JRT) {
@@ -60,11 +65,11 @@ public class Job extends Entity {
                     DA = false;
                     TR = true;
                 } else if(line.contains("STAT_REQUIREMENTS")) {
-                    SR = true;
                     TR = false;
                     TI = false;
                     PA = false;
                     DA = false;
+                    SR = true;
                 } else if(line.contains("TITLE")) {
                     SR = false;
                     TR = false;
@@ -210,5 +215,9 @@ public class Job extends Entity {
 
     public void setYearDate(LocalDate yearDate) {
         this.yearDate = yearDate;
+    }
+
+    public boolean isFromFile() {
+        return this.fromFile;
     }
 }

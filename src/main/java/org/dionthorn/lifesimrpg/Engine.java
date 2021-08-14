@@ -391,7 +391,7 @@ public class Engine {
         // Show Job Options
         GridPane.setConstraints(getJobLbl, 0, 3);
         for(Entity e: Entity.entities) {
-            if(e instanceof Job) {
+            if(e instanceof Job && ((Job)e).isFromFile()) {
                 Job target = (Job) e;
                 String targetInfo = String.format(
                         "%s $%d",
@@ -412,7 +412,7 @@ public class Engine {
             String jobName = selection.split("\\$")[0].replaceAll(" ", "");
             Job target;
             for(Entity e: Entity.entities) {
-                if(e instanceof Job) {
+                if(e instanceof Job && ((Job)e).isFromFile()) {
                     if(((Job)e).getName().equals(jobName)) {
                         target = (Job) e;
                         // check if player meets job requirements
@@ -728,26 +728,27 @@ public class Engine {
 
     // static utility method for debugging entities.
     public static void dumpEntityData() {
-        for(Entity e: Entity.entities) {
-            if(e instanceof Job) {
+        ArrayList<Entity> entities = Entity.entities;
+        for(Entity e : entities) {
+            if (e instanceof Job) {
                 Job temp = ((Job) e);
-                System.out.println("Entity ID: " + temp.getUID());
-                System.out.print(temp.getName());
+                System.out.print("Job UID:" + temp.getUID());
+                System.out.print(" " + temp.getName());
                 System.out.println(" " + temp.getSalary());
-            } else if(e instanceof Map) {
+            } else if (e instanceof Map) {
                 Map temp = ((Map) e);
-                System.out.println("Entity ID: " + temp.getUID());
-                System.out.print(temp.getName());
+                System.out.print("Map UID:" + temp.getUID());
+                System.out.print(" " + temp.getName());
                 System.out.println(" total places: " + temp.getPlaces().size());
-            } else if(e instanceof  Place) {
+            } else if (e instanceof Place) {
                 Place temp = ((Place) e);
-                System.out.println("Entity ID: " + temp.getUID());
-                System.out.print(temp.getName());
+                System.out.print("Place UID:" + temp.getUID());
+                System.out.print(" " + temp.getName());
                 System.out.println(" total connections: " + temp.getConnections().size());
-            } else if(e instanceof Character) {
+            } else if (e instanceof Character) {
                 Character temp = ((Character) e);
-                System.out.println("Entity ID: " + temp.getUID());
-                System.out.print(temp.getFirstName() + " " + temp.getLastName());
+                System.out.print("Character UID:" + temp.getUID());
+                System.out.print(" " + temp.getFirstName() + " " + temp.getLastName());
                 System.out.println(" is at: " + temp.getCurrentLocation().getName());
             }
         }

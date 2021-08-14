@@ -17,6 +17,7 @@ public class GameState {
     public GameState(String firstName, String lastName, LocalDate birthday) {
         // New Game is just a fresh GameState
         Entity.entities.clear();
+
         // load map
         currentMap = new Map("Vanillaton");
 
@@ -58,7 +59,6 @@ public class GameState {
         }
 
         // load job info
-        Entity.entities.removeIf(e -> e instanceof Job);
         String[] jobs;
         if(FileOpUtils.JRT) {
             jobs = FileOpUtils.getFileNamesFromDirectory(

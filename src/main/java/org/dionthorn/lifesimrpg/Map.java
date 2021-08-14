@@ -10,6 +10,7 @@ public class Map extends Entity {
     private final ArrayList<Place> places = new ArrayList<>();
 
     public Map(String mapName) {
+        super();
         // load map data from resources ex input: Vanillaton
         this.name = mapName;
         String[] fileLines;
@@ -42,10 +43,10 @@ public class Map extends Entity {
                 }
             } else {
                 // if no $ then we connect this location to the last $ location
-                if(line.contains(":END")) {
+                if(line.startsWith(":END")) {
                     // EOF
                     break;
-                } else if(!line.contains(":")) {
+                } else if(!line.startsWith(":")) {
                     // check if connection is new or not
                     boolean isNew = true;
                     Place notNew = null;

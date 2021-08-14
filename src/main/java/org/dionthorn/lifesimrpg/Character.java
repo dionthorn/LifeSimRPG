@@ -42,6 +42,7 @@ public class Character extends Entity {
      * AI constructor will use random information to generate a Character object
      */
     public Character() {
+        super();
         this.birthday = getRandomDate();
         this.firstName = getRandomFirstName();
         this.lastName = getRandomLastName();
@@ -55,6 +56,7 @@ public class Character extends Entity {
      * @param lastName the String representing the Characters last name
      */
     public Character(LocalDate birthday, String firstName, String lastName) {
+        super();
         this.birthday = birthday;
         this.firstName = firstName;
         this.lastName = lastName;

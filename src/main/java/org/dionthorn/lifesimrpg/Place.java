@@ -23,12 +23,14 @@ public class Place extends Entity {
 
     // generate Place object directly without metadata used for Residence
     public Place(String name, PLACE_TYPE type) {
+        super();
         this.name = name;
         this.type = type;
     }
 
-    // generate Place object from fileName should be qualifed by Map for JRT or not
+    // generate Place object from fileName should be qualified by Map for JRT or not
     public Place(String fileName) {
+        super();
         this.name = fileName.split("/")[fileName.split("/").length - 1];
         // load place data and character data from resources
         String[] fileLines;
