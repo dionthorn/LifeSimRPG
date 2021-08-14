@@ -3,6 +3,8 @@ package org.dionthorn.lifesimrpg;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class Job extends Entity {
 
@@ -13,8 +15,9 @@ public class Job extends Entity {
     private int yearsWorked = 0;
     private int[] titlesPay;
     private int[] workDays;
-    private String[] requirements;
+    private final HashMap<String, Double> statRequirements = new HashMap<>();
     private String[] titles;
+    private String[] titleRequirements;
     private String currentTitle;
     private final String name;
 
@@ -22,8 +25,8 @@ public class Job extends Entity {
     public Job(String name, int salary) {
         this.name = name;
         this.salary = salary;
-        this.requirements = new String[1];
-        this.requirements[0] = "none";
+        this.titleRequirements = new String[1];
+        this.titleRequirements[0] = "none";
         this.titlesPay = new int[1];
         this.titles = new String[1];
         this.titles[0] = this.name;
@@ -43,38 +46,59 @@ public class Job extends Entity {
         } else {
             fileLines = FileOpUtils.getFileLines(URI.create(getClass().getResource("/Jobs") + jobName));
         }
-        boolean RQ = false;
-        boolean TI = false;
-        boolean PA = false;
-        boolean DA = false;
+        boolean TR = false; // Title requirements - 5 state machine
+        boolean SR = false; // Stat requirements
+        boolean TI = false; // Title
+        boolean PA = false; // Pay
+        boolean DA = false; // Work Days
         for(String line: fileLines) {
             if(line.contains(":")) {
-                if(line.contains("REQUIREMENTS")) {
+                if(line.contains("TITLE_REQUIREMENTS")) {
+                    SR = false;
                     TI = false;
                     PA = false;
                     DA = false;
-                    RQ = true;
+                    TR = true;
+                } else if(line.contains("STAT_REQUIREMENTS")) {
+                    SR = true;
+                    TR = false;
+                    TI = false;
+                    PA = false;
+                    DA = false;
                 } else if(line.contains("TITLE")) {
-                    RQ = false;
+                    SR = false;
+                    TR = false;
                     PA = false;
                     DA = false;
                     TI = true;
                 } else if(line.contains("PAY")) {
-                    RQ = false;
+                    SR = false;
+                    TR = false;
                     TI = false;
                     DA = false;
                     PA = true;
                 } else if(line.contains("DAYS")) {
-                    RQ = false;
+                    SR = false;
+                    TR = false;
                     TI = false;
                     PA = false;
                     DA = true;
                 }
             } else {
-                if(RQ) {
+                if(TR) {
                     String[] temp = line.split(",");
-                    requirements = new String[temp.length];
-                    System.arraycopy(temp, 0, requirements, 0, requirements.length);
+                    if(!Objects.equals(temp[0], "")) {
+                        titleRequirements = new String[temp.length];
+                        System.arraycopy(temp, 0, titleRequirements, 0, titleRequirements.length);
+                    }
+                } else if(SR) {
+                    String[] temp = line.split(",");
+                    if(!Objects.equals(temp[0], "")) {
+                        for(String statRequire: temp) {
+                            String[] temp2 = statRequire.split(":");
+                            statRequirements.put(temp2[0], Double.parseDouble(temp2[1]));
+                        }
+                    }
                 } else if(TI) {
                     String[] temp = line.split(",");
                     titles = new String[temp.length];
@@ -156,8 +180,12 @@ public class Job extends Entity {
         return yearsWorked;
     }
 
-    public String[] getRequirements() {
-        return requirements;
+    public String[] getTitleRequirements() {
+        return titleRequirements;
+    }
+
+    public HashMap<String, Double> getStatRequirements() {
+        return statRequirements;
     }
 
     public String getCurrentTitle() {

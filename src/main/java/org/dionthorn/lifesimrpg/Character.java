@@ -23,6 +23,8 @@ public class Character extends Entity {
 
     // Attributes of a Character
     private final HashMap<Integer, Double> relationships = new HashMap<>();
+    private final HashMap<String, Double> stats = new HashMap<>();
+    private final ArrayList<String> titles = new ArrayList<>();
     private final ArrayList<Character> talkedToToday = new ArrayList<>();
     private final String firstName;
     private final String lastName;
@@ -225,6 +227,30 @@ public class Character extends Entity {
         return relationships.get(targetUID);
     }
 
+    public void addStat(String statName, double value) {
+        boolean doesExist = false;
+        for(String test: stats.keySet()) {
+            if(test.equals(statName)) {
+                doesExist = true;
+                break;
+            }
+        }
+        if(!doesExist) {
+            stats.put(statName, value);
+        } else {
+            double toAdd = stats.get(statName);
+            stats.put(statName, toAdd + value);
+        }
+    }
+
+    public double getStat(String statName) {
+        double toReturn = 0;
+        if(stats.get(statName) != null) {
+            toReturn += stats.get(statName);
+        }
+        return toReturn;
+    }
+
     /**
      * Will return a String representing this Character first name
      * @return String representing this Character first name
@@ -359,4 +385,11 @@ public class Character extends Entity {
         this.currentLocation = currentLocation;
     }
 
+    public ArrayList<String> getTitles() {
+        return titles;
+    }
+
+    public HashMap<String, Double> getStats() {
+        return stats;
+    }
 }

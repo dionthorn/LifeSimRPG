@@ -415,13 +415,70 @@ public class Engine {
                 if(e instanceof Job) {
                     if(((Job)e).getName().equals(jobName)) {
                         target = (Job) e;
-                        player.setJob(target, gameState.getCurrentDate());
-                        console.appendText(String.format(
-                                "%s started working at %s as a %s",
-                                player.getFirstName(),
-                                player.getJob().getName(),
-                                player.getJob().getCurrentTitle()
-                        ));
+                        // check if player meets job requirements
+                        boolean canApply = false;
+                        if((target.getTitleRequirements() == null && target.getStatRequirements().size() == 0)) {
+                            canApply = true;
+                        } else {
+                            // prep boolean trackers
+                            boolean[] hasTitleRQs = new boolean[target.getTitleRequirements().length];
+                            boolean hasTitleRQ = true;
+                            boolean[] hasStatRQs = new boolean[target.getStatRequirements().size()];
+                            boolean hasStatRQ = true;
+
+                            // process title requirements
+                            for(int t=0; t<target.getTitleRequirements().length; t++) {
+                                for(int p=0; p<player.getTitles().size(); p++) {
+                                    if(target.getTitleRequirements()[t].equals(player.getTitles().get(p))) {
+                                        hasTitleRQs[t] = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            for(boolean b: hasTitleRQs)  {
+                                if(!b) {
+                                    hasTitleRQ = false;
+                                    break;
+                                }
+                            }
+
+                            // process stat requirements
+                            String[] targetKeys = target.getStatRequirements().keySet().toArray(new String[0]);
+                            String[] playerKeys = player.getStats().keySet().toArray(new String[0]);
+                            for(int s=0; s<target.getStatRequirements().size(); s++) {
+                                for(int p=0; p<player.getStats().size(); p++) {
+                                    if(targetKeys[s].equals(playerKeys[p])) {
+                                        if(target.getStatRequirements().get(playerKeys[p]).equals(player.getStats().get(playerKeys[p]))) {
+                                            hasStatRQs[s] = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            for(boolean b: hasStatRQs) {
+                                if(!b) {
+                                    hasStatRQ = false;
+                                    break;
+                                }
+                            }
+                            // if they meet requirements then set canApply true
+                            if(hasStatRQ && hasTitleRQ) {
+                                canApply = true;
+                            }
+                        }
+
+                        // process application
+                        if(canApply) {
+                            player.setJob(target, gameState.getCurrentDate());
+                            console.appendText(String.format(
+                                    "%s started working at %s as a %s",
+                                    player.getFirstName(),
+                                    player.getJob().getName(),
+                                    player.getJob().getCurrentTitle()
+                            ));
+                        } else {
+                            console.appendText("You didn't meet job requirements to apply!");
+                        }
                         break;
                     }
                 }
@@ -535,14 +592,18 @@ public class Engine {
                 currentDate.getDayOfMonth(),
                 currentDate.getYear()
         ));
+
         // birthday check
         Character player = gameState.getPlayer();
         if(player.isBirthday(currentDate)) {
             console.appendText("Happy Birthday!\n");
         }
+
         // do Job logic
         if(player.getJob().getSalary() != 0) {
+            // Check if it is a work day
             if(player.getJob().isWorkDay(currentDate.getDayOfWeek().getValue())) {
+                // perform work logic and tell player in console they worked
                 player.getJob().workDay();
                 console.appendText(String.format(
                         "%s worked at %s today \n",
@@ -550,17 +611,28 @@ public class Engine {
                         player.getJob().getName()
                 ));
             }
+
+            // Pay day is the 1st and 15th of every month regardless of job, might abstract this so jobs
+            // can have different pay days/pay times much like the work days are already abstracted to the object
             if(currentDate.getDayOfMonth() == 1 || currentDate.getDayOfMonth() == 15) {
                 int originalSalary = 0;
+
+                // if it's been a year or more on this pay day we store the original salary
                 if(player.getJob().getYearDate().plusYears(1).equals(currentDate)) {
                     originalSalary = player.getJob().getSalary();
                 }
+
+                // get the player payout up to the current date
                 int payout = player.getJob().payout(currentDate);
+
+                // inform them of what they've been paid
                 console.appendText(String.format(
                         "Made $%d from working at %s\n",
                         payout,
                         player.getJob().getName()
                 ));
+
+                // set the days paid out to equal the amount of days worked
                 player.getJob().setDaysPaidOut(player.getJob().getDaysWorked());
                 player.setMoney(player.getMoney() + payout);
                 if(originalSalary > 0) {
@@ -572,14 +644,18 @@ public class Engine {
                 }
             }
         }
+
         // residence update
         player.getHome().onNextDay();
+
+        // pay rent on the first of the month
         if(currentDate.getDayOfMonth() == 1) {
-            // pay rent on the first of the month
             int rentPeriod = player.getHome().getDaysInPeriod();
             int rentCost = player.getHome().getRentPeriodCost();
             if(player.getMoney() - rentCost >= 0) {
                 player.setMoney(player.getMoney() - rentCost);
+
+                // successfully paid rent
                 console.appendText(String.format(
                         "%s paid $%d in rent!\n",
                         player.getFirstName(),
@@ -588,11 +664,15 @@ public class Engine {
             } else {
                 // maybe set rent higher based on 12 month rent distributed?
                 int rentIncrease = (rentCost / rentPeriod) / 12;
+
+                // couldn't afford rent
                 console.appendText(String.format(
                         "%s couldn't pay rent! An increase of $%d per day has been added\n",
                         player.getFirstName(),
                         rentIncrease
                 ));
+
+                // pretty heavy penalty at the moment
                 player.getHome().setRent(player.getHome().getRent() + rentIncrease);
                 player.getHome().setMonthsUnpaid(player.getHome().getMonthsUnpaid() + 1);
                 player.getHome().setTotalUnpaid(rentCost);
@@ -604,9 +684,9 @@ public class Engine {
                 ));
             }
         }
-        // eat food
+
+        // eat food logic
         if(player.getMoney() - player.getFoodCost() >= 0) {
-            // do eat food logic here
             player.setMoney(player.getMoney() - player.getFoodCost());
             player.setDaysWithoutFood(0);
             player.setHealth(player.getHealth() + 0.5);
@@ -614,6 +694,8 @@ public class Engine {
             // do not enough money for food logic here
             console.appendText("You couldn't pay for food today!\n");
             player.setDaysWithoutFood(player.getDaysWithoutFood() + 1);
+
+            // will die after 23 days in a row with no food starting from 100 health
             if(player.getHealth() - (0.25 * (player.getDaysWithoutFood() * 1.5)) > 0) {
                 // apply damage
                 player.setHealth(player.getHealth() - (0.25 * (player.getDaysWithoutFood() * 1.5)));
@@ -624,6 +706,8 @@ public class Engine {
                         "You died of starvation after %s days!\n",
                         player.getDaysWithoutFood()
                 ));
+
+                // setup game over screen, we leave console output
                 clearAll();
                 App.CURRENT_SCREEN = App.SCREEN.DEAD;
                 rightBar.getChildren().add(newGameBtn);
