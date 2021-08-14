@@ -3,6 +3,8 @@ package org.dionthorn.lifesimrpg;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -53,6 +55,7 @@ public class Engine {
     private final Label currentJobLbl           = new Label();
     private final Label currentDaysWorkedLbl    = new Label();
     private final Label getJobLbl               = new Label("Get A Job $ is per day: ");
+    private final ComboBox<String> jobOptions   = new ComboBox<>();
     private final Button chooseNewJob           = new Button("Apply for Job");
     private final Button nextWeekBtn            = new Button("Next Week");
     private final Button nextDayBtn             = new Button("Next Day");
@@ -115,6 +118,15 @@ public class Engine {
 
         // set the scene
         primaryStage.setScene(rootScene);
+
+        // add key handlers for debugging and esc exit key
+        rootScene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+            if(key.getCode() == KeyCode.ESCAPE) {
+                primaryStage.close();
+            } else if(key.getCode() == KeyCode.F7) {
+                dumpEntityData();
+            }
+        });
 
         // Check if we need to use JRT
         FileOpUtils.checkJRT();
@@ -185,6 +197,7 @@ public class Engine {
     private void displayMapInfo() {
         // set screen
         App.CURRENT_SCREEN = App.SCREEN.MAP;
+
         // Move all characters around if user press the mapInfoBtn
         Character player = gameState.getPlayer();
         for(Character c: gameState.getCurrentMap().getAllCharacters()) {
@@ -192,6 +205,7 @@ public class Engine {
                 c.moveRandom();
             }
         }
+
         // setup centerGridPane and labels/button arrays
         centerGridPane.getChildren().clear();
 
@@ -212,8 +226,8 @@ public class Engine {
 
     public void generateTalkBtnsAndLbls(Character player, int lastYindex) {
         // clear
-        charLbls.clear();
-        talkBtns.clear();
+        charLbls.clear(); // maybe instead we setup these with default buttons/labels on first pass
+        talkBtns.clear(); // and do .setText() calls instead of generating new in the below loop?
 
         // tracking variables
         lastYindex = lastYindex + 2;
@@ -264,8 +278,8 @@ public class Engine {
 
     public int generatePlaceBtnsAndLbls(Character player) {
         // clear
-        connectingPlaceLbls.clear();
-        connectingPlaceBtns.clear();
+        connectingPlaceLbls.clear(); // maybe instead we setup these with default buttons/labels on first pass
+        connectingPlaceBtns.clear(); // and do .setText() calls instead of generating new in the below loop?
 
         // some tracking variables
         int lastYindex = 0;
@@ -302,6 +316,8 @@ public class Engine {
         GridPane.setConstraints(currentPeopleLbl, 0, lastYindex + 1);
         centerGridPane.getChildren().addAll(currentPeopleLbl);
 
+        // we return the last Y index used for placing nodes
+        // on the GridPane used by the generateTalkBtnsAndLbls method
         return lastYindex;
     }
 
@@ -315,10 +331,11 @@ public class Engine {
         // setup labels from player info
         Character player = gameState.getPlayer();
         playerNameLbl.setText(String.format(
-                "Player: %s %s Health: %.2f/100.00",
+                "Player: %s %s Health: %.2f/%.2f",
                 player.getFirstName(),
                 player.getLastName(),
-                player.getHealth()
+                player.getHealth(),
+                player.getMaxHealth()
         ));
         GridPane.setConstraints(playerNameLbl, 0, 0);
 
@@ -373,15 +390,17 @@ public class Engine {
 
         // Show Job Options
         GridPane.setConstraints(getJobLbl, 0, 3);
-        ComboBox<String> jobOptions = new ComboBox<>();
         for(Entity e: Entity.entities) {
             if(e instanceof Job) {
                 Job target = (Job) e;
-                jobOptions.getItems().add(String.format(
+                String targetInfo = String.format(
                         "%s $%d",
                         target.getName(),
                         target.getSalary()
-                ));
+                );
+                if(!(jobOptions.getItems().contains(targetInfo))) {
+                    jobOptions.getItems().add(targetInfo);
+                }
             }
         }
         jobOptions.getSelectionModel().select(0);
@@ -620,6 +639,33 @@ public class Engine {
         }
         if (App.CURRENT_SCREEN == App.SCREEN.MAP) {
             displayMapInfo();
+        }
+    }
+
+    // static utility method for debugging entities.
+    public static void dumpEntityData() {
+        for(Entity e: Entity.entities) {
+            if(e instanceof Job) {
+                Job temp = ((Job) e);
+                System.out.println("Entity ID: " + temp.getUID());
+                System.out.print(temp.getName());
+                System.out.println(" " + temp.getSalary());
+            } else if(e instanceof Map) {
+                Map temp = ((Map) e);
+                System.out.println("Entity ID: " + temp.getUID());
+                System.out.print(temp.getName());
+                System.out.println(" total places: " + temp.getPlaces().size());
+            } else if(e instanceof  Place) {
+                Place temp = ((Place) e);
+                System.out.println("Entity ID: " + temp.getUID());
+                System.out.print(temp.getName());
+                System.out.println(" total connections: " + temp.getConnections().size());
+            } else if(e instanceof Character) {
+                Character temp = ((Character) e);
+                System.out.println("Entity ID: " + temp.getUID());
+                System.out.print(temp.getFirstName() + " " + temp.getLastName());
+                System.out.println(" is at: " + temp.getCurrentLocation().getName());
+            }
         }
     }
 

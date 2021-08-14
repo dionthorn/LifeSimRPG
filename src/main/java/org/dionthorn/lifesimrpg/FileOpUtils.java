@@ -39,8 +39,8 @@ public class FileOpUtils {
             if(targetFile.getScheme().equals("jrt")) {
                 Path path = Path.of(targetFile);
                 assert(Files.exists(path));
-                FileSystem jrtfs = FileSystems.getFileSystem(URI.create("jrt:/"));
-                return Files.exists(jrtfs.getPath(path.toString()));
+                FileSystem jrtFS = FileSystems.getFileSystem(URI.create("jrt:/"));
+                return Files.exists(jrtFS.getPath(path.toString()));
             } else {
                 answer = new File(targetFile.getPath()).isFile();
             }
@@ -112,7 +112,6 @@ public class FileOpUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // System.out.println("Successfully located file at: " + targetFile.getPath());
         return toReturn;
     }
 

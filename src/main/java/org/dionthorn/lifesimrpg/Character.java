@@ -27,7 +27,7 @@ public class Character extends Entity {
     private final String firstName;
     private final String lastName;
     private final LocalDate birthday;
-    private final double max_health = 100.00;
+    private final double maxHealth = 100.00;
     private double health = 100.00;
     private int money = 200;
     private int foodCost = 14; // $14 a day in food = $98 per week
@@ -204,17 +204,15 @@ public class Character extends Entity {
         int targetUID = target.getUID();
         if(!hasRelationship(target)) {
             relationships.put(targetUID, value);
-            talkedToToday.add(target);
         } else {
             double relation = relationships.get(targetUID);
             if(relation + value > 100) {
                 relationships.put(targetUID, 100d);
-                talkedToToday.add(target);
             } else {
                 relationships.put(targetUID, relation + value);
-                talkedToToday.add(target);
             }
         }
+        talkedToToday.add(target);
     }
 
     /**
@@ -317,12 +315,16 @@ public class Character extends Entity {
         return health;
     }
 
+    public double getMaxHealth() {
+        return maxHealth;
+    }
+
     /**
      * Will set this Character health to the provided double value but cap at max_health
      * @param health double to set this Character health to will cap at max_health
      */
     public void setHealth(double health) {
-        this.health = Math.min(health, max_health);
+        this.health = Math.min(health, maxHealth);
     }
 
     /**
