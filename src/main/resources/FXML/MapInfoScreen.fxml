@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TextArea?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Button?>
+<BorderPane fx:controller="org.dionthorn.lifesimrpg.controllers.MapInfoScreenController" xmlns:fx="http://javafx.com/fxml">
+    <top>
+        <HBox fx:id="topBar" style="-fx-background-color: #336699;" minHeight="32">
+            <Label fx:id="moneyLbl" text="Cash: $-0">
+                <font><Font name="Times New Roman" size="28"/></font>
+            </Label>
+            <Region fx:id="hRegion" HBox.hgrow="ALWAYS"/>
+            <Label fx:id="currentDateLbl" text="Date: 0/0/0">
+                <font><Font name="Times New Roman" size="28"/></font>
+            </Label>
+        </HBox>
+    </top>
+    <center>
+        <GridPane fx:id="centerGridPane" hgap="10" vgap="10">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <Label fx:id="currentLocationLbl"/>
+            <Label fx:id="currentPeopleLbl" text="Current People Present:"/>
+        </GridPane>
+    </center>
+    <left>
+        <VBox fx:id="leftBar" style="-fx-background-color: #336699;" minWidth="32" spacing="10">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <Button fx:id="playerInfoBtn" onAction="#onPlayerInfo" text="Player Info"/>
+            <Button fx:id="jobInfoBtn" onAction="#onJobInfo" text="Job Info"/>
+            <Button fx:id="mapInfoBtn" onAction="#onMapInfo" text="Map Info"/>
+            <Region fx:id="vRegion3" VBox.vgrow="ALWAYS"/>
+            <Button fx:id="clearConsoleBtn" onAction="#clearConsole" text="Clear Console"/>
+        </VBox>
+    </left>
+    <right>
+        <VBox fx:id="rightBar" style="-fx-background-color: #336699;" minWidth="32" spacing="10">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <Region fx:id="vRegion2" VBox.vgrow="ALWAYS"/>
+            <Button fx:id="nextWeekBtn" onAction="#onNextWeek" text="Next Week"/>
+            <Button fx:id="nextDayBtn" onAction="#onNextDay" text="Next Day"/>
+        </VBox>
+    </right>
+    <bottom>
+        <TextArea fx:id="console" prefWidth="1024" prefHeight="192"/>
+    </bottom>
+</BorderPane>

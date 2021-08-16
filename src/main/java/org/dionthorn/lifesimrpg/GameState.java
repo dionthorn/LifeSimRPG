@@ -1,5 +1,8 @@
 package org.dionthorn.lifesimrpg;
 
+import org.dionthorn.lifesimrpg.entities.*;
+import org.dionthorn.lifesimrpg.entities.Character;
+
 import java.net.URI;
 import java.time.LocalDate;
 
