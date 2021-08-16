@@ -26,7 +26,7 @@ v0.0.1 Structure:
 
 Kudos Series (makers of the Democracy series)
 https://www.positech.co.uk/kudos2/
-
+ 
 GameBiz series
 http://www.veloci.dk/gamebiz/GB3.htm
 
