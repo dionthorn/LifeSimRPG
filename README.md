@@ -2,27 +2,28 @@
 Simple JavaFX Controls based GUI for a Life Simulation game, inspired by classic older titles like Kudos and GameBiz
 
 v0.0.1 Structure:
-  LifeSimRPG
-  |> App
-  |> Engine
-  |> GameState
-  |> FileOpUtils
+
+LifeSimRPG
++ App
++ Engine
++ GameState
++ FileOpUtils
       
-  LifeSimRPG.entites
-  |> Entity
-      |> Character
-      |> Job
-      |> Map
-      |> Place
-            |> Residence
+LifeSimRPG.entites
++ Entity
++ +  Character
++ +  Job
++ +  Map
++ +  Place
++ + +  Residence
             
-  LifeSimRPG.controllers
-  |> StartScreenController
-  |> CharacterCreationScreenController
-  |> PlayerInfoScreenController
-  |> JobInfoScreenController
-  |> MapInfoScreenController
-  |> GameOverScreenController
+LifeSimRPG.controllers
++ StartScreenController
++ CharacterCreationScreenController
++ PlayerInfoScreenController
++ JobInfoScreenController
++ MapInfoScreenController
++ GameOverScreenController
 
 Kudos Series (makers of the Democracy series)
 https://www.positech.co.uk/kudos2/
