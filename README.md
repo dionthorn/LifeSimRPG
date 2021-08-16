@@ -3,6 +3,9 @@ Simple* JavaFX Controls based GUI for a Life Simulation game, inspired by classi
 
 *Recently added FXML so its a little all over right now
 
+Here is App.java the starting point
+https://github.com/dionthorn/LifeSimRPG/blob/main/src/main/java/org/dionthorn/lifesimrpg/App.java
+
 v0.0.1 Structure:
 
 LifeSimRPG
