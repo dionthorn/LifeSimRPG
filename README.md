@@ -1,4 +1,5 @@
 # LifeSimRPG
+You can contact me on reddit /u/dionthorn if you have questions about the game. I help out on the /r/javahelp subreddit all the time!
 Simple* JavaFX Controls based GUI for a Life Simulation game, inspired by classic older titles like Kudos and GameBiz
 
 *Recently added FXML so its a little all over right now
