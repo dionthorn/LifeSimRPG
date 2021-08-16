@@ -1,53 +1,23 @@
 package org.dionthorn.lifesimrpg.controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.entities.Character;
 
-public class PlayerInfoScreenController {
+public class PlayerInfoScreenController extends GameScreenController {
 
-    @FXML public HBox topBar;
-    @FXML public Label moneyLbl;
-    @FXML public Region hRegion;
-    @FXML public Label currentDateLbl;
-    @FXML public GridPane centerGridPane;
-    @FXML public Region vRegion;
-    @FXML public VBox leftBar;
-    @FXML public Region vRegion3;
-    @FXML public VBox rightBar;
-    @FXML public Region vRegion2;
-    @FXML public TextArea console;
-    @FXML public Button nextWeekBtn;
-    @FXML public Button nextDayBtn;
     @FXML public Label playerNameLbl;
     @FXML public Label currentLocationLbl;
     @FXML public Label currentHouseInfoLbl;
-    @FXML public Button playerInfoBtn;
-    @FXML public Button jobInfoBtn;
-    @FXML public Button mapInfoBtn;
-    @FXML public Button clearConsoleBtn;
 
+    @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.PLAYER_INFO;
         updateAll();
     }
 
-    public void onNextDay() {
-        Engine.nextDay(console);
-        updateAll();
-    }
-
-    public void onNextWeek() {
-        Engine.nextWeek(console);
-        updateAll();
-    }
-
+    @Override
     public void updateAll() {
         // update variable texts
         playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
@@ -89,6 +59,8 @@ public class PlayerInfoScreenController {
         Engine.updateMoneyLbl(moneyLbl);
     }
 
+    // Screen changers different for each screen
+
     public void onPlayerInfo() {
         updateAll();
     }
@@ -111,7 +83,4 @@ public class PlayerInfoScreenController {
         }
     }
 
-    public void clearConsole() {
-        console.clear();
-    }
 }

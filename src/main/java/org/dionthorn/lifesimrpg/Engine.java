@@ -1,5 +1,7 @@
-package org.dionthorn.lifesimrpg.controllers;
+package org.dionthorn.lifesimrpg;
 
+import org.dionthorn.lifesimrpg.entities.*;
+import org.dionthorn.lifesimrpg.entities.Character;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -8,19 +10,25 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import org.dionthorn.lifesimrpg.*;
-import org.dionthorn.lifesimrpg.entities.*;
-import org.dionthorn.lifesimrpg.entities.Character;
-
-import java.net.URI;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.net.URI;
+import java.net.URL;
 
+/**
+ * The Engine class will manage the GameState, FXMLLoader
+ * And which screen we are on, it is essentially the interface between the
+ * controllers and the entities packages. All variables and methods are public static
+ * Engine.loadFXML(String fileName) can be used to load a different screen from any controller object
+ */
 public class Engine {
 
-    // keep track of which screen we are on for flagging
+    /**
+     * SCREEN enum is used to flag which screen we should be currently on
+     * for example when you press next day, if you are on mapInfo it will just update mapInfo
+     *
+     */
     public enum SCREEN {
         BOOT,
         CHARACTER_CREATION,
@@ -35,12 +43,18 @@ public class Engine {
     public static final int SCREEN_WIDTH = 1024;
     public static final int SCREEN_HEIGHT = 768;
 
-    // Game data
+    // Access these from any controller or entity
     public static SCREEN CURRENT_SCREEN = SCREEN.BOOT;
     public static Stage rootStage;
     public static FXMLLoader rootLoader;
     public static GameState gameState;
 
+    /**
+     * Essentially our constructor we take it the Stage object from App.start() call
+     * Then we add the global event handlers for ESC key and F7 key
+     * Then we loadFXML for the StartScreen.fxml
+     * @param stage Stage representing the root Stage object for the program to be statically referenced
+     */
     public static void setStage(Stage stage) {
         rootStage = stage;
         rootStage.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
@@ -57,8 +71,12 @@ public class Engine {
         }
     }
 
-    // Game Time Progress
+    // Game Time Progress methods can be called from any ScreenController with Engine.nextWeek(TextArea console)
 
+    /**
+     * Will advance the game 7 days by calling nextDay() 7 times
+     * @param console TextArea representing the current console object
+     */
     public static void nextWeek(TextArea console) {
         console.clear();
         for(int i=0; i<7; i++) {
@@ -68,6 +86,11 @@ public class Engine {
         }
     }
 
+    /**
+     * Will advance the game a day and do all related processing
+     * This is the core of the game loop
+     * @param console TextArea representing the current console object
+     */
     public static void nextDay(TextArea console) {
         // update entities for now this is just sending them home on the new day
         for(Entity e: Entity.entities) {
@@ -97,17 +120,18 @@ public class Engine {
         }
 
         // do Job logic
-        if(player.getJob().getSalary() != 0) {
+        Job playerJob = player.getJob();
+        if(playerJob.getSalary() != 0) {
             // Check if it is a work day
-            if(player.getJob().isWorkDay(currentDate.getDayOfWeek().getValue())) {
+            if(playerJob.isWorkDay(currentDate.getDayOfWeek().getValue())) {
                 // perform work logic and tell player in console they worked
-                player.getJob().workDay();
+                playerJob.workDay();
                 console.appendText(
                         """
                         %s worked at %s today
                         """.formatted(
                                 player.getFirstName(),
-                                player.getJob().getName()
+                                playerJob.getName()
                         )
                 );
             }
@@ -118,12 +142,12 @@ public class Engine {
                 int originalSalary = 0;
 
                 // if it's been a year or more on this pay day we store the original salary
-                if(player.getJob().getYearDate().plusYears(1).equals(currentDate)) {
-                    originalSalary = player.getJob().getSalary();
+                if(playerJob.getYearDate().plusYears(1).equals(currentDate)) {
+                    originalSalary = playerJob.getSalary();
                 }
 
                 // get the player payout up to the current date
-                int payout = player.getJob().payout(currentDate);
+                int payout = playerJob.payout(currentDate);
 
                 // inform them of what they've been paid
                 console.appendText(
@@ -131,12 +155,12 @@ public class Engine {
                         Made $%d from working at %s
                         """.formatted(
                                 payout,
-                                player.getJob().getName()
+                                playerJob.getName()
                         )
                 );
 
                 // set the days paid out to equal the amount of days worked
-                player.getJob().setDaysPaidOut(player.getJob().getDaysWorked());
+                playerJob.setDaysPaidOut(playerJob.getDaysWorked());
                 player.setMoney(player.getMoney() + payout);
                 if(originalSalary > 0) {
                     console.appendText(
@@ -144,7 +168,7 @@ public class Engine {
                             %s got a raise of $%d per day!
                             """.formatted(
                                     player.getFirstName(),
-                                    player.getJob().getSalary() - originalSalary
+                                    playerJob.getSalary() - originalSalary
                             )
                     );
                 }
@@ -152,12 +176,13 @@ public class Engine {
         }
 
         // residence update
-        player.getHome().onNextDay();
+        Residence playerHome = player.getHome();
+        playerHome.onNextDay();
 
         // pay rent on the first of the month
         if(currentDate.getDayOfMonth() == 1) {
-            int rentPeriod = player.getHome().getDaysInPeriod();
-            int rentCost = player.getHome().getRentPeriodCost();
+            int rentPeriod = playerHome.getDaysInPeriod();
+            int rentCost = playerHome.getRentPeriodCost();
             if(player.getMoney() - rentCost >= 0) {
                 player.setMoney(player.getMoney() - rentCost);
 
@@ -185,16 +210,16 @@ public class Engine {
                 );
 
                 // pretty heavy penalty at the moment
-                player.getHome().setRent(player.getHome().getRent() + rentIncrease);
-                player.getHome().setMonthsUnpaid(player.getHome().getMonthsUnpaid() + 1);
-                player.getHome().setTotalUnpaid(rentCost);
+                playerHome.setRent(player.getHome().getRent() + rentIncrease);
+                playerHome.setMonthsUnpaid(player.getHome().getMonthsUnpaid() + 1);
+                playerHome.setTotalUnpaid(rentCost);
                 console.appendText(
                         """
                         %s haven't paid for %d months and owe a total of $%d
                         """.formatted(
                                 player.getFirstName(),
-                                player.getHome().getMonthsUnpaid(),
-                                player.getHome().getTotalUnpaid()
+                                playerHome.getMonthsUnpaid(),
+                                playerHome.getTotalUnpaid()
                         )
                 );
             }
@@ -228,12 +253,18 @@ public class Engine {
         }
     }
 
-    // FX static methods
-
+    /**
+     * Will update the provided label to show the players current cash
+     * @param moneyLbl Label representing the moneyLbl
+     */
     public static void updateMoneyLbl(Label moneyLbl) {
         moneyLbl.setText(String.format("Cash: $%d", gameState.getPlayer().getMoney()));
     }
 
+    /**
+     * Will update the provided label to show the current date
+     * @param currentDateLbl Label representing the currentDateLbl
+     */
     public static void updateDateLbl(Label currentDateLbl) {
         LocalDate currentDate = gameState.getCurrentDate();
         currentDateLbl.setText(
@@ -247,8 +278,15 @@ public class Engine {
         );
     }
 
-    // static utility methods
+    // utility methods
 
+    /**
+     * Will find the FXML file if in JRT or not and use FXMLLoader.load(URL) to load the new Scene
+     * We use the static rootStage object and setScene() on the result of the .load()
+     * @param fileName String the target filename ex: "StartScreen.fxml"
+     * @throws Exception Exception representing either an IO or File error, shouldn't happen,
+     * but we print stack trace in a try catch anytime we call this method just in case.
+     */
     public static void loadFXML(String fileName) throws Exception {
         FileOpUtils.checkJRT();
         URL test;
@@ -262,6 +300,9 @@ public class Engine {
         rootStage.setScene(rootScene);
     }
 
+    /**
+     * This will dump Entity related data into System.out
+     */
     public static void dumpEntityData() {
         ArrayList<Entity> entities = Entity.entities; // get quick dump of entity data
         for(Entity e : entities) {

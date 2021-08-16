@@ -4,45 +4,28 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.entities.Character;
 import org.dionthorn.lifesimrpg.entities.Entity;
 import org.dionthorn.lifesimrpg.entities.Job;
 
-public class JobInfoScreenController {
+public class JobInfoScreenController extends GameScreenController {
 
-    @FXML public HBox topBar;
-    @FXML public GridPane centerGridPane;
-    @FXML public VBox leftBar;
-    @FXML public VBox rightBar;
-    @FXML public TextArea console;
-    @FXML public Label moneyLbl;
-    @FXML public Region hRegion;
-    @FXML public Label currentDateLbl;
+    @FXML public ComboBox<String> jobOptions;
     @FXML public Label currentJobLbl;
     @FXML public Label currentDaysWorkedLbl;
-    @FXML public Region vRegion;
     @FXML public Label getJobLbl;
-    @FXML public ComboBox<String> jobOptions;
     @FXML public Button applyBtn;
-    @FXML public Button playerInfoBtn;
-    @FXML public Button jobInfoBtn;
-    @FXML public Button mapInfoBtn;
     @FXML public Region vRegion3;
-    @FXML public Button clearConsoleBtn;
-    @FXML public Region vRegion2;
-    @FXML public Button nextWeekBtn;
-    @FXML public Button nextDayBtn;
 
+    @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.JOB_INFO;
         updateAll();
     }
 
+    @Override
     public void updateAll() {
         // update variable texts
         playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
@@ -180,6 +163,8 @@ public class JobInfoScreenController {
         }
     }
 
+    // Screen changers different for each screen
+
     public void onPlayerInfo() {
         // load fxml for PlayerInfoScreen.fxml
         try {
@@ -202,17 +187,4 @@ public class JobInfoScreenController {
         }
     }
 
-    public void clearConsole() {
-        console.clear();
-    }
-
-    public void onNextWeek() {
-        updateAll();
-        Engine.nextWeek(console);
-    }
-
-    public void onNextDay() {
-        updateAll();
-        Engine.nextDay(console);
-    }
 }

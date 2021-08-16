@@ -3,36 +3,27 @@ package org.dionthorn.lifesimrpg.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.GameState;
 
 import java.time.LocalDate;
 
-public class CharacterCreationScreenController {
+public class CharacterCreationScreenController extends ScreenController {
 
-    @FXML public HBox topBar;
-    @FXML public GridPane centerGridPane;
+
     @FXML public Label enterFirstNameLbl;
-    @FXML public TextField firstNameInput;
     @FXML public Label enterLastNameLbl;
-    @FXML public TextField lastNameInput;
     @FXML public Label enterBirthdayLbl;
     @FXML public Label dayLbl;
-    @FXML public TextField dayInput;
     @FXML public Label monthLbl;
-    @FXML public TextField monthInput;
     @FXML public Label yearLbl;
-    @FXML public TextField yearInput;
-    @FXML public VBox leftBar;
-    @FXML public VBox rightBar;
-    @FXML public Region vRegion2;
     @FXML public Button createNewPlayerBtn;
-    @FXML public TextArea console;
+    @FXML public TextField firstNameInput;
+    @FXML public TextField lastNameInput;
+    @FXML public TextField dayInput;
+    @FXML public TextField monthInput;
+    @FXML public TextField yearInput;
 
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.CHARACTER_CREATION;

@@ -20,7 +20,7 @@
     <right>
         <VBox fx:id="rightBar" style="-fx-background-color: #336699;" minWidth="32">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-            <Region fx:id="vRegion2" VBox.vgrow="ALWAYS"/>
+            <Region fx:id="vRegion" VBox.vgrow="ALWAYS"/>
             <Button fx:id="startGameBtn" onAction="#onStartGame" text="Start Game"/>
         </VBox>
     </right>

@@ -3,50 +3,33 @@ package org.dionthorn.lifesimrpg.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.entities.Character;
 import org.dionthorn.lifesimrpg.entities.Place;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MapInfoScreenController {
+public class MapInfoScreenController extends GameScreenController {
 
-    private final ArrayList<Label> connectingPlaceLbls = new ArrayList<>();
-    private final ArrayList<Button> connectingPlaceBtns = new ArrayList<>();
-    private final ArrayList<Label> charLbls = new ArrayList<>();
-    private final ArrayList<Button> talkBtns = new ArrayList<>();
+    private static final ArrayList<Label> connectingPlaceLbls = new ArrayList<>();
+    private static final ArrayList<Button> connectingPlaceBtns = new ArrayList<>();
+    private static final ArrayList<Label> charLbls = new ArrayList<>();
+    private static final ArrayList<Button> talkBtns = new ArrayList<>();
 
-    @FXML public HBox topBar;
-    @FXML public GridPane centerGridPane;
-    @FXML public VBox leftBar;
-    @FXML public VBox rightBar;
-    @FXML public TextArea console;
-    @FXML public Label moneyLbl;
-    @FXML public Region hRegion;
-    @FXML public Label currentDateLbl;
     @FXML public Label currentLocationLbl;
     @FXML public Label currentPeopleLbl;
-    @FXML public Button playerInfoBtn;
-    @FXML public Button jobInfoBtn;
-    @FXML public Button mapInfoBtn;
-    @FXML public Region vRegion3;
-    @FXML public Button clearConsoleBtn;
-    @FXML public Region vRegion2;
-    @FXML public Button nextWeekBtn;
-    @FXML public Button nextDayBtn;
 
+    @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.MAP_INFO;
         updateAll();
     }
 
+    // essentially a refresh method
+    @Override
     public void updateAll() {
         if(Engine.CURRENT_SCREEN == Engine.SCREEN.MAP_INFO) {
-            // clear grid pane if already in Map Info
             centerGridPane.getChildren().clear();
         }
         // update variable texts
@@ -182,6 +165,8 @@ public class MapInfoScreenController {
         }
     }
 
+    // Screen changers different for each screen
+
     public void onPlayerInfo() {
         // load fxml for PlayerInfoScreen.fxml
         try {
@@ -204,17 +189,4 @@ public class MapInfoScreenController {
         updateAll();
     }
 
-    public void clearConsole() {
-        console.clear();
-    }
-
-    public void onNextWeek() {
-        Engine.nextWeek(console);
-        updateAll();
-    }
-
-    public void onNextDay() {
-        Engine.nextDay(console);
-        updateAll();
-    }
 }
