@@ -24,12 +24,15 @@ LifeSimRPG.entites
 + + +  Residence
             
 LifeSimRPG.controllers
-+ StartScreenController
-+ CharacterCreationScreenController
-+ PlayerInfoScreenController
-+ JobInfoScreenController
-+ MapInfoScreenController
-+ GameOverScreenController
++ ScreenController (Abstract)
++ + CharacterCreationScreen
++ + NewGameScreenController (Abstract)
++ + + StartScreenController
++ + + GameOverScreenController
++ + GameScreenController (Abstract)
++ + + PlayerInfoScreenController
++ + + JobInfoScreenController
++ + + MapInfoScreenController
 
 Kudos Series (makers of the Democracy series)
 https://www.positech.co.uk/kudos2/
