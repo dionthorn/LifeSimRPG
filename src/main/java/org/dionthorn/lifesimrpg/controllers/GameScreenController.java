@@ -36,11 +36,13 @@ public abstract class GameScreenController extends ScreenController {
 
     @FXML protected void onNextDay() {
         Engine.nextDay(console);
+        console.appendText(Engine.getDateString());
         updateAll();
     }
 
     @FXML protected void onNextWeek() {
         Engine.nextWeek(console);
+        console.appendText(Engine.getDateString());
         updateAll();
     }
 

@@ -40,6 +40,7 @@ public class Character extends Entity {
     private Job job;
     private Residence home;
     private Place currentLocation;
+    private Course currentCourse;
 
     /**
      * AI constructor will use random information to generate a Character object
@@ -256,6 +257,10 @@ public class Character extends Entity {
         return toReturn;
     }
 
+    public boolean hasStat(String statName) {
+        return stats.containsKey(statName);
+    }
+
     /**
      * Will return a String representing this Character first name
      * @return String representing this Character first name
@@ -397,4 +402,17 @@ public class Character extends Entity {
     public HashMap<String, Double> getStats() {
         return stats;
     }
+
+    public Course getCurrentCourse() {
+        return currentCourse;
+    }
+
+    public void setCurrentCourse(Course currentCourse) {
+        this.currentCourse = currentCourse;
+    }
+
+    public boolean hasCourse() {
+        return this.currentCourse != null;
+    }
+
 }

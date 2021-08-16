@@ -22,11 +22,15 @@ public class JobInfoScreenController extends GameScreenController {
     @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.JOB_INFO;
+        console.appendText(Engine.getDateString());
         updateAll();
     }
 
     @Override
     public void updateAll() {
+        if(Engine.CURRENT_SCREEN != Engine.SCREEN.JOB_INFO) {
+            console.appendText(Engine.getDateString());
+        }
         // update variable texts
         playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
 
@@ -71,6 +75,7 @@ public class JobInfoScreenController extends GameScreenController {
             }
         }
         jobOptions.getSelectionModel().select(0);
+
         Engine.updateDateLbl(currentDateLbl);
         Engine.updateMoneyLbl(moneyLbl);
     }
@@ -153,7 +158,6 @@ public class JobInfoScreenController extends GameScreenController {
                                         player.getJob().getCurrentTitle()
                                 )
                         );
-                        updateAll();
                     } else {
                         console.appendText("You didn't meet job requirements to apply!");
                     }

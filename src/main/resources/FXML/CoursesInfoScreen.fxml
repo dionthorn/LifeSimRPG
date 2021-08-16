@@ -3,11 +3,11 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.TextArea?>
+
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Font?>
-
 <?import javafx.scene.control.Button?>
-<BorderPane fx:controller="org.dionthorn.lifesimrpg.controllers.PlayerInfoScreenController" xmlns:fx="http://javafx.com/fxml">
+<BorderPane fx:controller="org.dionthorn.lifesimrpg.controllers.CoursesInfoController" xmlns:fx="http://javafx.com/fxml">
     <top>
         <HBox fx:id="topBar" style="-fx-background-color: #336699;" minHeight="32">
             <Label fx:id="moneyLbl" text="Cash: $-0">
@@ -22,11 +22,9 @@
     <center>
         <GridPane fx:id="centerGridPane" hgap="10" vgap="10">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-            <Label fx:id="playerNameLbl" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-            <Label fx:id="currentLocationLbl" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-            <Label fx:id="currentHouseInfoLbl" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-            <Label fx:id="currentStatsLbl" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-            <Label fx:id="currentTitlesLbl" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+            <Label fx:id="currentCourseLbl" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Button fx:id="checkTitleBtn" onAction="#onCheckTitle" text="Check Title" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            <Label fx:id="coursesLbl" text="Courses Available:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         </GridPane>
     </center>
     <left>
@@ -48,6 +46,7 @@
         </VBox>
     </right>
     <bottom>
-        <TextArea fx:id="console" prefWidth="1024" prefHeight="192"/>
+        <TextArea fx:id="console" prefWidth="1024" prefHeight="192"
+                  text="Welcome! Please Choose a Course!"/>
     </bottom>
 </BorderPane>

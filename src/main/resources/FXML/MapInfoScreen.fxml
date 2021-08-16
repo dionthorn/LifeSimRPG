@@ -39,6 +39,7 @@
     <right>
         <VBox fx:id="rightBar" style="-fx-background-color: #336699;" minWidth="32" spacing="10">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <Button fx:id="coursesInfoBtn" onAction="#onCoursesInfo" text="Courses Info" visible="false"/>
             <Region fx:id="vRegion2" VBox.vgrow="ALWAYS"/>
             <Button fx:id="nextWeekBtn" onAction="#onNextWeek" text="Next Week"/>
             <Button fx:id="nextDayBtn" onAction="#onNextDay" text="Next Day"/>

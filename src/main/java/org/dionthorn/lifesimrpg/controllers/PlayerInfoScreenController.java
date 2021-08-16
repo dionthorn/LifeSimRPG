@@ -5,20 +5,28 @@ import javafx.scene.control.Label;
 import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.entities.Character;
 
+import java.util.Map;
+
 public class PlayerInfoScreenController extends GameScreenController {
 
     @FXML public Label playerNameLbl;
     @FXML public Label currentLocationLbl;
     @FXML public Label currentHouseInfoLbl;
+    @FXML public Label currentStatsLbl;
+    @FXML public Label currentTitlesLbl;
 
     @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.PLAYER_INFO;
+        console.appendText(Engine.getDateString());
         updateAll();
     }
 
     @Override
     public void updateAll() {
+        if(Engine.CURRENT_SCREEN != Engine.SCREEN.PLAYER_INFO) {
+            console.appendText(Engine.getDateString());
+        }
         // update variable texts
         playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
 
@@ -55,6 +63,35 @@ public class PlayerInfoScreenController extends GameScreenController {
                         player.getHome().getTotalUnpaid()
                 )
         );
+
+        // might want region here so dynamic labels are moved to bottom and look ordered
+
+        // show player stats
+        StringBuilder sb = new StringBuilder();
+        sb.append("Stats:\n");
+        if(player.getStats().size() > 0) {
+            for(Map.Entry<String, Double> entry : player.getStats().entrySet()) {
+                String statName = entry.getKey();
+                Double statValue = entry.getValue();
+                sb.append(String.format("%8s : %.2f\n", statName, statValue));
+            }
+        } else {
+            sb.append("NONE");
+        }
+        currentStatsLbl.setText(String.valueOf(sb));
+
+        // show player titles
+        sb = new StringBuilder();
+        sb.append("Titles:\n");
+        if(player.getTitles().size() > 0) {
+            for(String title: player.getTitles()) {
+                sb.append(String.format("%s\n", title));
+            }
+        } else {
+            sb.append("NONE");
+        }
+        currentTitlesLbl.setText(String.valueOf(sb));
+
         Engine.updateDateLbl(currentDateLbl);
         Engine.updateMoneyLbl(moneyLbl);
     }

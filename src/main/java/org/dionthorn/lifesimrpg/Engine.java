@@ -36,6 +36,7 @@ public class Engine {
         PLAYER_INFO,
         JOB_INFO,
         MAP_INFO,
+        COURSES_INFO,
         DEAD
     }
 
@@ -57,6 +58,8 @@ public class Engine {
      */
     public static void setStage(Stage stage) {
         rootStage = stage;
+
+        // set Key Handlers
         rootStage.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if(key.getCode() == KeyCode.ESCAPE) {
                 rootStage.close();
@@ -64,6 +67,8 @@ public class Engine {
                 dumpEntityData();
             }
         });
+
+        // Load the StartScreen
         try{
             loadFXML("StartScreen.fxml");
         } catch(Exception e) {
@@ -72,6 +77,18 @@ public class Engine {
     }
 
     // Game Time Progress methods can be called from any ScreenController with Engine.nextWeek(TextArea console)
+
+    public static String getDateString() {
+        LocalDate currentDate = gameState.getCurrentDate();
+        return """
+                %s: %s %d %d
+                """.formatted(
+                currentDate.getDayOfWeek().name(),
+                currentDate.getMonth().name(),
+                currentDate.getDayOfMonth(),
+                currentDate.getYear()
+        );
+    }
 
     /**
      * Will advance the game 7 days by calling nextDay() 7 times
@@ -102,21 +119,17 @@ public class Engine {
         // advance a day
         LocalDate currentDate = gameState.getCurrentDate();
         gameState.setCurrentDate(currentDate.plusDays(1));
-        console.appendText(
-                """
-                %s: %s %d %d
-                """.formatted(
-                        currentDate.getDayOfWeek().name(),
-                        currentDate.getMonth().name(),
-                        currentDate.getDayOfMonth(),
-                        currentDate.getYear()
-                )
-        );
 
         // birthday check
         Character player = gameState.getPlayer();
         if(player.isBirthday(currentDate)) {
             console.appendText("Happy Birthday!\n");
+        }
+
+        // do Course logic
+        Course playerCourse = player.getCurrentCourse();
+        if(playerCourse != null) {
+            player.addStat(playerCourse.getStatName(), playerCourse.getCurrentStatGain());
         }
 
         // do Job logic

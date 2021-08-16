@@ -19,16 +19,21 @@ public class MapInfoScreenController extends GameScreenController {
 
     @FXML public Label currentLocationLbl;
     @FXML public Label currentPeopleLbl;
+    @FXML public Button coursesInfoBtn;
 
     @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.MAP_INFO;
+        console.appendText(Engine.getDateString());
         updateAll();
     }
 
     // essentially a refresh method
     @Override
     public void updateAll() {
+        if(Engine.CURRENT_SCREEN != Engine.SCREEN.MAP_INFO) {
+            console.appendText(Engine.getDateString());
+        }
         if(Engine.CURRENT_SCREEN == Engine.SCREEN.MAP_INFO) {
             centerGridPane.getChildren().clear();
         }
@@ -60,6 +65,9 @@ public class MapInfoScreenController extends GameScreenController {
 
         // generate the Label and Button for each character in the current location
         generateTalkBtnsAndLbls(player, lastYindex);
+
+        // check if we currently are in a SCHOOL type Place and add the courses button to rightBar
+        coursesInfoBtn.setVisible(Engine.gameState.getPlayer().getCurrentLocation().getType() == Place.PLACE_TYPE.SCHOOL);
 
         Engine.updateDateLbl(currentDateLbl);
         Engine.updateMoneyLbl(moneyLbl);
@@ -145,13 +153,12 @@ public class MapInfoScreenController extends GameScreenController {
                                     player.getRelationship(finalTargetChar),
                                     finalTargetChar.getRelationship(player)
                             );
-
+                    updateAll();
                     console.appendText(output);
                 }
             });
 
-            // add button and label to centerGridPane
-            if(!(targetChar == player)) {
+            if(!(targetChar == player) && !player.hasTalkedToToday(targetChar)) {
                 centerGridPane.getChildren().addAll(talkBtns.get(i));
             }
             centerGridPane.getChildren().addAll(charLbls.get(i));
@@ -189,4 +196,12 @@ public class MapInfoScreenController extends GameScreenController {
         updateAll();
     }
 
+    public void onCoursesInfo() {
+        // load fxml for CourseInfoScreen.fxml
+        try {
+            Engine.loadFXML("CoursesInfoScreen.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
