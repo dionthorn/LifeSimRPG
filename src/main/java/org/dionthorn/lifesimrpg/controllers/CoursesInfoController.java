@@ -9,8 +9,6 @@ import org.dionthorn.lifesimrpg.entities.Character;
 import org.dionthorn.lifesimrpg.entities.Course;
 import org.dionthorn.lifesimrpg.entities.Map;
 
-import java.util.ArrayList;
-
 public class CoursesInfoController extends GameScreenController {
 
     @FXML public Label coursesLbl;
@@ -96,6 +94,8 @@ public class CoursesInfoController extends GameScreenController {
         }
     }
 
+    // other buttons
+
     public void onTakeCourse(String courseName) {
         Character player = Engine.gameState.getPlayer();
         if(player.getCurrentCourse() == null) {
@@ -109,27 +109,7 @@ public class CoursesInfoController extends GameScreenController {
     }
 
     public void onCheckTitle() {
-        Character player = Engine.gameState.getPlayer();
-        if(player.hasCourse()) {
-            int currentLevel = player.getCurrentCourse().getCourseLevel();
-            String newTitle = player.getCurrentCourse().checkTitle(player);
-            if(!(player.getTitles().contains(newTitle))) {
-                player.getTitles().add(newTitle);
-            } else {
-                System.out.println("Already have " + newTitle);
-            }
-            if(currentLevel < player.getCurrentCourse().getCourseLevel()) {
-                console.appendText("You increased in title to: " + newTitle + "\n");
-            } else {
-                console.appendText("You are not yet qualified for the next title\n");
-            }
-        }
-        for(String title: player.getTitles()) {
-            if(title.contains("Not Qualified")) {
-                player.getTitles().remove(title);
-                break;
-            }
-        }
-        updateAll();
+        updateTitle(true);
     }
+
 }
