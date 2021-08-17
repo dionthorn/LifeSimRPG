@@ -27,7 +27,7 @@ LifeSimRPG.controllers
 + AbstractScreenController
 + + CharacterCreationScreen
 + +
-+ + AbstractNewGameScreenController
++ + AbstractStartScreenController
 + + + StartScreenController
 + + + GameOverScreenController
 + +
