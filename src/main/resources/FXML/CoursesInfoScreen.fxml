@@ -7,7 +7,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.control.Button?>
-<BorderPane fx:controller="org.dionthorn.lifesimrpg.controllers.CoursesInfoController" xmlns:fx="http://javafx.com/fxml">
+<BorderPane fx:controller="org.dionthorn.lifesimrpg.controllers.CoursesInfoScreenController" xmlns:fx="http://javafx.com/fxml">
     <top>
         <HBox fx:id="topBar" style="-fx-background-color: #336699;" minHeight="32">
             <Label fx:id="moneyLbl" text="Cash: $-0">

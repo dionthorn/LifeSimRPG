@@ -17,9 +17,14 @@ import java.util.ArrayList;
  */
 public class FileOpUtils {
 
+    // static flag and URI reference for JRT when in JLink/JPackage distribution
     public static boolean JRT = false;
     public static URI jrtBaseURI;
 
+    /**
+     * Will test if we are in a JRT distribution and set the JRT flag
+     * As well as the jrtBaseURI, so we can access resources
+     */
     public static void checkJRT() {
         URL resource = App.class.getClassLoader().getResource("credits.txt");
         if(resource == null) {

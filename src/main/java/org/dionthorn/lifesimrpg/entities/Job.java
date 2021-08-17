@@ -5,10 +5,9 @@ import org.dionthorn.lifesimrpg.FileOpUtils;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Objects;
 
-public class Job extends Entity {
+public class Job extends AbstractEntity {
 
     private LocalDate yearDate;
     private int salary;
@@ -17,8 +16,9 @@ public class Job extends Entity {
     private int yearsWorked = 0;
     private int[] titlesPay;
     private int[] workDays;
-    private final HashMap<String, Double> statRequirements = new HashMap<>();
-    private String[] titles;
+    private String[] statRQNames;
+    private double[] statRQValues;
+    private String[] jobTitles;
     private String[] titleRequirements;
     private String currentTitle;
     private final String name;
@@ -33,8 +33,8 @@ public class Job extends Entity {
         this.titleRequirements = new String[1];
         this.titleRequirements[0] = "none";
         this.titlesPay = new int[1];
-        this.titles = new String[1];
-        this.titles[0] = this.name;
+        this.jobTitles = new String[1];
+        this.jobTitles[0] = this.name;
         this.currentTitle = this.name;
         this.workDays = new int[7];
         for(int i=0; i<workDays.length; i++) {
@@ -55,61 +55,61 @@ public class Job extends Entity {
         }
         boolean TR = false; // Title requirements - 5 state machine
         boolean SR = false; // Stat requirements
-        boolean TI = false; // Title
+        boolean JT = false; // jobTitle
         boolean PA = false; // Pay
         boolean DA = false; // Work Days
         for(String line: fileLines) {
-            if(line.contains(":")) {
-                if(line.contains("TITLE_REQUIREMENTS")) {
-                    SR = false;
-                    TI = false;
-                    PA = false;
-                    DA = false;
-                    TR = true;
-                } else if(line.contains("STAT_REQUIREMENTS")) {
-                    TR = false;
-                    TI = false;
-                    PA = false;
-                    DA = false;
-                    SR = true;
-                } else if(line.contains("TITLE")) {
-                    SR = false;
-                    TR = false;
-                    PA = false;
-                    DA = false;
-                    TI = true;
-                } else if(line.contains("PAY")) {
-                    SR = false;
-                    TR = false;
-                    TI = false;
-                    DA = false;
-                    PA = true;
-                } else if(line.contains("DAYS")) {
-                    SR = false;
-                    TR = false;
-                    TI = false;
-                    PA = false;
-                    DA = true;
-                }
+            if(line.contains(":TITLE_REQUIREMENTS:")) {
+                SR = false;
+                JT = false;
+                PA = false;
+                DA = false;
+                TR = true;
+            } else if(line.contains(":STAT_REQUIREMENTS:")) {
+                TR = false;
+                JT = false;
+                PA = false;
+                DA = false;
+                SR = true;
+            } else if(line.contains(":TITLE:")) {
+                SR = false;
+                TR = false;
+                PA = false;
+                DA = false;
+                JT = true;
+            } else if(line.contains(":PAY:")) {
+                SR = false;
+                TR = false;
+                JT = false;
+                DA = false;
+                PA = true;
+            } else if(line.contains(":DAYS:")) {
+                SR = false;
+                TR = false;
+                JT = false;
+                PA = false;
+                DA = true;
             } else {
                 if(TR) {
                     String[] temp = line.split(",");
-                    if(!Objects.equals(temp[0], "")) {
-                        titleRequirements = new String[temp.length];
-                        System.arraycopy(temp, 0, titleRequirements, 0, titleRequirements.length);
-                    }
+                    titleRequirements = new String[temp.length];
+                    System.arraycopy(temp, 0, titleRequirements, 0, temp.length);
                 } else if(SR) {
                     String[] temp = line.split(",");
+                    statRQNames = new String[temp.length];
+                    statRQValues = new double[temp.length];
                     if(!Objects.equals(temp[0], "")) {
-                        for(String statRequire: temp) {
+                        for (int i = 0; i < temp.length; i++) {
+                            String statRequire = temp[i];
                             String[] temp2 = statRequire.split(":");
-                            statRequirements.put(temp2[0], Double.parseDouble(temp2[1]));
+                            statRQNames[i] = temp2[0];
+                            statRQValues[i] = Double.parseDouble(temp2[1]);
                         }
                     }
-                } else if(TI) {
+                } else if(JT) {
                     String[] temp = line.split(",");
-                    titles = new String[temp.length];
-                    System.arraycopy(temp, 0, titles, 0, titles.length);
+                    jobTitles = new String[temp.length];
+                    System.arraycopy(temp, 0, jobTitles, 0, temp.length);
                 } else if(PA) {
                     String[] temp = line.split(",");
                     titlesPay = new int[temp.length];
@@ -125,7 +125,7 @@ public class Job extends Entity {
                 }
             }
         }
-        currentTitle = titles[0];
+        currentTitle = jobTitles[0];
         salary = titlesPay[0];
     }
 
@@ -135,15 +135,15 @@ public class Job extends Entity {
         LocalDate oneYearAni = yearDate.plusYears(1);
         if(currentDate.isEqual(oneYearAni) || currentDate.isAfter(oneYearAni)) {
             int newRank = 0;
-            for(int i=0; i<titles.length; i++) {
-                if(titles[i].equals(currentTitle)) {
+            for(int i = 0; i< jobTitles.length; i++) {
+                if(jobTitles[i].equals(currentTitle)) {
                     newRank = i + 1;
                 }
             }
             if(newRank<titlesPay.length) {
                 // new rank
                 salary = titlesPay[newRank];
-                currentTitle = titles[newRank];
+                currentTitle = jobTitles[newRank];
             } else {
                 // max rank so give raise
                 salary = salary + (int)(0.5 * (salary * 1.1));
@@ -191,16 +191,16 @@ public class Job extends Entity {
         return titleRequirements;
     }
 
-    public HashMap<String, Double> getStatRequirements() {
-        return statRequirements;
+    public String[] getStatRQNames() {
+        return statRQNames;
+    }
+
+    public double[] getStatRQValues() {
+        return statRQValues;
     }
 
     public String getCurrentTitle() {
         return currentTitle;
-    }
-
-    public String[] getTitles() {
-        return titles;
     }
 
     public int[] getTitlesPay() {

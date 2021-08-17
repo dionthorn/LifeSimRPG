@@ -9,7 +9,7 @@ import org.dionthorn.lifesimrpg.GameState;
 
 import java.time.LocalDate;
 
-public class CharacterCreationScreenController extends ScreenController {
+public class CharacterCreationScreenController extends AbstractScreenController {
 
 
     @FXML public Label enterFirstNameLbl;

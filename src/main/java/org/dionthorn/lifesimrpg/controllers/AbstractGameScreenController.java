@@ -10,7 +10,7 @@ import org.dionthorn.lifesimrpg.entities.Character;
 /**
  * Used for PlayerInfo, MapInfo, and JobInfo as they all share these nodes
  */
-public abstract class GameScreenController extends ScreenController {
+public abstract class AbstractGameScreenController extends AbstractScreenController {
 
     @FXML public Button playerInfoBtn;
     @FXML public Button jobInfoBtn;
@@ -24,7 +24,7 @@ public abstract class GameScreenController extends ScreenController {
     @FXML public Region vRegion2;
 
     protected void updateAll() {
-        // all GameScreenController must have a updateAll() override
+        // all AbstractGameScreenController must have a updateAll() override
         // that will handle the screen specific updates
     }
 

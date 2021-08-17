@@ -10,7 +10,7 @@ import org.dionthorn.lifesimrpg.entities.Place;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MapInfoScreenController extends GameScreenController {
+public class MapInfoScreenController extends AbstractGameScreenController {
 
     private static final ArrayList<Label> connectingPlaceLbls = new ArrayList<>();
     private static final ArrayList<Button> connectingPlaceBtns = new ArrayList<>();

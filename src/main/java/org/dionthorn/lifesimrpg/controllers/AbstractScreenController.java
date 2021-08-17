@@ -8,9 +8,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
- * The base ScreenController, all ScreenControllers use these nodes
+ * The base AbstractScreenController, all ScreenControllers use these nodes
  */
-public abstract class ScreenController {
+public abstract class AbstractScreenController {
 
     // FXML JavaFX Nodes Common amongst all subclasses
     @FXML public HBox topBar; // top

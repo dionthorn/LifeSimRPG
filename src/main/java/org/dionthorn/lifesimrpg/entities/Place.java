@@ -5,7 +5,7 @@ import org.dionthorn.lifesimrpg.FileOpUtils;
 import java.net.URI;
 import java.util.ArrayList;
 
-public class Place extends Entity {
+public class Place extends AbstractEntity {
 
     public enum PLACE_TYPE {
         RESIDENTIAL_ZONE,

@@ -2,7 +2,6 @@ package org.dionthorn.lifesimrpg.entities;
 
 import org.dionthorn.lifesimrpg.FileOpUtils;
 import org.dionthorn.lifesimrpg.GameState;
-
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.Month;
@@ -17,9 +16,9 @@ import java.util.Random;
  * has an associated Job object, manages relationships with other Characters,
  * has various attributes like health, money, foodCost, daysWithoutFood.
  */
-public class Character extends Entity {
+public class Character extends AbstractEntity {
 
-    // static used for storing firstNames/lastNames for AI and the random object
+    // static used for storing firstNames/lastNames data for AI and the random object
     private static final ArrayList<String> firstNames = new ArrayList<>();
     private static final ArrayList<String> lastNames = new ArrayList<>();
     private static final Random rand = new Random();
@@ -70,7 +69,7 @@ public class Character extends Entity {
     // logical and boolean methods
 
     /**
-     * Calls moveTo(this.home)
+     * Calls this.moveTo(this.home) simply for code readability
      */
     public void goHome() {
         moveTo(home);
@@ -203,7 +202,7 @@ public class Character extends Entity {
 
     /**
      * Will increase by value and/or establish a relationship with target Character
-     * relationships are stored by the Character Entity UID (always unique)
+     * relationships are stored by the Character AbstractEntity UID (always unique)
      * and a double between 0 and 100 in a HashMap < Integer, Double > called Character.relationships
      * @param target Character representing who this Character is adding relationship with
      * @param value double representing the amount of relationship to increase
@@ -214,11 +213,7 @@ public class Character extends Entity {
             relationships.put(targetUID, value);
         } else {
             double relation = relationships.get(targetUID);
-            if(relation + value > 100) {
-                relationships.put(targetUID, 100d);
-            } else {
-                relationships.put(targetUID, relation + value);
-            }
+            relationships.put(targetUID, relation + value > 100 ? 100d : relation + value);
         }
         talkedToToday.add(target);
     }
@@ -233,15 +228,15 @@ public class Character extends Entity {
         return relationships.get(targetUID);
     }
 
+    /**
+     * Will add a new entry in the stats HashMap where < String , Double >
+     *     And if the stat name given is NONE we ignore
+     * @param statName String representing the stat name to add
+     * @param value double representing the stat value to add
+     */
     public void addStat(String statName, double value) {
         if(!statName.equals("NONE")) {
-            boolean doesExist = false;
-            for(String test: stats.keySet()) {
-                if(test.equals(statName)) {
-                    doesExist = true;
-                    break;
-                }
-            }
+            boolean doesExist = stats.keySet().stream().anyMatch(test -> test.equals(statName));
             if(!doesExist) {
                 stats.put(statName, value);
             } else {
@@ -251,14 +246,24 @@ public class Character extends Entity {
         }
     }
 
+    /**
+     * Will return a double representing the value of statName or 0 if null
+     * @param statName String representing the stat name
+     * @return double representing the stat name value
+     */
     public double getStat(String statName) {
         double toReturn = 0;
-        if(stats.get(statName) != null) {
+        if(hasStat(statName)) {
             toReturn += stats.get(statName);
         }
         return toReturn;
     }
 
+    /**
+     * Will return boolean if this character has statName
+     * @param statName String representing the stat to check
+     * @return boolean representing whether this character has statName
+     */
     public boolean hasStat(String statName) {
         return stats.containsKey(statName);
     }

@@ -6,7 +6,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class Map extends Entity {
+public class Map extends AbstractEntity {
 
     private final String name;
     private final ArrayList<Place> places = new ArrayList<>();
@@ -102,7 +102,7 @@ public class Map extends Entity {
         return places;
     }
 
-    // returns a ArrayList of all character object in every Place object in the places ArrayList
+    // returns a ArrayList of all Character objects in every Place object in the places reference
     public ArrayList<Character> getAllCharacters() {
         return places.stream().flatMap(p -> p.getCharacters().stream()).collect(Collectors.toCollection(ArrayList::new));
     }

@@ -9,7 +9,7 @@ import org.dionthorn.lifesimrpg.entities.Character;
 import org.dionthorn.lifesimrpg.entities.Course;
 import org.dionthorn.lifesimrpg.entities.Map;
 
-public class CoursesInfoController extends GameScreenController {
+public class CoursesInfoScreenController extends AbstractGameScreenController {
 
     @FXML public Label coursesLbl;
     @FXML public Label currentCourseLbl;

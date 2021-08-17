@@ -4,7 +4,7 @@ import org.dionthorn.lifesimrpg.FileOpUtils;
 
 import java.net.URI;
 
-public class Course extends Entity {
+public class Course extends AbstractEntity {
 
     public String courseName;
     public int courseLevel = 0;

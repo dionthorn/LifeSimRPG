@@ -7,7 +7,7 @@ import org.dionthorn.lifesimrpg.Engine;
 /**
  * Used for both StartScreen and GameOverScreen with only the GameOverScreen having an override
  */
-public abstract class NewGameScreenController extends ScreenController {
+public abstract class AbstractStartScreenController extends AbstractScreenController {
 
     // FXML JavaFX Nodes common amongst StartScreen and GameOverScreen
     @FXML public Button startGameBtn;

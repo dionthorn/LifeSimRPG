@@ -2,7 +2,7 @@ package org.dionthorn.lifesimrpg.controllers;
 
 import org.dionthorn.lifesimrpg.Engine;
 
-public class GameOverScreenController extends NewGameScreenController {
+public class GameOverScreenController extends AbstractStartScreenController {
 
     @Override
     public void initialize() {

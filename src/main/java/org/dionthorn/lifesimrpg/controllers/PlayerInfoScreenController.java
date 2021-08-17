@@ -3,11 +3,12 @@ package org.dionthorn.lifesimrpg.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import org.dionthorn.lifesimrpg.Engine;
+import org.dionthorn.lifesimrpg.GameState;
 import org.dionthorn.lifesimrpg.entities.Character;
 
 import java.util.Map;
 
-public class PlayerInfoScreenController extends GameScreenController {
+public class PlayerInfoScreenController extends AbstractGameScreenController {
 
     @FXML public Label playerNameLbl;
     @FXML public Label currentLocationLbl;
@@ -18,7 +19,11 @@ public class PlayerInfoScreenController extends GameScreenController {
     @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.PLAYER_INFO;
-        console.appendText(Engine.getDateString());
+        if(Engine.gameState.getCurrentDate().isEqual(GameState.DAY_ONE.minusDays(1))) {
+            Engine.nextDay(console);
+        } else {
+            console.appendText(Engine.getDateString());
+        }
         updateAll();
     }
 

@@ -27,7 +27,7 @@ public class Engine {
     /**
      * SCREEN enum is used to flag which screen we should be currently on
      * for example when you press next day, if you are on mapInfo it will just update mapInfo
-     *
+     * instead of reloading it.
      */
     public enum SCREEN {
         BOOT,
@@ -56,9 +56,8 @@ public class Engine {
      * @param stage Stage representing the root Stage object for the program to be statically referenced
      */
     public static void setStage(Stage stage) {
+        // setup rootStage and Key Handlers
         rootStage = stage;
-
-        // set Key Handlers
         rootStage.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             if(key.getCode() == KeyCode.ESCAPE) {
                 rootStage.close();
@@ -75,8 +74,12 @@ public class Engine {
         }
     }
 
-    // Game Time Progress methods can be called from any ScreenController with Engine.nextWeek(TextArea console)
+    // Game Time Progress methods can be called from any AbstractScreenController with Engine.nextWeek(TextArea console)
 
+    /**
+     * Will return a String representing the current date formatted for human readability
+     * @return String representing the current date formatted for human readability
+     */
     public static String getDateString() {
         LocalDate currentDate = gameState.getCurrentDate();
         return """
@@ -109,7 +112,7 @@ public class Engine {
      */
     public static void nextDay(TextArea console) {
         // update entities for now this is just sending them home on the new day
-        for(Entity e: Entity.entities) {
+        for(AbstractEntity e: AbstractEntity.entities) {
             if(e instanceof Character) {
                 ((Character) e).update();
             }
@@ -118,6 +121,7 @@ public class Engine {
         // advance a day
         LocalDate currentDate = gameState.getCurrentDate();
         gameState.setCurrentDate(currentDate.plusDays(1));
+        currentDate = gameState.getCurrentDate();
         console.appendText(Engine.getDateString());
 
         // birthday check
@@ -126,7 +130,7 @@ public class Engine {
             console.appendText("Happy Birthday!\n");
         }
 
-        // do Course logic
+        // do Course stat gain logic
         Course playerCourse = player.getCurrentCourse();
         if(playerCourse != null) {
             player.addStat(playerCourse.getStatName(), playerCourse.getCurrentStatGain());
@@ -196,10 +200,10 @@ public class Engine {
         if(currentDate.getDayOfMonth() == 1) {
             int rentPeriod = playerHome.getDaysInPeriod();
             int rentCost = playerHome.getRentPeriodCost();
+
+            // check if player can pay rent
             if(player.getMoney() - rentCost >= 0) {
                 player.setMoney(player.getMoney() - rentCost);
-
-                // successfully paid rent
                 console.appendText(
                         """
                         %s paid $%d in rent!
@@ -211,8 +215,6 @@ public class Engine {
             } else {
                 // maybe set rent higher based on 12 month rent distributed?
                 int rentIncrease = (rentCost / rentPeriod) / 12;
-
-                // couldn't afford rent
                 console.appendText(
                         """
                         %s couldn't pay rent! An increase of $%d per day has been added
@@ -222,7 +224,7 @@ public class Engine {
                         )
                 );
 
-                // pretty heavy penalty at the moment
+                // set rent and calculate rent debt
                 playerHome.setRent(player.getHome().getRent() + rentIncrease);
                 playerHome.setMonthsUnpaid(player.getHome().getMonthsUnpaid() + 1);
                 playerHome.setTotalUnpaid(rentCost);
@@ -314,11 +316,11 @@ public class Engine {
     }
 
     /**
-     * This will dump Entity related data into System.out
+     * This will dump AbstractEntity related data into System.out
      */
     public static void dumpEntityData() {
-        ArrayList<Entity> entities = Entity.entities; // get quick dump of entity data
-        for(Entity e : entities) {
+        ArrayList<AbstractEntity> entities = AbstractEntity.entities; // get quick dump of entity data
+        for(AbstractEntity e : entities) {
             if (e instanceof Job) {
                 Job temp = ((Job) e);
                 System.out.print("Job UID:" + temp.getUID());

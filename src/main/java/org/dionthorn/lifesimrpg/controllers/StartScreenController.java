@@ -1,6 +1,6 @@
 package org.dionthorn.lifesimrpg.controllers;
 
-public class StartScreenController extends NewGameScreenController {
+public class StartScreenController extends AbstractStartScreenController {
 
     // singleton just so we can Instantiate the NewGameScreen,
     // notice how GameOverScreenController is slightly different.
