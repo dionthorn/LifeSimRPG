@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.GameState;
-import org.dionthorn.lifesimrpg.entities.Character;
+import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 
 import java.util.Map;
 
@@ -20,9 +20,9 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.PLAYER_INFO;
         if(Engine.gameState.getCurrentDate().isEqual(GameState.DAY_ONE.minusDays(1))) {
-            Engine.nextDay(console);
+            nextDay();
         } else {
-            console.appendText(Engine.getDateString());
+            console.appendText(getDateString());
         }
         updateAll();
     }
@@ -30,13 +30,13 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
     @Override
     public void updateAll() {
         if(Engine.CURRENT_SCREEN != Engine.SCREEN.PLAYER_INFO) {
-            console.appendText(Engine.getDateString());
+            console.appendText(getDateString());
         }
         // update variable texts
         playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
 
         // update player name label
-        Character player = Engine.gameState.getPlayer();
+        AbstractCharacter player = Engine.gameState.getPlayer();
         playerNameLbl.setText(
                 """
                 Player: %s %s Health: %.2f/%.2f
@@ -97,8 +97,8 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
         }
         currentTitlesLbl.setText(String.valueOf(sb));
 
-        Engine.updateDateLbl(currentDateLbl);
-        Engine.updateMoneyLbl(moneyLbl);
+        updateDateLbl();
+        updateMoneyLbl();
     }
 
     // Screen changers different for each screen

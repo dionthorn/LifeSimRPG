@@ -1,16 +1,20 @@
 package org.dionthorn.lifesimrpg.entities;
 
-import org.dionthorn.lifesimrpg.FileOpUtils;
-
+import org.dionthorn.lifesimrpg.FileOpUtil;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Job manages either a default job or a job loaded from .job files
+ * ex: /Maps/{MapName}/Jobs/{JobName}.job
+ */
 public class Job extends AbstractEntity {
 
-    private LocalDate yearDate;
-    private int salary;
+    // Job information variables
+    private LocalDate oneYearDateTracker;
+    private int dailyPayRate;
     private int daysWorked = 0;
     private int daysPaidOut = 0;
     private int yearsWorked = 0;
@@ -22,72 +26,62 @@ public class Job extends AbstractEntity {
     private String[] titleRequirements;
     private String currentTitle;
     private final String name;
-    private final boolean fromFile;
+    private final boolean isFromFile; // used to distinguish default jobs from jobs loaded from .job files
 
-    // used for unemployed job creation
-    public Job(String name, int salary) {
+    /**
+     * Will generate a default job with isFromFile set to false,
+     * used for salary person and unemployed default jobs.
+     * @param name String representing the default name
+     * @param dailyPayRate int representing the default pay rate
+     */
+    public Job(String name, int dailyPayRate) {
         super();
-        this.fromFile = false;
+        this.isFromFile = false;
         this.name = name;
-        this.salary = salary;
+        this.dailyPayRate = dailyPayRate;
         this.titleRequirements = new String[1];
-        this.titleRequirements[0] = "none";
+        this.titleRequirements[0] = "";
         this.titlesPay = new int[1];
         this.jobTitles = new String[1];
         this.jobTitles[0] = this.name;
         this.currentTitle = this.name;
-        this.workDays = new int[7];
-        for(int i=0; i<workDays.length; i++) {
-            workDays[i] = i+1;
+        this.workDays = new int[5];
+        for(int i=0; i<5; i++) {
+            workDays[i] = i;
         }
     }
 
-    // used for loading jobs from file
-    public Job(String jobName) {
+    /**
+     * Will load a job from file targeting /Maps/{MapName}/Jobs/{JobName}.job
+     * @param jobName String representing the jobName to target
+     * @param mapName String representing the mapName to target
+     */
+    public Job(String jobName, String mapName) {
         super();
-        this.fromFile = true;
+        this.isFromFile = true;
         this.name = jobName.split("\\.")[0];
         String[] fileLines;
-        if(FileOpUtils.JRT) {
-            fileLines = FileOpUtils.getFileLines(URI.create(FileOpUtils.jrtBaseURI + "Jobs/" + jobName));
+        if(FileOpUtil.JRT) {
+            fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/Jobs/" + jobName));
         } else {
-            fileLines = FileOpUtils.getFileLines(URI.create(getClass().getResource("/Jobs") + jobName));
+            fileLines = FileOpUtil.getFileLines(URI.create(getClass().getResource("/Maps/" + mapName + "/Jobs") + jobName));
         }
-        boolean TR = false; // Title requirements - 5 state machine
-        boolean SR = false; // Stat requirements
-        boolean JT = false; // jobTitle
-        boolean PA = false; // Pay
-        boolean DA = false; // Work Days
+        boolean TR = false, SR = false, JT = false, PA = false, DA = false; // 5 state machine
         for(String line: fileLines) {
             if(line.contains(":TITLE_REQUIREMENTS:")) {
-                SR = false;
-                JT = false;
-                PA = false;
-                DA = false;
+                SR = JT = PA = DA = false;
                 TR = true;
             } else if(line.contains(":STAT_REQUIREMENTS:")) {
-                TR = false;
-                JT = false;
-                PA = false;
-                DA = false;
+                TR = JT = PA = DA = false;
                 SR = true;
             } else if(line.contains(":TITLE:")) {
-                SR = false;
-                TR = false;
-                PA = false;
-                DA = false;
+                SR = TR = PA = DA = false;
                 JT = true;
             } else if(line.contains(":PAY:")) {
-                SR = false;
-                TR = false;
-                JT = false;
-                DA = false;
+                SR = TR = JT = DA = false;
                 PA = true;
             } else if(line.contains(":DAYS:")) {
-                SR = false;
-                TR = false;
-                JT = false;
-                PA = false;
+                SR = TR = JT = PA = false;
                 DA = true;
             } else {
                 if(TR) {
@@ -126,13 +120,22 @@ public class Job extends AbstractEntity {
             }
         }
         currentTitle = jobTitles[0];
-        salary = titlesPay[0];
+        dailyPayRate = titlesPay[0];
     }
 
     // calculates pay for job
+
+    /**
+     * Will return an int value representing the amount paid out on this call,
+     * Will check the daysWorked and daysPaidOut variables to determine pay along with dailyPayRate
+     * Will change those variables as needed. On the oneYearAni of this job will also give a raise,
+     * or raise title
+     * @param currentDate String representing the current date used to calculate pay
+     * @return int representing the amount paid out on this call
+     */
     public int payout(LocalDate currentDate) {
-        int payout = (daysWorked - daysPaidOut) * salary;
-        LocalDate oneYearAni = yearDate.plusYears(1);
+        int payout = (daysWorked - daysPaidOut) * dailyPayRate;
+        LocalDate oneYearAni = oneYearDateTracker.plusYears(1);
         if(currentDate.isEqual(oneYearAni) || currentDate.isAfter(oneYearAni)) {
             int newRank = 0;
             for(int i = 0; i< jobTitles.length; i++) {
@@ -142,33 +145,60 @@ public class Job extends AbstractEntity {
             }
             if(newRank<titlesPay.length) {
                 // new rank
-                salary = titlesPay[newRank];
+                dailyPayRate = titlesPay[newRank];
                 currentTitle = jobTitles[newRank];
             } else {
                 // max rank so give raise
-                salary = salary + (int)(0.5 * (salary * 1.1));
+                dailyPayRate = dailyPayRate + (int)(0.5 * (dailyPayRate * 1.1));
             }
-            payout = (daysWorked - daysPaidOut) * salary;
+            payout = (daysWorked - daysPaidOut) * dailyPayRate;
             daysWorked = 0;
             daysPaidOut = 0;
             yearsWorked++;
-            yearDate = oneYearAni;
+            oneYearDateTracker = oneYearAni;
         }
         return payout;
     }
 
+    // logical
+
+    /**
+     * Will return a boolean representing whether this job defines the provided dayOfWeek as a work day
+     * @param dayOfWeek int representing the current day of week monday = 1
+     * @return boolean representing whether this job defines the provided dayOfWeek as a work day
+     */
+    public boolean isWorkDay(int dayOfWeek) {
+        return Arrays.stream(workDays).anyMatch(i -> i == dayOfWeek);
+    }
+
+    /**
+     * Will return a boolean representing whether this job is loaded from file
+     * @return boolean representing whether this job is loaded from file
+     */
+    public boolean isFromFile() {
+        return this.isFromFile;
+    }
+
     // getters and setters
 
-    public LocalDate getYearDate() {
-        return yearDate;
+    /**
+     * Will return a LocalDate representing the date you started, or the last date you raised title
+     * @return LocalDate representing the date you started, or the last date you raised title
+     */
+    public LocalDate getOneYearDateTracker() {
+        return oneYearDateTracker;
+    }
+
+    public void setOneYearDateTracker(LocalDate initialDate) {
+        this.oneYearDateTracker = initialDate;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getSalary() {
-        return salary;
+    public int getDailyPayRate() {
+        return dailyPayRate;
     }
 
     public void workDay() {
@@ -211,15 +241,4 @@ public class Job extends AbstractEntity {
         return workDays;
     }
 
-    public boolean isWorkDay(int dayOfWeek) {
-        return Arrays.stream(workDays).anyMatch(i -> i == dayOfWeek);
-    }
-
-    public void setYearDate(LocalDate yearDate) {
-        this.yearDate = yearDate;
-    }
-
-    public boolean isFromFile() {
-        return this.fromFile;
-    }
 }

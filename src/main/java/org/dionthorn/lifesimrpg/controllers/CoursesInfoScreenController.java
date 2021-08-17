@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import org.dionthorn.lifesimrpg.Engine;
-import org.dionthorn.lifesimrpg.entities.Character;
+import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import org.dionthorn.lifesimrpg.entities.Course;
 import org.dionthorn.lifesimrpg.entities.Map;
 
@@ -25,7 +25,7 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
     @Override
     public void updateAll() {
         centerGridPane.getChildren().clear();
-        Character player = Engine.gameState.getPlayer();
+        AbstractCharacter player = Engine.gameState.getPlayer();
         playerInfoBtn.setText(String.format("%s Info", player.getFirstName()));
         if(player.hasCourse()) {
             currentCourseStatLbl.setText(
@@ -61,8 +61,8 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
             centerGridPane.getChildren().addAll(courseName, takeCourse);
         }
 
-        Engine.updateDateLbl(currentDateLbl);
-        Engine.updateMoneyLbl(moneyLbl);
+        updateDateLbl();
+        updateMoneyLbl();
     }
 
     // Screen changers different for each screen
@@ -97,7 +97,7 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
     // other buttons
 
     public void onTakeCourse(String courseName) {
-        Character player = Engine.gameState.getPlayer();
+        AbstractCharacter player = Engine.gameState.getPlayer();
         if(player.getCurrentCourse() == null) {
             for(Course course: Engine.gameState.getCurrentMap().getCourses()) {
                 if(course.getCourseName().equals(courseName)) {

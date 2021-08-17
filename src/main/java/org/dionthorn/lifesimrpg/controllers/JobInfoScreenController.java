@@ -6,11 +6,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import org.dionthorn.lifesimrpg.Engine;
+import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import org.dionthorn.lifesimrpg.entities.AbstractEntity;
-import org.dionthorn.lifesimrpg.entities.Character;
 import org.dionthorn.lifesimrpg.entities.Job;
-
-import java.util.Map;
 
 public class JobInfoScreenController extends AbstractGameScreenController {
 
@@ -24,27 +22,27 @@ public class JobInfoScreenController extends AbstractGameScreenController {
     @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.JOB_INFO;
-        console.appendText(Engine.getDateString());
+        console.appendText(getDateString());
         updateAll();
     }
 
     @Override
     public void updateAll() {
         if(Engine.CURRENT_SCREEN != Engine.SCREEN.JOB_INFO) {
-            console.appendText(Engine.getDateString());
+            console.appendText(getDateString());
         }
         // update variable texts
         playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
 
         // Show Current Job Info
-        Character player = Engine.gameState.getPlayer();
+        AbstractCharacter player = Engine.gameState.getPlayer();
         currentJobLbl.setText(
                 """
                 Current Job: %s Current Salary: %d
                 Current Title: %s
                 """.formatted(
                         player.getJob().getName(),
-                        player.getJob().getSalary(),
+                        player.getJob().getDailyPayRate(),
                         player.getJob().getCurrentTitle()
                 )
         );
@@ -69,7 +67,7 @@ public class JobInfoScreenController extends AbstractGameScreenController {
                         %s $%d
                         """.formatted(
                                 target.getName(),
-                                target.getSalary()
+                                target.getDailyPayRate()
                         );
                 if(!(jobOptions.getItems().contains(targetInfo))) {
                     jobOptions.getItems().add(targetInfo);
@@ -78,8 +76,8 @@ public class JobInfoScreenController extends AbstractGameScreenController {
         }
         jobOptions.getSelectionModel().select(0);
 
-        Engine.updateDateLbl(currentDateLbl);
-        Engine.updateMoneyLbl(moneyLbl);
+        updateDateLbl();
+        updateMoneyLbl();
     }
 
     public void onApply() {
@@ -87,7 +85,7 @@ public class JobInfoScreenController extends AbstractGameScreenController {
         String selection = jobOptions.getSelectionModel().getSelectedItem();
         String jobName = selection.split("\\$")[0].replaceAll(" ", "");
         Job target;
-        Character player = Engine.gameState.getPlayer();
+        AbstractCharacter player = Engine.gameState.getPlayer();
         // loop through entities and find the target job
         for(AbstractEntity e: AbstractEntity.entities) {
             // make sure it is from file and not a default job

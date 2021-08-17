@@ -5,8 +5,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import org.dionthorn.lifesimrpg.Engine;
-import org.dionthorn.lifesimrpg.entities.Character;
+import org.dionthorn.lifesimrpg.entities.AICharacter;
+import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import org.dionthorn.lifesimrpg.entities.Place;
+import org.dionthorn.lifesimrpg.entities.PlayerCharacter;
+
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,7 +27,7 @@ public class MapInfoScreenController extends AbstractGameScreenController {
     @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.MAP_INFO;
-        console.appendText(Engine.getDateString());
+        console.appendText(getDateString());
         updateAll();
     }
 
@@ -32,19 +35,19 @@ public class MapInfoScreenController extends AbstractGameScreenController {
     @Override
     public void updateAll() {
         if(Engine.CURRENT_SCREEN != Engine.SCREEN.MAP_INFO) {
-            console.appendText(Engine.getDateString());
+            console.appendText(getDateString());
         }
-        if(Engine.CURRENT_SCREEN == Engine.SCREEN.MAP_INFO) {
+        if(Engine.CURRENT_SCREEN == Engine.SCREEN.MAP_INFO || Engine.CURRENT_SCREEN == Engine.SCREEN.DEAD) {
             centerGridPane.getChildren().clear();
         }
         // update variable texts
         playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
 
         // Move all characters around if user press the mapInfoBtn
-        Character player = Engine.gameState.getPlayer();
-        for(Character c: Engine.gameState.getCurrentMap().getAllCharacters()) {
+        PlayerCharacter player = Engine.gameState.getPlayer();
+        for(AbstractCharacter c: Engine.gameState.getCurrentMap().getAllCharacters()) {
             if(!(c == player)) {
-                c.moveRandom();
+                ((AICharacter) c).moveRandom();
             }
         }
 
@@ -69,11 +72,11 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         // check if we currently are in a SCHOOL type Place and add the courses button to rightBar
         coursesInfoBtn.setVisible(Engine.gameState.getPlayer().getCurrentLocation().getType() == Place.PLACE_TYPE.SCHOOL);
 
-        Engine.updateDateLbl(currentDateLbl);
-        Engine.updateMoneyLbl(moneyLbl);
+        updateDateLbl();
+        updateMoneyLbl();
     }
 
-    public int generatePlaceBtnsAndLbls(Character player) {
+    public int generatePlaceBtnsAndLbls(AbstractCharacter player) {
         // clear arrays
         connectingPlaceLbls.clear(); // maybe instead we setup these with default buttons/labels on first pass
         connectingPlaceBtns.clear(); // and do .setText() calls instead of generating new in the below loop?
@@ -118,14 +121,14 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         return lastYindex;
     }
 
-    public void generateTalkBtnsAndLbls(Character player, int lastYindex) {
+    public void generateTalkBtnsAndLbls(AbstractCharacter player, int lastYindex) {
         // clear arrays
         charLbls.clear();
         talkBtns.clear();
 
         // tracking variables
         lastYindex = lastYindex + 2;
-        Character targetChar;
+        AbstractCharacter targetChar;
         int xCap = 0;
         int yCap = 0;
 
@@ -139,7 +142,7 @@ public class MapInfoScreenController extends AbstractGameScreenController {
             GridPane.setConstraints(talkBtns.get(i), xCap, lastYindex + yCap + 1);
 
             // setup buttons
-            Character finalTargetChar = targetChar;
+            AbstractCharacter finalTargetChar = targetChar;
             talkBtns.get(i).setOnAction(ActionEvent -> {
                 if(!player.hasTalkedToToday(finalTargetChar)) {
                     player.addRelationship(finalTargetChar, ThreadLocalRandom.current().nextDouble(0, 10));

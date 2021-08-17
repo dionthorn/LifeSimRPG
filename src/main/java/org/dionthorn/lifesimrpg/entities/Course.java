@@ -1,9 +1,11 @@
 package org.dionthorn.lifesimrpg.entities;
 
-import org.dionthorn.lifesimrpg.FileOpUtils;
-
+import org.dionthorn.lifesimrpg.FileOpUtil;
 import java.net.URI;
 
+/**
+ * Course will manage .course data
+ */
 public class Course extends AbstractEntity {
 
     public String courseName;
@@ -13,35 +15,35 @@ public class Course extends AbstractEntity {
     public double[] titleRequirements;
     public double[] statGains;
 
+    /**
+     * Course constructor will locate the Course data in /Maps/{mapName}/Course/{courseName}.course
+     * @param courseName String representing this Course name
+     * @param mapName String representing this Course respective map folder
+     */
     public Course(String courseName, String mapName) {
         super();
 
         // set name and check JRT for fileLines
         this.courseName = courseName.split("\\.")[0];
         String[] fileLines;
-        if(FileOpUtils.JRT) {
-            fileLines = FileOpUtils.getFileLines(URI.create(FileOpUtils.jrtBaseURI + "Maps/" + mapName + "/Courses/" + courseName));
+        if(FileOpUtil.JRT) {
+            fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/Courses/" + courseName));
         } else {
-            fileLines = FileOpUtils.getFileLines(URI.create(getClass().getResource("/Maps/" + mapName + "/Courses") + courseName));
+            fileLines = FileOpUtil.getFileLines(URI.create(getClass().getResource("/Maps/" + mapName + "/Courses") + courseName));
         }
 
-        // loop through all file lines and process
-        boolean TI = false;
-        boolean RQ = false;
-        boolean SG = false;
+        // loop through all file lines and process using a 3 state machine
+        boolean TI = false, RQ = false, SG = false;
         for(String line: fileLines) {
             if(line.contains(":TITLES:")) {
+                RQ = SG = false;
                 TI = true;
-                RQ = false;
-                SG = false;
             } else if(line.contains(":REQUIREMENTS:")) {
+                TI = SG = false;
                 RQ = true;
-                TI = false;
-                SG = false;
             } else if(line.contains(":STAT_GAIN:")) {
+                TI = RQ = false;
                 SG = true;
-                TI = false;
-                RQ = false;
             } else if(TI) {
                 titles = line.split(",");
             } else if(RQ) {
@@ -66,16 +68,10 @@ public class Course extends AbstractEntity {
         }
     }
 
+    // logical
 
-    public String checkTitle(Character target) {
-        String toReturn = "Not Qualified - " + courseName;
-        if(target.hasCourse() && target.getStats().size() > 0) {
-            if(target.getStats().get(statName) >= titleRequirements[courseLevel]) {
-                toReturn = titles[courseLevel];
-                courseLevel++;
-            }
-        }
-        return toReturn;
+    public void plusCourseLevel() {
+        courseLevel++;
     }
 
     // getters and setters
@@ -89,15 +85,29 @@ public class Course extends AbstractEntity {
     }
 
     public double getCurrentTitleRequirement() {
+        if(courseLevel > titleRequirements.length - 1) {
+            return titleRequirements[titleRequirements.length - 1];
+        }
         return titleRequirements[courseLevel];
     }
 
     public double getCurrentStatGain() {
+        if(courseLevel > statGains.length - 1) {
+            return statGains[statGains.length - 1];
+        }
         return statGains[courseLevel];
     }
 
     public int getCourseLevel() {
         return courseLevel;
+    }
+
+    public double[] getTitleRequirements() {
+        return titleRequirements;
+    }
+
+    public String[] getTitles() {
+        return titles;
     }
 
 }

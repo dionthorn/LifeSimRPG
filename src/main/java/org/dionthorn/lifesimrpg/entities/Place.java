@@ -1,6 +1,6 @@
 package org.dionthorn.lifesimrpg.entities;
 
-import org.dionthorn.lifesimrpg.FileOpUtils;
+import org.dionthorn.lifesimrpg.FileOpUtil;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class Place extends AbstractEntity {
         REALTOR
     }
 
-    private final ArrayList<Character> characters = new ArrayList<>();
+    private final ArrayList<AbstractCharacter> characters = new ArrayList<>();
     private final ArrayList<Place> connections = new ArrayList<>();
 
     private final String name;
@@ -36,7 +36,7 @@ public class Place extends AbstractEntity {
         this.name = fileName.split("/")[fileName.split("/").length - 1];
         // load place data and character data from resources
         String[] fileLines;
-        fileLines = FileOpUtils.getFileLines(URI.create(fileName + ".place"));
+        fileLines = FileOpUtil.getFileLines(URI.create(fileName + ".place"));
         boolean TY = false; // small two state machine
         boolean AI = false;
         for(String line: fileLines) {
@@ -53,7 +53,7 @@ public class Place extends AbstractEntity {
                 // process AI data
                 int toGenerate = Integer.parseInt(line.replaceAll(" ",""));
                 for(int i=0; i<toGenerate; i++) {
-                    Character temp = new Character();
+                    AbstractCharacter temp = new AICharacter();
                     characters.add(temp);
                     temp.setCurrentLocation(this);
                 }
@@ -68,7 +68,7 @@ public class Place extends AbstractEntity {
         return name;
     }
 
-    public ArrayList<Character> getCharacters() {
+    public ArrayList<AbstractCharacter> getCharacters() {
         return characters;
     }
 

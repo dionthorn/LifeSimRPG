@@ -1,6 +1,6 @@
 package org.dionthorn.lifesimrpg.entities;
 
-import org.dionthorn.lifesimrpg.FileOpUtils;
+import org.dionthorn.lifesimrpg.FileOpUtil;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -17,10 +17,10 @@ public class Map extends AbstractEntity {
         // load map data from resources ex input: Vanillaton
         this.name = mapName;
         String[] fileLines;
-        if(FileOpUtils.JRT) {
-            fileLines = FileOpUtils.getFileLines(URI.create(FileOpUtils.jrtBaseURI + "Maps/" + mapName + "/" + mapName + ".map"));
+        if(FileOpUtil.JRT) {
+            fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/" + mapName + ".map"));
         } else {
-            fileLines = FileOpUtils.getFileLines(URI.create(getClass().getResource("/Maps") + mapName + "/" + mapName + ".map"));
+            fileLines = FileOpUtil.getFileLines(URI.create(getClass().getResource("/Maps") + mapName + "/" + mapName + ".map"));
         }
         Place target = null;
 
@@ -37,8 +37,8 @@ public class Map extends AbstractEntity {
                     }
                 }
                 if(isNew) {
-                    if(FileOpUtils.JRT) {
-                        target = new Place(FileOpUtils.jrtBaseURI + "Maps/" + mapName + "/" + targetName);
+                    if(FileOpUtil.JRT) {
+                        target = new Place(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/" + targetName);
                     } else {
                         target = new Place(getClass().getResource("/Maps") + mapName + "/" + targetName);
                     }
@@ -63,8 +63,8 @@ public class Map extends AbstractEntity {
                     if(isNew && target != null) {
                         // if a new one make a new one and add connections to target
                         Place newPlace;
-                        if(FileOpUtils.JRT) {
-                            newPlace = new Place(FileOpUtils.jrtBaseURI + "Maps/" + mapName + "/" + line);
+                        if(FileOpUtil.JRT) {
+                            newPlace = new Place(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/" + line);
                         } else {
                             newPlace = new Place(getClass().getResource("/Maps") + mapName + "/" + line);
                         }
@@ -82,12 +82,12 @@ public class Map extends AbstractEntity {
 
         // Load courses data based off how many file names there are
         URI targetURI;
-        if(FileOpUtils.JRT) {
-            targetURI = URI.create(FileOpUtils.jrtBaseURI + "Maps/" + mapName + "/Courses");
+        if(FileOpUtil.JRT) {
+            targetURI = URI.create(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/Courses");
         } else {
             targetURI = URI.create(String.valueOf(getClass().getResource("/Maps/" + mapName + "/Courses")));
         }
-        for(String fileName: FileOpUtils.getFileNamesFromDirectory(targetURI)) {
+        for(String fileName: FileOpUtil.getFileNamesFromDirectory(targetURI)) {
             courses.add(new Course(fileName, name));
         }
     }
@@ -102,8 +102,8 @@ public class Map extends AbstractEntity {
         return places;
     }
 
-    // returns a ArrayList of all Character objects in every Place object in the places reference
-    public ArrayList<Character> getAllCharacters() {
+    // returns a ArrayList of all AbstractCharacter objects in every Place object in the places reference
+    public ArrayList<AbstractCharacter> getAllCharacters() {
         return places.stream().flatMap(p -> p.getCharacters().stream()).collect(Collectors.toCollection(ArrayList::new));
     }
 
