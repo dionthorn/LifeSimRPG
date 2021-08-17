@@ -13,15 +13,21 @@ LifeSimRPG
 + App
 + Engine
 + GameState
-+ FileOpUtils
++ FileOpUtil
++ NameDataUtil
       
 LifeSimRPG.entites
 + AbstractEntity
-+ +  Character
-+ +  Job
-+ +  Map
-+ +  Place
-+ + +  Residence
++ + Job
++ + Course
++ + Map
++ +
++ + Place
++ + + Residence
++ +
++ + AbstractCharacter
++ + + PlayerCharacter
++ + + AICharacter
             
 LifeSimRPG.controllers
 + AbstractScreenController
@@ -35,6 +41,7 @@ LifeSimRPG.controllers
 + + + PlayerInfoScreenController
 + + + JobInfoScreenController
 + + + MapInfoScreenController
++ + + CoursesInfoScreenController
 
 Kudos Series (makers of the Democracy series)
 https://www.positech.co.uk/kudos2/
