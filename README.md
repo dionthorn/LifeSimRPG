@@ -28,12 +28,10 @@ LifeSimRPG.controllers
 + + CharacterCreationScreen
 + +
 + + AbstractNewGameScreenController
-+ +
 + + + StartScreenController
 + + + GameOverScreenController
 + +
 + + AbstractGameScreenController
-+ +
 + + + PlayerInfoScreenController
 + + + JobInfoScreenController
 + + + MapInfoScreenController
