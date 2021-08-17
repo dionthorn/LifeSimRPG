@@ -24,6 +24,7 @@
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
             <Label fx:id="currentCourseLbl" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <Button fx:id="checkTitleBtn" onAction="#onCheckTitle" text="Check Title" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            <Label fx:id="currentCourseStatLbl" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
             <Label fx:id="coursesLbl" text="Courses Available:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         </GridPane>
     </center>
@@ -47,6 +48,6 @@
     </right>
     <bottom>
         <TextArea fx:id="console" prefWidth="1024" prefHeight="192"
-                  text="Welcome! Please Choose a Course!"/>
+                  text="Welcome! Please Choose a Course!&#10;"/>
     </bottom>
 </BorderPane>

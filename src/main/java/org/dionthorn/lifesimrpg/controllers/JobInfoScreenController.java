@@ -93,6 +93,13 @@ public class JobInfoScreenController extends GameScreenController {
                 // make sure the name matches
                 if(((Job)e).getName().equals(jobName)) {
                     target = (Job) e;
+                    // check if player already has this job
+                    if(player.hasJob() && player.getJob().isFromFile()) {
+                        if(target.getName().equals(player.getJob().getName())) {
+                            console.appendText(String.format("You already work at %s\n", player.getJob().getName()));
+                            break;
+                        }
+                    }
                     // check if player meets job requirements
                     boolean canApply = false;
                     if((target.getTitleRequirements() == null && target.getStatRequirements().size() == 0)) {
@@ -165,6 +172,7 @@ public class JobInfoScreenController extends GameScreenController {
                 }
             }
         }
+        updateAll();
     }
 
     // Screen changers different for each screen

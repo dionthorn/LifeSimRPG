@@ -234,18 +234,20 @@ public class Character extends Entity {
     }
 
     public void addStat(String statName, double value) {
-        boolean doesExist = false;
-        for(String test: stats.keySet()) {
-            if(test.equals(statName)) {
-                doesExist = true;
-                break;
+        if(!statName.equals("NONE")) {
+            boolean doesExist = false;
+            for(String test: stats.keySet()) {
+                if(test.equals(statName)) {
+                    doesExist = true;
+                    break;
+                }
             }
-        }
-        if(!doesExist) {
-            stats.put(statName, value);
-        } else {
-            double toAdd = stats.get(statName);
-            stats.put(statName, toAdd + value);
+            if(!doesExist) {
+                stats.put(statName, value);
+            } else {
+                double toAdd = stats.get(statName);
+                stats.put(statName, toAdd + value);
+            }
         }
     }
 
@@ -415,4 +417,7 @@ public class Character extends Entity {
         return this.currentCourse != null;
     }
 
+    public boolean hasJob() {
+        return job != null;
+    }
 }

@@ -15,7 +15,7 @@
     </top>
     <center>
         <GridPane fx:id="centerGridPane" vgap="10" hgap="10">
-            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
             <Label fx:id="enterFirstNameLbl" text="Enter Your First Name: "
                    GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <TextField fx:id="firstNameInput"
@@ -24,8 +24,8 @@
                    GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <TextField fx:id="lastNameInput"
                        GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-            <Label fx:id="enterBirthdayLbl" text="Enter Your Birth Day&#10;Default is 18 years old"
-                   GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="enterBirthdayLbl" text="Enter Your Birth Day:&#10;Default is 18 years old"
+                   GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.rowSpan="2"/>
             <Label fx:id="dayLbl" text="Day"
                    GridPane.columnIndex="1" GridPane.rowIndex="2"/>
             <TextField fx:id="dayInput" text="1"

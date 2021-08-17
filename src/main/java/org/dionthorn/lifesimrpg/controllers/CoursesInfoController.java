@@ -14,6 +14,7 @@ public class CoursesInfoController extends GameScreenController {
     @FXML public Label coursesLbl;
     @FXML public Label currentCourseLbl;
     @FXML public Button checkTitleBtn;
+    @FXML public Label currentCourseStatLbl;
 
     @Override
     public void initialize() {
@@ -24,14 +25,28 @@ public class CoursesInfoController extends GameScreenController {
     @Override
     public void updateAll() {
         centerGridPane.getChildren().clear();
-        centerGridPane.getChildren().addAll(currentCourseLbl, coursesLbl, checkTitleBtn);
-        // update currentCourseLbl
         Character player = Engine.gameState.getPlayer();
+        playerInfoBtn.setText(String.format("%s Info", player.getFirstName()));
+        if(player.hasCourse()) {
+            currentCourseStatLbl.setText(
+                    String.format(
+                            "Stat Required: %s %s current stat: %.2f",
+                            player.getCurrentCourse().getStatName(),
+                            player.getFirstName(),
+                            player.getStat(player.getCurrentCourse().getStatName())
+
+                    )
+            );
+        }
+        centerGridPane.getChildren().addAll(currentCourseLbl, currentCourseStatLbl, coursesLbl, checkTitleBtn);
+
+        // update currentCourseLbl
         if(player.hasCourse()) {
             currentCourseLbl.setText("Current Course: " + player.getCurrentCourse().getCourseName());
         } else {
             currentCourseLbl.setText("Current Course: NONE");
         }
+
         // List a course Label and Take Course Button for each course
         int xCap = 0;
         int yCap = 2;
@@ -94,9 +109,15 @@ public class CoursesInfoController extends GameScreenController {
     public void onCheckTitle() {
         Character player = Engine.gameState.getPlayer();
         if(player.hasCourse()) {
+            int currentLevel = player.getCurrentCourse().getCourseLevel();
             String currentTitle = player.getCurrentCourse().getHighestTitle(player);
             if(!(player.getTitles().contains(currentTitle))) {
                 player.getTitles().add(currentTitle);
+            }
+            if(currentLevel < player.getCurrentCourse().getCourseLevel()) {
+                console.appendText("You increased in title to:\n" + currentTitle);
+            } else {
+                console.appendText("You are not yet qualified for the next title\n");
             }
         }
         updateAll();

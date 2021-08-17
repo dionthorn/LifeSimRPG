@@ -30,19 +30,18 @@ public abstract class GameScreenController extends ScreenController {
     // Console Clear
     @FXML protected void clearConsole() {
         console.clear();
+        console.appendText(Engine.getDateString());
     }
 
     // Time Changers
 
     @FXML protected void onNextDay() {
         Engine.nextDay(console);
-        console.appendText(Engine.getDateString());
         updateAll();
     }
 
     @FXML protected void onNextWeek() {
         Engine.nextWeek(console);
-        console.appendText(Engine.getDateString());
         updateAll();
     }
 

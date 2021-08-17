@@ -18,9 +18,9 @@ public class Course extends Entity {
         this.courseName = courseName.split("\\.")[0];
         String[] fileLines;
         if(FileOpUtils.JRT) {
-            fileLines = FileOpUtils.getFileLines(URI.create(FileOpUtils.jrtBaseURI + "Courses/" + courseName));
+            fileLines = FileOpUtils.getFileLines(URI.create(FileOpUtils.jrtBaseURI + "Maps/Vanillaton/Courses/" + courseName));
         } else {
-            fileLines = FileOpUtils.getFileLines(URI.create(getClass().getResource("/Courses") + courseName));
+            fileLines = FileOpUtils.getFileLines(URI.create(getClass().getResource("/Maps/Vanillaton/Courses") + courseName));
         }
 
         // loop through all file lines and process
@@ -82,12 +82,12 @@ public class Course extends Entity {
 
 
     public String getHighestTitle(Character target) {
-        String toReturn = "Not Qualified Yet";
+        String toReturn = "Not Qualified - " + courseName;
         if(target.hasCourse() && target.getStats().size() > 0) {
-            if(target.getStats().get(statName) == titleRequirements[courseLevel]) {
-                System.out.println("Increase title!");
-            } else {
-                System.out.println("Didn't increase title!");
+            if(target.getStats().get(statName) >= titleRequirements[courseLevel]) {
+                toReturn = titles[courseLevel];
+                target.getTitles().remove("Not Qualified Yet");
+                courseLevel++;
             }
         }
         return toReturn;

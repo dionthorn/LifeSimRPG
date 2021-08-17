@@ -4,7 +4,6 @@ import org.dionthorn.lifesimrpg.FileOpUtils;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class Map extends Entity {
@@ -84,9 +83,9 @@ public class Map extends Entity {
         // Load courses data based off how many file names there are
         URI targetURI;
         if(FileOpUtils.JRT) {
-            targetURI = URI.create(FileOpUtils.jrtBaseURI + "Courses/");
+            targetURI = URI.create(FileOpUtils.jrtBaseURI + "Maps/" + mapName + "/Courses");
         } else {
-            targetURI = URI.create(String.valueOf(getClass().getResource("/Courses")));
+            targetURI = URI.create(String.valueOf(getClass().getResource("/Maps/" + mapName + "/Courses")));
         }
         for(String fileName: FileOpUtils.getFileNamesFromDirectory(targetURI)) {
             courses.add(new Course(fileName));

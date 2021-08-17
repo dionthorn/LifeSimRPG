@@ -32,7 +32,6 @@ public class Engine {
     public enum SCREEN {
         BOOT,
         CHARACTER_CREATION,
-        MAIN,
         PLAYER_INFO,
         JOB_INFO,
         MAP_INFO,
@@ -119,6 +118,7 @@ public class Engine {
         // advance a day
         LocalDate currentDate = gameState.getCurrentDate();
         gameState.setCurrentDate(currentDate.plusDays(1));
+        console.appendText(Engine.getDateString());
 
         // birthday check
         Character player = gameState.getPlayer();
@@ -245,7 +245,7 @@ public class Engine {
             player.setHealth(player.getHealth() + 0.5);
         } else {
             // do not enough money for food logic here
-            console.appendText("You couldn't pay for food today!\n");
+            console.appendText(String.format("%s couldn't pay for food today!\n", player.getFirstName()));
             player.setDaysWithoutFood(player.getDaysWithoutFood() + 1);
 
             // will die after 23 days in a row with no food starting from 100 health
