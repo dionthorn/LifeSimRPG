@@ -13,14 +13,16 @@ public class Course extends Entity {
     public double[] titleRequirements;
     public double[] statGains;
 
-    public Course(String courseName) {
+    public Course(String courseName, String mapName) {
         super();
+
+        // set name and check JRT for fileLines
         this.courseName = courseName.split("\\.")[0];
         String[] fileLines;
         if(FileOpUtils.JRT) {
-            fileLines = FileOpUtils.getFileLines(URI.create(FileOpUtils.jrtBaseURI + "Maps/Vanillaton/Courses/" + courseName));
+            fileLines = FileOpUtils.getFileLines(URI.create(FileOpUtils.jrtBaseURI + "Maps/" + mapName + "/Courses/" + courseName));
         } else {
-            fileLines = FileOpUtils.getFileLines(URI.create(getClass().getResource("/Maps/Vanillaton/Courses") + courseName));
+            fileLines = FileOpUtils.getFileLines(URI.create(getClass().getResource("/Maps/" + mapName + "/Courses") + courseName));
         }
 
         // loop through all file lines and process
@@ -64,6 +66,20 @@ public class Course extends Entity {
         }
     }
 
+
+    public String checkTitle(Character target) {
+        String toReturn = "Not Qualified - " + courseName;
+        if(target.hasCourse() && target.getStats().size() > 0) {
+            if(target.getStats().get(statName) >= titleRequirements[courseLevel]) {
+                toReturn = titles[courseLevel];
+                courseLevel++;
+            }
+        }
+        return toReturn;
+    }
+
+    // getters and setters
+
     public String getCourseName() {
         return courseName;
     }
@@ -78,19 +94,6 @@ public class Course extends Entity {
 
     public double getCurrentStatGain() {
         return statGains[courseLevel];
-    }
-
-
-    public String getHighestTitle(Character target) {
-        String toReturn = "Not Qualified - " + courseName;
-        if(target.hasCourse() && target.getStats().size() > 0) {
-            if(target.getStats().get(statName) >= titleRequirements[courseLevel]) {
-                toReturn = titles[courseLevel];
-                target.getTitles().remove("Not Qualified Yet");
-                courseLevel++;
-            }
-        }
-        return toReturn;
     }
 
     public int getCourseLevel() {

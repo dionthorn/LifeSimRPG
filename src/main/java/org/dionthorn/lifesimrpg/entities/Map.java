@@ -88,7 +88,7 @@ public class Map extends Entity {
             targetURI = URI.create(String.valueOf(getClass().getResource("/Maps/" + mapName + "/Courses")));
         }
         for(String fileName: FileOpUtils.getFileNamesFromDirectory(targetURI)) {
-            courses.add(new Course(fileName));
+            courses.add(new Course(fileName, name));
         }
     }
 
