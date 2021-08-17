@@ -24,12 +24,16 @@ LifeSimRPG.entites
 + + +  Residence
             
 LifeSimRPG.controllers
-+ ScreenController (Abstract)
++ AbstractScreenController
 + + CharacterCreationScreen
-+ + NewGameScreenController (Abstract)
++ +
++ + AbstractNewGameScreenController
++ +
 + + + StartScreenController
 + + + GameOverScreenController
-+ + GameScreenController (Abstract)
++ +
++ + AbstractGameScreenController
++ +
 + + + PlayerInfoScreenController
 + + + JobInfoScreenController
 + + + MapInfoScreenController
