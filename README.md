@@ -16,7 +16,7 @@ LifeSimRPG
 + FileOpUtils
       
 LifeSimRPG.entites
-+ Entity (Abstract)
++ AbstractEntity
 + +  Character
 + +  Job
 + +  Map
