@@ -7,7 +7,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.dionthorn.lifesimrpg.Engine;
-
 import java.time.LocalDate;
 
 /**
@@ -23,6 +22,11 @@ public abstract class AbstractScreenController {
     @FXML public GridPane centerGridPane; // center
     @FXML public Region vRegion;
 
+    /**
+     * All ScreenControllers must have an initialize method for the FXML
+     * Child classes can override it to do things right after the FXML.load is done setting up nodes
+     * for things like setting the CURRENT_SCREEN flag
+     */
     protected void initialize() {
         // All ScreenControllers must have an initialize method for the FXML
         // Can override in order to do things on creation of the screen

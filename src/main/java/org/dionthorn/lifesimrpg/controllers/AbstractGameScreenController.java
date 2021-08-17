@@ -3,17 +3,23 @@ package org.dionthorn.lifesimrpg.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.Region;
 import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.entities.*;
 import java.time.LocalDate;
 
 /**
- * Used for PlayerInfo, MapInfo, and JobInfo as they all share these nodes
+ * Used as the usual primary 'shell' of the user interface during normal game play
+ * We tend to treat the left bar as 'static' and every screen should have its interfacing buttons
+ * Same with the top bar and the console
+ * the right bar we only keep the nextDay and nextWeek button in, but the top portion is 'dynamic'
+ * in that it will be altered 'contextually' by child classes
+ * for example if you are in a PLACE_TYPE.SCHOOL while on the MapInfoScreen then you will see
+ * a 'Course Info' button appear on the right bar
  */
 public abstract class AbstractGameScreenController extends AbstractScreenController {
 
+    // FXML JavaFX Nodes Common amongst all subclasses
     @FXML public Button playerInfoBtn;
     @FXML public Button jobInfoBtn;
     @FXML public Button mapInfoBtn;
@@ -25,34 +31,54 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
     @FXML public Region hRegion;
     @FXML public Region vRegion2;
 
-    protected void updateAll() {
-        // all AbstractGameScreenController must have a updateAll() override
-        // that will handle the screen specific updates
+    // FXML methods simply button press methods
+
+    /**
+     * FXML button method to clear the console
+     */
+    @FXML protected void onClearConsole() {
+        this.console.clear();
+        this.console.appendText(getDateString());
     }
 
-    // Console Clear
-    @FXML protected void clearConsole() {
-        console.clear();
-        console.appendText(getDateString());
-    }
-
-    // Time Changers
-
+    /**
+     * FXML button method to advance a day
+     */
     @FXML protected void onNextDay() {
         nextDay();
         update();
     }
 
+    /**
+     * FXML button to advance a week
+     */
     @FXML protected void onNextWeek() {
         nextWeek();
         update();
     }
 
+    // Logical
+
+    /**
+     * AbstractGameScreenController children should override updateAll() for their specific needs
+     */
+    protected void updateAll() {
+        // all AbstractGameScreenController children should override updateAll()
+        // that will handle the screen specific updates
+    }
+
+    /**
+     * Will updateTitle(false) and updateAll() this is called after every nextDay and nextWeek
+     */
     protected void update() {
         updateTitle(false);
         updateAll();
     }
 
+    /**
+     * Will update the player Course title if applicable and append relevant text to console
+     * @param isButton boolean representing if the caller is a Button reaction or not
+     */
     protected void updateTitle(boolean isButton) {
         AbstractCharacter player = Engine.gameState.getPlayer();
         if(player.hasCourse()) {
@@ -62,11 +88,11 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                 player.getTitles().add(newTitle);
             }
             if(currentLevel < player.getCurrentCourse().getCourseLevel()) {
-                console.appendText("You increased in title to: %s\n".formatted(newTitle));
+                this.console.appendText("You increased in title to: %s\n".formatted(newTitle));
             } else {
                 if(isButton) {
-                    console.appendText("You are not yet qualified for the next title\n");
-                    console.appendText(
+                    this.console.appendText("You are not yet qualified for the next title\n");
+                    this.console.appendText(
                             """
                             You need %s stat to be %s
                             """.formatted(
@@ -85,7 +111,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
      * Will update the money label
      */
     protected void updateMoneyLbl() {
-        moneyLbl.setText(String.format("Cash: $%d", Engine.gameState.getPlayer().getMoney()));
+        this.moneyLbl.setText(String.format("Cash: $%d", Engine.gameState.getPlayer().getMoney()));
     }
 
     /**
@@ -93,7 +119,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
      */
     protected void updateDateLbl() {
         LocalDate currentDate = Engine.gameState.getCurrentDate();
-        currentDateLbl.setText(
+        this.currentDateLbl.setText(
                 """
                 Date: %d / %d / %d
                 """.formatted(
@@ -104,13 +130,13 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
         );
     }
 
-    // Game Time Progress methods can be called from any AbstractScreenController with Engine.nextWeek(TextArea console)
+    // Game Time Progress methods
 
     /**
      * Will advance the game 7 days by calling nextDay() 7 times
      */
     public void nextWeek() {
-        console.clear();
+        this.console.clear();
         for(int i=0; i<7; i++) {
             if(Engine.gameState.getPlayer().getHealth() > 0) {
                 nextDay();
@@ -134,12 +160,12 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
         LocalDate currentDate = Engine.gameState.getCurrentDate();
         Engine.gameState.setCurrentDate(currentDate.plusDays(1));
         currentDate = Engine.gameState.getCurrentDate();
-        console.appendText(getDateString());
+        this.console.appendText(getDateString());
 
         // birthday check
         AbstractCharacter player = Engine.gameState.getPlayer();
         if(player.isBirthday(currentDate)) {
-            console.appendText("Happy Birthday!\n");
+            this.console.appendText("Happy Birthday!\n");
         }
 
         // do Course stat gain logic
@@ -155,7 +181,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
             if(playerJob.isWorkDay(currentDate.getDayOfWeek().getValue())) {
                 // perform work logic and tell player in console they worked
                 playerJob.workDay();
-                console.appendText(
+                this.console.appendText(
                         """
                         %s worked at %s today
                         """.formatted(
@@ -179,7 +205,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                 int payout = playerJob.payout(currentDate);
 
                 // inform them of what they've been paid
-                console.appendText(
+                this.console.appendText(
                         """
                         Made $%d from working at %s
                         """.formatted(
@@ -192,7 +218,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                 playerJob.setDaysPaidOut(playerJob.getDaysWorked());
                 player.setMoney(player.getMoney() + payout);
                 if(originalSalary > 0) {
-                    console.appendText(
+                    this.console.appendText(
                             """
                             %s got a raise of $%d per day!
                             """.formatted(
@@ -208,39 +234,39 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
         Residence playerHome = player.getHome();
         playerHome.onNextDay();
 
-        // pay rent on the first of the month
+        // pay rentPerDay on the first of the month
         if(currentDate.getDayOfMonth() == 1) {
             int rentPeriod = playerHome.getDaysInPeriod();
             int rentCost = playerHome.getRentPeriodCost();
 
-            // check if player can pay rent
+            // check if player can pay rentPerDay
             if(player.getMoney() - rentCost >= 0) {
                 player.setMoney(player.getMoney() - rentCost);
-                console.appendText(
+                this.console.appendText(
                         """
-                        %s paid $%d in rent!
+                        %s paid $%d in rentPerDay!
                         """.formatted(
                                 player.getFirstName(),
                                 rentCost
                         )
                 );
             } else {
-                // maybe set rent higher based on 12 month rent distributed?
+                // maybe set rentPerDay higher based on 12 month rentPerDay distributed?
                 int rentIncrease = (rentCost / rentPeriod) / 12;
-                console.appendText(
+                this.console.appendText(
                         """
-                        %s couldn't pay rent! An increase of $%d per day has been added
+                        %s couldn't pay rentPerDay! An increase of $%d per day has been added
                         """.formatted(
                                 player.getFirstName(),
                                 rentIncrease
                         )
                 );
 
-                // set rent and calculate rent debt
-                playerHome.setRent(player.getHome().getRent() + rentIncrease);
+                // set rentPerDay and calculate rentPerDay debt
+                playerHome.setRentPerDay(player.getHome().getRentPerDay() + rentIncrease);
                 playerHome.setMonthsUnpaid(player.getHome().getMonthsUnpaid() + 1);
                 playerHome.setTotalUnpaid(rentCost);
-                console.appendText(
+                this.console.appendText(
                         """
                         %s haven't paid for %d months and owe a total of $%d
                         """.formatted(
@@ -259,7 +285,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
             player.setHealth(player.getHealth() + 0.5);
         } else {
             // do not enough money for food logic here
-            console.appendText(String.format("%s couldn't pay for food today!\n", player.getFirstName()));
+            this.console.appendText(String.format("%s couldn't pay for food today!\n", player.getFirstName()));
             player.setDaysWithoutFood(player.getDaysWithoutFood() + 1);
 
             // will die after 23 days in a row with no food starting from 100 health

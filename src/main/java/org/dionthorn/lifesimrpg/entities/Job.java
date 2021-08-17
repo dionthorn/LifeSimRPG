@@ -47,7 +47,7 @@ public class Job extends AbstractEntity {
         this.currentTitle = this.name;
         this.workDays = new int[5];
         for(int i=0; i<5; i++) {
-            workDays[i] = i;
+            this.workDays[i] = i;
         }
     }
 
@@ -86,44 +86,44 @@ public class Job extends AbstractEntity {
             } else {
                 if(TR) {
                     String[] temp = line.split(",");
-                    titleRequirements = new String[temp.length];
-                    System.arraycopy(temp, 0, titleRequirements, 0, temp.length);
+                    this.titleRequirements = new String[temp.length];
+                    System.arraycopy(temp, 0, this.titleRequirements, 0, temp.length);
                 } else if(SR) {
                     String[] temp = line.split(",");
-                    statRQNames = new String[temp.length];
-                    statRQValues = new double[temp.length];
+                    this.statRQNames = new String[temp.length];
+                    this.statRQValues = new double[temp.length];
                     if(!Objects.equals(temp[0], "")) {
                         for (int i = 0; i < temp.length; i++) {
                             String statRequire = temp[i];
                             String[] temp2 = statRequire.split(":");
-                            statRQNames[i] = temp2[0];
-                            statRQValues[i] = Double.parseDouble(temp2[1]);
+                            this.statRQNames[i] = temp2[0];
+                            this.statRQValues[i] = Double.parseDouble(temp2[1]);
                         }
                     }
                 } else if(JT) {
                     String[] temp = line.split(",");
-                    jobTitles = new String[temp.length];
-                    System.arraycopy(temp, 0, jobTitles, 0, temp.length);
+                    this.jobTitles = new String[temp.length];
+                    System.arraycopy(temp, 0, this.jobTitles, 0, temp.length);
                 } else if(PA) {
                     String[] temp = line.split(",");
-                    titlesPay = new int[temp.length];
-                    for(int i=0; i<titlesPay.length; i++) {
-                        titlesPay[i] = Integer.parseInt(temp[i]);
+                    this.titlesPay = new int[temp.length];
+                    for(int i=0; i<this.titlesPay.length; i++) {
+                        this.titlesPay[i] = Integer.parseInt(temp[i]);
                     }
                 } else if(DA) {
                     String[] temp = line.split(",");
-                    workDays = new int[temp.length];
-                    for(int i=0; i<workDays.length; i++) {
-                        workDays[i] = Integer.parseInt(temp[i]);
+                    this.workDays = new int[temp.length];
+                    for(int i=0; i<this.workDays.length; i++) {
+                        this.workDays[i] = Integer.parseInt(temp[i]);
                     }
                 }
             }
         }
-        currentTitle = jobTitles[0];
-        dailyPayRate = titlesPay[0];
+        this.currentTitle = this.jobTitles[0];
+        this.dailyPayRate = this.titlesPay[0];
     }
 
-    // calculates pay for job
+    // Logical
 
     /**
      * Will return an int value representing the amount paid out on this call,
@@ -134,33 +134,40 @@ public class Job extends AbstractEntity {
      * @return int representing the amount paid out on this call
      */
     public int payout(LocalDate currentDate) {
-        int payout = (daysWorked - daysPaidOut) * dailyPayRate;
-        LocalDate oneYearAni = oneYearDateTracker.plusYears(1);
+        int payout = (this.daysWorked - this.daysPaidOut) * this.dailyPayRate;
+        LocalDate oneYearAni = this.oneYearDateTracker.plusYears(1);
         if(currentDate.isEqual(oneYearAni) || currentDate.isAfter(oneYearAni)) {
             int newRank = 0;
-            for(int i = 0; i< jobTitles.length; i++) {
-                if(jobTitles[i].equals(currentTitle)) {
+            for(int i = 0; i< this.jobTitles.length; i++) {
+                if(this.jobTitles[i].equals(this.currentTitle)) {
                     newRank = i + 1;
                 }
             }
-            if(newRank<titlesPay.length) {
+            if(newRank<this.titlesPay.length) {
                 // new rank
-                dailyPayRate = titlesPay[newRank];
-                currentTitle = jobTitles[newRank];
+                this.dailyPayRate = this.titlesPay[newRank];
+                this.currentTitle = this.jobTitles[newRank];
             } else {
                 // max rank so give raise
-                dailyPayRate = dailyPayRate + (int)(0.5 * (dailyPayRate * 1.1));
+                this.dailyPayRate = this.dailyPayRate + (int)(0.5 * (this.dailyPayRate * 1.1));
             }
-            payout = (daysWorked - daysPaidOut) * dailyPayRate;
-            daysWorked = 0;
-            daysPaidOut = 0;
-            yearsWorked++;
-            oneYearDateTracker = oneYearAni;
+            payout = (this.daysWorked - this.daysPaidOut) * this.dailyPayRate;
+            this.daysWorked = 0;
+            this.daysPaidOut = 0;
+            this.yearsWorked++;
+            this.oneYearDateTracker = oneYearAni;
         }
         return payout;
     }
 
-    // logical
+    /**
+     * Will increase this Job daysWorked by 1
+     */
+    public void workDay() {
+        this.daysWorked++;
+    }
+
+    // Qualified boolean
 
     /**
      * Will return a boolean representing whether this job defines the provided dayOfWeek as a work day
@@ -168,8 +175,10 @@ public class Job extends AbstractEntity {
      * @return boolean representing whether this job defines the provided dayOfWeek as a work day
      */
     public boolean isWorkDay(int dayOfWeek) {
-        return Arrays.stream(workDays).anyMatch(i -> i == dayOfWeek);
+        return Arrays.stream(this.workDays).anyMatch(i -> i == dayOfWeek);
     }
+
+    // Pure getters and setters and boolean
 
     /**
      * Will return a boolean representing whether this job is loaded from file
@@ -179,66 +188,108 @@ public class Job extends AbstractEntity {
         return this.isFromFile;
     }
 
-    // getters and setters
-
     /**
      * Will return a LocalDate representing the date you started, or the last date you raised title
      * @return LocalDate representing the date you started, or the last date you raised title
      */
     public LocalDate getOneYearDateTracker() {
-        return oneYearDateTracker;
+        return this.oneYearDateTracker;
     }
 
+    /**
+     * Will set this Job oneYearDateTracker to initialDate
+     * @param initialDate LocalDate representing the initialDate to set this Job oneYearDateTracker to
+     */
     public void setOneYearDateTracker(LocalDate initialDate) {
         this.oneYearDateTracker = initialDate;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getDailyPayRate() {
-        return dailyPayRate;
-    }
-
-    public void workDay() {
-        daysWorked++;
-    }
-
-    public int getDaysWorked() {
-        return daysWorked;
-    }
-
+    /**
+     * Will set this Job daysPaidOut to the provided int
+     * @param daysPaidOut int representing the new value to set this Job daysPaidOut
+     */
     public void setDaysPaidOut(int daysPaidOut) {
         this.daysPaidOut = daysPaidOut;
     }
 
+    /**
+     * Will return a String representing this Job name
+     * @return String representing this Job name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Will return an int representing this Job dailyPayRate
+     * @return int representing this Job dailyPayRate
+     */
+    public int getDailyPayRate() {
+        return this.dailyPayRate;
+    }
+
+    /**
+     * Will return an int representing this Job daysWorked
+     * @return int representing this Job daysWorked
+     */
+    public int getDaysWorked() {
+        return this.daysWorked;
+    }
+
+    /**
+     * Will return an int representing this Job yearsWorked
+     * @return int representing this Job yearsWorked
+     */
     public int getYearsWorked() {
-        return yearsWorked;
+        return this.yearsWorked;
     }
 
+    /**
+     * Will return a String[] representing this Job titleRequirements
+     * @return String[] representing this Job titleRequirements
+     */
     public String[] getTitleRequirements() {
-        return titleRequirements;
+        return this.titleRequirements;
     }
 
+    /**
+     * Will return a String[] representing this Job statRQNames for each title
+     * @return String[] representing this Job statRQNames for each title
+     */
     public String[] getStatRQNames() {
-        return statRQNames;
+        return this.statRQNames;
     }
 
+    /**
+     * Will return a double[] representing this Job statRQValues for each title
+     * @return double[] representing this Job statRQValues for each title
+     */
     public double[] getStatRQValues() {
-        return statRQValues;
+        return this.statRQValues;
     }
 
+    /**
+     * Will return a String representing this Job currentTitle
+     * @return String representing this Job currentTitle
+     */
     public String getCurrentTitle() {
-        return currentTitle;
+        return this.currentTitle;
     }
 
+    /**
+     * Will return an int[] representing this Job titlesPay for each title
+     * @return int[] representing this Job titlesPay for each title
+     */
     public int[] getTitlesPay() {
-        return titlesPay;
+        return this.titlesPay;
     }
 
+    /**
+     * Will return an int[] representing this Job workDays where 1=Monday and the length is the days worked in a week
+     * @return int[] representing this Job workDays where 1=Monday and the length is the days worked in a week
+     */
     public int[] getWorkDays() {
-        return workDays;
+        return this.workDays;
     }
 
 }

@@ -33,7 +33,7 @@
             <Button fx:id="jobInfoBtn" onAction="#onJobInfo" text="Job Info"/>
             <Button fx:id="mapInfoBtn" onAction="#onMapInfo" text="Map Info"/>
             <Region fx:id="vRegion" VBox.vgrow="ALWAYS"/>
-            <Button fx:id="clearConsoleBtn" onAction="#clearConsole" text="Clear Console"/>
+            <Button fx:id="clearConsoleBtn" onAction="#onClearConsole" text="Clear Console"/>
         </VBox>
     </left>
     <right>

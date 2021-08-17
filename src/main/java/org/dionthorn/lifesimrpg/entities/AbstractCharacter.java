@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public abstract class AbstractCharacter extends AbstractEntity {
 
-    // Attributes of a AbstractCharacter
+    // Attributes of an AbstractCharacter
     protected final HashMap<Integer, Double> relationships = new HashMap<>();
     protected final HashMap<String, Double> stats = new HashMap<>();
     protected final ArrayList<String> titles = new ArrayList<>();
@@ -29,27 +29,42 @@ public abstract class AbstractCharacter extends AbstractEntity {
     protected Place currentLocation;
     protected Course currentCourse;
 
+    /**
+     * Abstract constructor
+     */
     public AbstractCharacter() {
         super();
     }
 
-    // logical and boolean methods
+    // logical methods
 
     /**
-     * Calls this.moveTo(this.home) simply for code readability
+     * Will return a String representing the course title currently qualified for
+     * @return String representing the course title currently qualified for
      */
-    public void goHome() {
-        moveTo(this.home);
+    public String checkTitle() {
+        String toReturn = "Not Qualified - " + this.currentCourse.getCourseName();
+        if(this.hasCourse() && this.getStats().size() > 0) {
+            if(this.getStats().get(this.currentCourse.getStatName()) >= this.currentCourse.getCurrentTitleRequirement()) {
+                if(this.currentCourse.getCourseLevel() > this.currentCourse.getTitles().length - 1) {
+                    toReturn = this.currentCourse.getTitles()[this.currentCourse.getTitles().length - 1];
+                } else {
+                    toReturn = this.currentCourse.getTitles()[this.currentCourse.getCourseLevel()];
+                    this.currentCourse.plusCourseLevel();
+                }
+            }
+        }
+        return toReturn;
     }
 
     /**
-     * Relocates this AbstractCharacter to target Place
+     * Relocates this AbstractCharacter to target Place and removes from previous Place
      * @param target the Place that this AbstractCharacter will move to
      */
     public void moveTo(Place target) {
         this.currentLocation.getCharacters().remove(this);
         this.currentLocation = target;
-        target.getCharacters().add(this);
+        this.currentLocation.getCharacters().add(this);
     }
 
     /**
@@ -62,6 +77,15 @@ public abstract class AbstractCharacter extends AbstractEntity {
             goHome();
         }
     }
+
+    /**
+     * Calls this.moveTo(this.home) simply for code readability
+     */
+    public void goHome() {
+        moveTo(this.home);
+    }
+
+    // boolean methods is/has
 
     /**
      * Will return the boolean value of if today is equal to birthday month and day of month values
@@ -106,7 +130,32 @@ public abstract class AbstractCharacter extends AbstractEntity {
         return this.talkedToToday.contains(target);
     }
 
-    // getters and setters
+    /**
+     * Will return boolean if this character has statName
+     * @param statName String representing the stat to check
+     * @return boolean representing whether this character has statName
+     */
+    public boolean hasStat(String statName) {
+        return this.stats.containsKey(statName);
+    }
+
+    /**
+     * Will return a boolean representing if this character currentCourse is not null
+     * @return boolean representing if this character currentCourse is not null
+     */
+    public boolean hasCourse() {
+        return this.currentCourse != null;
+    }
+
+    /**
+     * Will return a boolean if this character job is not null
+     * @return boolean if this character job is not null
+     */
+    public boolean hasJob() {
+        return this.job != null;
+    }
+
+    // special set methods we use 'add'
 
     /**
      * Will increase by value and/or establish a relationship with target AbstractCharacter
@@ -117,23 +166,13 @@ public abstract class AbstractCharacter extends AbstractEntity {
      */
     public void addRelationship(AbstractCharacter target, double value) {
         int targetUID = target.getUID();
-        if(!hasRelationship(target)) {
+        if(!this.hasRelationship(target)) {
             this.relationships.put(targetUID, value);
         } else {
             double relation = this.relationships.get(targetUID);
             this.relationships.put(targetUID, relation + value > 100 ? 100d : relation + value);
         }
         this.talkedToToday.add(target);
-    }
-
-    /**
-     * Will return a double representing the value of the relationship of this AbstractCharacter to target
-     * @param target AbstractCharacter to get the relationship value out of this AbstractCharacter.relationships HashMap
-     * @return double representing the value of the relationship of this AbstractCharacter to target
-     */
-    public double getRelationship(AbstractCharacter target) {
-        int targetUID = target.getUID();
-        return this.relationships.get(targetUID);
     }
 
     /**
@@ -154,6 +193,8 @@ public abstract class AbstractCharacter extends AbstractEntity {
         }
     }
 
+    // Qualified getters and setters
+
     /**
      * Will return a double representing the value of statName or 0 if null
      * @param statName String representing the stat name
@@ -161,19 +202,39 @@ public abstract class AbstractCharacter extends AbstractEntity {
      */
     public double getStat(String statName) {
         double toReturn = 0;
-        if(hasStat(statName)) {
+        if(this.hasStat(statName)) {
             toReturn += this.stats.get(statName);
         }
         return toReturn;
     }
 
     /**
-     * Will return boolean if this character has statName
-     * @param statName String representing the stat to check
-     * @return boolean representing whether this character has statName
+     * Will set this AbstractCharacter job to a new Job and update that job start date
+     * @param job Job representing the job this AbstractCharacter is gaining
+     * @param currentDate LocalDate representing the job start date
      */
-    public boolean hasStat(String statName) {
-        return this.stats.containsKey(statName);
+    public void setJob(Job job, LocalDate currentDate) {
+        this.job = job;
+        this.job.setOneYearDateTracker(currentDate);
+    }
+
+    /**
+     * Will set this AbstractCharacter health to the provided double value but cap at max_health
+     * @param health double to set this AbstractCharacter health to will cap at max_health
+     */
+    public void setHealth(double health) {
+        this.health = Math.min(health, this.maxHealth);
+    }
+
+    // pure getters and setters, these do no qualifications just pure return or assignment
+
+    /**
+     * Will return a double representing the value of the relationship of this AbstractCharacter to target
+     * @param target AbstractCharacter to get the relationship value out of this AbstractCharacter relationships HashMap
+     * @return double representing the value of the relationship of this AbstractCharacter to target
+     */
+    public double getRelationship(AbstractCharacter target) {
+        return this.relationships.get(target.getUID());
     }
 
     /**
@@ -217,16 +278,6 @@ public abstract class AbstractCharacter extends AbstractEntity {
     }
 
     /**
-     * Will set this AbstractCharacter job to a new Job and update that job start date
-     * @param job Job representing the job this AbstractCharacter is gaining
-     * @param currentDate LocalDate representing the job start date
-     */
-    public void setJob(Job job, LocalDate currentDate) {
-        this.job = job;
-        job.setOneYearDateTracker(currentDate);
-    }
-
-    /**
      * Will return a Residence representing this AbstractCharacter home
      * @return Residence representing this AbstractCharacter home
      */
@@ -266,16 +317,12 @@ public abstract class AbstractCharacter extends AbstractEntity {
         return this.health;
     }
 
+    /**
+     * Will return a double representing this character maxHealth
+     * @return double representing this character maxHealth
+     */
     public double getMaxHealth() {
         return this.maxHealth;
-    }
-
-    /**
-     * Will set this AbstractCharacter health to the provided double value but cap at max_health
-     * @param health double to set this AbstractCharacter health to will cap at max_health
-     */
-    public void setHealth(double health) {
-        this.health = Math.min(health, this.maxHealth);
     }
 
     /**
@@ -310,47 +357,36 @@ public abstract class AbstractCharacter extends AbstractEntity {
         this.currentLocation = currentLocation;
     }
 
+    /**
+     * Will return an ArrayList representing the titles this character has
+     * @return ArrayList representing the titles this character has
+     */
     public ArrayList<String> getTitles() {
         return this.titles;
     }
 
+    /**
+     * Will return a HashMap representing the stats this character has
+     * @return HashMap representing the stats this character has
+     */
     public HashMap<String, Double> getStats() {
         return this.stats;
     }
 
+    /**
+     * Will return a Course representing this characters current course
+     * @return Course representing this characters current course
+     */
     public Course getCurrentCourse() {
         return this.currentCourse;
     }
 
+    /**
+     * Will return a Course representing the new Course this character will use for currentCourse
+     * @param currentCourse Course representing the new Course this character will use for currentCourse
+     */
     public void setCurrentCourse(Course currentCourse) {
         this.currentCourse = currentCourse;
-    }
-
-    public boolean hasCourse() {
-        return this.currentCourse != null;
-    }
-
-    public boolean hasJob() {
-        return this.job != null;
-    }
-
-    /**
-     * Will return a String representing the course title currently qualified for
-     * @return String representing the course title currently qualified for
-     */
-    public String checkTitle() {
-        String toReturn = "Not Qualified - " + this.currentCourse.getCourseName();
-        if(this.hasCourse() && this.getStats().size() > 0) {
-            if(this.getStats().get(this.currentCourse.getStatName()) >= this.currentCourse.getCurrentTitleRequirement()) {
-                if(this.currentCourse.getCourseLevel() > this.currentCourse.getTitles().length - 1) {
-                    toReturn = this.currentCourse.getTitles()[this.currentCourse.getTitles().length - 1];
-                } else {
-                    toReturn = this.currentCourse.getTitles()[this.currentCourse.getCourseLevel()];
-                    this.currentCourse.plusCourseLevel();
-                }
-            }
-        }
-        return toReturn;
     }
 
 }

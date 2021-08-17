@@ -25,6 +25,7 @@ public class CharacterCreationScreenController extends AbstractScreenController 
     @FXML public TextField monthInput;
     @FXML public TextField yearInput;
 
+    @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.CHARACTER_CREATION;
     }

@@ -1,19 +1,31 @@
 package org.dionthorn.lifesimrpg.entities;
 
 import org.dionthorn.lifesimrpg.FileOpUtil;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+/**
+ * Map will manage data in /Maps/{mapName}/{mapName}.map
+ *
+ * Map will also keep reference of all associated Place objects, set their connections,
+ * And any Course objects required for this map
+ */
 public class Map extends AbstractEntity {
 
+    // Map variables for tracking Place and Course objects as well as the name for reference
     private final String name;
     private final ArrayList<Place> places = new ArrayList<>();
     private final ArrayList<Course> courses = new ArrayList<>();
 
+    /**
+     * Constructor takes a String representing the mapName to target
+     * ex: /Maps/{mapName}/{mapName}.map
+     * @param mapName String representing the mapName to target
+     */
     public Map(String mapName) {
         super();
+
         // load map data from resources ex input: Vanillaton
         this.name = mapName;
         String[] fileLines;
@@ -26,53 +38,59 @@ public class Map extends AbstractEntity {
 
         // loop through all fileLines
         for(String line: fileLines) {
-            // $ indicates we want to connect the following lines to this location
+            // $ indicates we want to connect the following lines to this Place
             if(line.contains("$")) {
                 String targetName = line.replaceAll("\\$", "");
+
+                // test if this Place already exists
                 boolean isNew = true;
-                for(Place place: places) {
+                for(Place place: this.places) {
                     if(place.getName().equals(targetName)) {
                         isNew = false;
                         target = place;
                     }
                 }
+
+                // if this Place is new then add it to the places reference
                 if(isNew) {
                     if(FileOpUtil.JRT) {
                         target = new Place(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/" + targetName);
                     } else {
                         target = new Place(getClass().getResource("/Maps") + mapName + "/" + targetName);
                     }
-                    places.add(target);
+                    this.places.add(target);
                 }
             } else {
-                // if no $ then we connect this location to the last $ location
+                // if no $ then we connect this Place to the last $ marked Place
                 if(line.startsWith(":END")) {
-                    // EOF
+                    // Marks the End of connection data this is an artifact we might add more map level metadata later
                     break;
                 } else if(!line.startsWith(":")) {
-                    // check if connection is new or not
                     boolean isNew = true;
                     Place notNew = null;
-                    for(Place place: places) {
+
+                    // check if Place is new or not
+                    for(Place place: this.places) {
                         if(place.getName().equals(line)) {
                             isNew = false;
                             notNew = place;
                             break;
                         }
                     }
+
+                    // if new add connection and to places reference
                     if(isNew && target != null) {
-                        // if a new one make a new one and add connections to target
                         Place newPlace;
                         if(FileOpUtil.JRT) {
                             newPlace = new Place(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/" + line);
                         } else {
                             newPlace = new Place(getClass().getResource("/Maps") + mapName + "/" + line);
                         }
-                        places.add(newPlace);
+                        this.places.add(newPlace);
                         target.addConnection(newPlace);
                         newPlace.addConnection(target);
                     } else if(target != null) {
-                        // if not new then just establish connection
+                        // if not new then just add connection
                         target.addConnection(notNew);
                         notNew.addConnection(target);
                     }
@@ -80,7 +98,8 @@ public class Map extends AbstractEntity {
             }
         }
 
-        // Load courses data based off how many file names there are
+        // Load Course data for this map from /Maps/{mapName}/Courses/
+        // Pass each Course its parent mapName
         URI targetURI;
         if(FileOpUtil.JRT) {
             targetURI = URI.create(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/Courses");
@@ -88,27 +107,45 @@ public class Map extends AbstractEntity {
             targetURI = URI.create(String.valueOf(getClass().getResource("/Maps/" + mapName + "/Courses")));
         }
         for(String fileName: FileOpUtil.getFileNamesFromDirectory(targetURI)) {
-            courses.add(new Course(fileName, name));
+            this.courses.add(new Course(fileName, this.name));
         }
     }
 
-    // getters and setters
+    // Logical
 
-    public String getName() {
-        return name;
-    }
-
-    public ArrayList<Place> getPlaces() {
-        return places;
-    }
-
-    // returns a ArrayList of all AbstractCharacter objects in every Place object in the places reference
+    /**
+     * Will return an ArrayList representing all characters in every Place reference this Map has
+     * @return ArrayList representing all characters in every Place reference this Map has
+     */
     public ArrayList<AbstractCharacter> getAllCharacters() {
-        return places.stream().flatMap(p -> p.getCharacters().stream()).collect(Collectors.toCollection(ArrayList::new));
+        return this.places.stream().flatMap(p -> p.getCharacters().stream()).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    // Pure getters
+
+    /**
+     * Will return an ArrayList representing all Course objects referenced by this Map
+     * @return ArrayList representing all Course objects referenced by this Map
+     */
     public ArrayList<Course> getCourses() {
-        return courses;
+        return this.courses;
     }
+
+    /**
+     * Will return a String representing this Map name
+     * @return String representing this Map name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Will return an ArrayList representing all Place references this Map has
+     * @return ArrayList representing all Place references this Map has
+     */
+    public ArrayList<Place> getPlaces() {
+        return this.places;
+    }
+
 
 }

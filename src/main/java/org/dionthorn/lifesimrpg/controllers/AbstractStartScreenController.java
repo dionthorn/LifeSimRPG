@@ -5,14 +5,17 @@ import javafx.scene.control.Button;
 import org.dionthorn.lifesimrpg.Engine;
 
 /**
- * Used for both StartScreen and GameOverScreen with only the GameOverScreen having an override
+ * Used for both StartScreen and GameOverScreen with only the GameOverScreen having an override currently
  */
 public abstract class AbstractStartScreenController extends AbstractScreenController {
 
     // FXML JavaFX Nodes common amongst StartScreen and GameOverScreen
     @FXML public Button startGameBtn;
 
-    public void onStartGame() {
+    /**
+     *
+     */
+    @FXML public void onStartGame() {
         // load fxml for characterCreation.fxml
         try {
             Engine.loadFXML("CharacterCreationScreen.fxml");

@@ -8,6 +8,7 @@ import java.net.URI;
  */
 public class Course extends AbstractEntity {
 
+    // Course variables
     public String courseName;
     public int courseLevel = 0;
     public String[] titles;
@@ -45,69 +46,102 @@ public class Course extends AbstractEntity {
                 TI = RQ = false;
                 SG = true;
             } else if(TI) {
-                titles = line.split(",");
+                this.titles = line.split(",");
             } else if(RQ) {
                 String[] byTitle = line.split(",");
-                titleRequirements = new double[byTitle.length];
+                this.titleRequirements = new double[byTitle.length];
                 for(int i = 0; i < byTitle.length; i++) {
                     String req = byTitle[i];
                     String[] keyValue = req.split(":");
-                    statName = keyValue[0];
-                    titleRequirements[i] = Double.parseDouble(keyValue[1]);
+                    this.statName = keyValue[0];
+                    this.titleRequirements[i] = Double.parseDouble(keyValue[1]);
                 }
             } else if(SG) {
                 String[] byTitle = line.split(",");
-                statGains = new double[byTitle.length];
+                this.statGains = new double[byTitle.length];
                 for(int i = 0; i < byTitle.length; i++) {
                     String statG = byTitle[i];
                     String[] keyValue = statG.split(":");
-                    statName = keyValue[0];
-                    statGains[i] = Double.parseDouble(keyValue[1]);
+                    this.statName = keyValue[0];
+                    this.statGains[i] = Double.parseDouble(keyValue[1]);
                 }
             }
         }
     }
 
-    // logical
+    // Logical methods
 
+    /**
+     * Will increase this Course courseLevel by 1
+     */
     public void plusCourseLevel() {
-        courseLevel++;
+        this.courseLevel++;
     }
 
-    // getters and setters
+    // Qualified getters
 
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public String getStatName() {
-        return statName;
-    }
-
+    /**
+     * Will return a double representing the current title requirement or the max if at max
+     * @return double representing the current title requirement or the max if at max
+     */
     public double getCurrentTitleRequirement() {
-        if(courseLevel > titleRequirements.length - 1) {
-            return titleRequirements[titleRequirements.length - 1];
+        if(this.courseLevel > this.titleRequirements.length - 1) {
+            return this.titleRequirements[this.titleRequirements.length - 1];
         }
-        return titleRequirements[courseLevel];
+        return this.titleRequirements[this.courseLevel];
     }
 
+    /**
+     * Will return a double representing the current title statGain or the max if at max
+     * @return double representing the current title statGain or the max if at max
+     */
     public double getCurrentStatGain() {
-        if(courseLevel > statGains.length - 1) {
-            return statGains[statGains.length - 1];
+        if(this.courseLevel > this.statGains.length - 1) {
+            return this.statGains[this.statGains.length - 1];
         }
-        return statGains[courseLevel];
+        return this.statGains[this.courseLevel];
     }
 
+    // Pure getters
+
+    /**
+     * Will return a String representing this Course courseName
+     * @return String representing this Course courseName
+     */
+    public String getCourseName() {
+        return this.courseName;
+    }
+
+    /**
+     * Will return a String representing this Course required statName
+     * @return String representing this Course required statName
+     */
+    public String getStatName() {
+        return this.statName;
+    }
+
+    /**
+     * Will return an int representing this Course courseLevel
+     * @return int representing this Course courseLevel
+     */
     public int getCourseLevel() {
-        return courseLevel;
+        return this.courseLevel;
     }
 
+    /**
+     * Will return a double[] representing this Course title requirement value for all titles
+     * @return double[] representing this Course title requirement value for all titles
+     */
     public double[] getTitleRequirements() {
-        return titleRequirements;
+        return this.titleRequirements;
     }
 
+    /**
+     * Will return a String[] representing this Course titles
+     * @return String[] representing this Course titles
+     */
     public String[] getTitles() {
-        return titles;
+        return this.titles;
     }
 
 }

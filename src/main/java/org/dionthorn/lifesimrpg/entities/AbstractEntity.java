@@ -22,7 +22,7 @@ public abstract class AbstractEntity {
     protected AbstractEntity() {
         // UID assignment takes place upon construction as defined by UID declaration at the class level.
         // It is then ++ after assignment, giving us a Unique Identification number for every entity.
-        entities.add(this);
+        AbstractEntity.entities.add(this);
     }
 
     /**
@@ -30,7 +30,7 @@ public abstract class AbstractEntity {
      * @return the integer unique id of the entity
      */
     public int getUID() {
-        return UID;
+        return this.UID;
     }
 
 }

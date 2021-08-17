@@ -62,7 +62,7 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
                 Months Rent Unpaid: %d
                 Total Rent Unpaid: $%d
                 """.formatted(
-                        player.getHome().getRent(),
+                        player.getHome().getRentPerDay(),
                         player.getFoodCost(),
                         player.getHome().getMonthsUnpaid(),
                         player.getHome().getTotalUnpaid()
@@ -101,13 +101,13 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
         updateMoneyLbl();
     }
 
-    // Screen changers different for each screen
+    // Screen changers need to think of way to abstract this
 
-    public void onPlayerInfo() {
+    @FXML public void onPlayerInfo() {
         updateAll();
     }
 
-    public void onJobInfo() {
+    @FXML public void onJobInfo() {
         // load fxml for JobInfoScreen.fxml
         try {
             Engine.loadFXML("JobInfoScreen.fxml");
@@ -116,7 +116,7 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
         }
     }
 
-    public void onMapInfo() {
+    @FXML public void onMapInfo() {
         // load fxml for MapInfoScreen.fxml
         try {
             Engine.loadFXML("MapInfoScreen.fxml");

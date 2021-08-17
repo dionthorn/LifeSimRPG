@@ -2,6 +2,9 @@ package org.dionthorn.lifesimrpg.entities;
 
 import org.dionthorn.lifesimrpg.NameDataUtil;
 
+/**
+ * AICharacter will manage AI distinct methods
+ */
 public class AICharacter extends AbstractCharacter {
 
     /**
@@ -20,11 +23,11 @@ public class AICharacter extends AbstractCharacter {
      * from among the currentLocation connections reference
      */
     public void moveRandom() {
-        int coinFlip = NameDataUtil.rand.nextInt(2); // 50%ish
+        int coinFlip = NameDataUtil.rand.nextInt(2); // 50%ish returns 0 or 1
         if(coinFlip > 0) {
-            int cap = getCurrentLocation().getConnections().size();
-            Place choice = getCurrentLocation().getConnections().get(NameDataUtil.rand.nextInt(cap));
-            moveTo(choice);
+            int cap = this.currentLocation.getConnections().size();
+            Place choice = this.currentLocation.getConnections().get(NameDataUtil.rand.nextInt(cap));
+            this.moveTo(choice);
         }
     }
 
