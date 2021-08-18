@@ -21,9 +21,19 @@ public class FileOpUtil {
     public static boolean JRT = false;
     public static URI jrtBaseURI;
 
+    // Constants that mark folder locations
+    public static URI NAME_PATH; // LifeSimRPG/NameData/
+    public static URI GAME_MAP_PATH; // LifeSimRPG/Maps/
+    public static URI GAME_FXML_PATH; // LifeSimRPG/FXML/
+    public static String START_SCREEN_MAP_NAME; // {CurrentMap}
+    public static URI MAP_PATH; // LifeSimRPG/Maps/{CurrentMap}/
+    public static URI MAP_COURSES_PATH; // LifeSimRPG/Maps/{CurrentMap}/Courses
+    public static URI MAP_JOBS_PATH; // LifeSimRPG/Maps/{CurrentMap}/Jobs
+    public static URI MAP_FXML_PATH; // LifeSimRPG/Maps/{CurrentMap}/FXML
+
     /**
      * Will test if we are in a JRT distribution and set the JRT flag
-     * As well as the jrtBaseURI, so we can access resources
+     * As well as the jrtBaseURI, so we can access resources in JLink and JPackage
      */
     public static void checkJRT() {
         URL resource = App.class.getClassLoader().getResource("credits.txt");
@@ -33,46 +43,44 @@ public class FileOpUtil {
         }
     }
 
-    /**
-     * Will check to see if a file at path exists and return true or false.
-     * @param targetFile the target file
-     * @return returns boolean true if a file exists at path and boolean false if it doesn't.
-     */
-    public static boolean doesFileExist(URI targetFile) {
-        boolean answer = false;
-        try {
-            if(targetFile.getScheme().equals("jrt")) {
-                Path path = Path.of(targetFile);
-                assert(Files.exists(path));
-                FileSystem jrtFS = FileSystems.getFileSystem(URI.create("jrt:/"));
-                return Files.exists(jrtFS.getPath(path.toString()));
-            } else {
-                answer = new File(targetFile.getPath()).isFile();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void initializePaths() {
+        if(JRT) {
+            NAME_PATH = URI.create(FileOpUtil.jrtBaseURI + "NameData");
+            GAME_FXML_PATH = URI.create(FileOpUtil.jrtBaseURI + "FXML");
+            GAME_MAP_PATH = URI.create(FileOpUtil.jrtBaseURI + "Maps");
+        } else {
+            NAME_PATH = URI.create(String.valueOf(App.class.getResource("/NameData")));
+            GAME_FXML_PATH = URI.create(String.valueOf(App.class.getResource("/FXML")));
+            GAME_MAP_PATH = URI.create(String.valueOf(App.class.getResource("/Maps")));
         }
-        return answer;
+    }
+
+    public static void initializeMapPaths(String mapName) {
+        START_SCREEN_MAP_NAME = mapName;
+        MAP_PATH = URI.create(GAME_MAP_PATH + mapName + "/");
+        MAP_FXML_PATH = URI.create(GAME_MAP_PATH + mapName + "/FXML/");
+        MAP_JOBS_PATH = URI.create(GAME_MAP_PATH + mapName + "/Jobs/");
+        MAP_COURSES_PATH = URI.create(GAME_MAP_PATH + mapName + "/Courses/");
     }
 
     /**
      * Returns the filenames from a directory as a string array where
      * each index is a name of a file including extensions
-     * @param targetFile the target file
+     * @param targetDirectory the target file
      * @return a string array where each index is the name of a file in the directory at path
      */
-    public static String[] getFileNamesFromDirectory(URI targetFile) {
+    public static String[] getFileNamesFromDirectory(URI targetDirectory) {
         ArrayList<String> fileNamesList = new ArrayList<>();
         String[] fileNames = new String[0];
         try {
             File[] files;
-            if(targetFile.getScheme().equals("jrt")) {
-                Path path = Path.of(targetFile);
+            if(targetDirectory.getScheme().equals("jrt")) {
+                Path path = Path.of(targetDirectory);
                 assert(Files.exists(path));
-                FileSystem jrtfs = FileSystems.getFileSystem(URI.create("jrt:/"));
-                assert(Files.exists(jrtfs.getPath(path.toString())));
+                FileSystem jrtFS = FileSystems.getFileSystem(URI.create("jrt:/"));
+                assert(Files.exists(jrtFS.getPath(path.toString())));
                 try {
-                    DirectoryStream<Path> stream = Files.newDirectoryStream(jrtfs.getPath(path.toString()));
+                    DirectoryStream<Path> stream = Files.newDirectoryStream(jrtFS.getPath(path.toString()));
                     for(Path entry: stream) {
                         fileNamesList.add(entry.getFileName().toString());
                     }
@@ -81,9 +89,9 @@ public class FileOpUtil {
                     e.printStackTrace();
                 }
             }
-            files = new File(targetFile.getPath()).listFiles();
+            files = new File(targetDirectory.getPath()).listFiles();
             if(files != null) {
-                if(!targetFile.getScheme().equals("jrt")) {
+                if(!targetDirectory.getScheme().equals("jrt")) {
                     fileNames = new String[files.length];
                     for(int i=0; i<files.length; i++) {
                         if(files[i].isFile()) {
@@ -94,8 +102,8 @@ public class FileOpUtil {
                     System.out.println("Using JRT Filesystem");
                 }
             } else {
-                if(!targetFile.getScheme().equals("jrt")) {
-                    System.out.println("No Files Found In Directory " + targetFile);
+                if(!targetDirectory.getScheme().equals("jrt")) {
+                    System.out.println("No Files Found In Directory " + targetDirectory);
                 }
             }
         } catch (Exception e) {
@@ -104,63 +112,31 @@ public class FileOpUtil {
         return fileNames;
     }
 
+    public static String[] getFolderNamesFromDirectory(URI targetDirectory) {
+        File[] directories = new File(targetDirectory).listFiles(File::isDirectory);
+        String[] folderNames = new String[0];
+        if(directories != null) {
+            folderNames = new String[directories.length];
+            for(int i=0; i<directories.length; i++) {
+                folderNames[i] = directories[i].getName();
+            }
+        }
+        return folderNames;
+    }
+
     /**
-     * Will process a target file as if it were lines of String using System.lineSeparator()
+     * Will process a target file as if it were lines of String
      * @param targetFile the target file
      * @return a string array where each index is a line from the file
      */
     public static String[] getFileLines(URI targetFile) {
-        String[] toReturn = null;
+        String[] toReturn = new String[0];
         try {
-            byte[] fileByteData = Files.readAllBytes(Path.of(targetFile));
-            toReturn = new String(fileByteData).split(System.lineSeparator());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return toReturn;
-    }
-
-    /**
-     * Will either create a new file at path, or overwrite an existing one. will take each string in data and
-     * write a new line per string into the file at path.
-     * @param targetFile the target file
-     * @param data the data where each index in data will be a new line in the file
-     */
-    public static void writeFileLines(URI targetFile, String[] data) {
-        if(!doesFileExist(targetFile)) {
-            System.out.printf("File: %s Doesn't Exist Creating New File!\n", targetFile.getPath());
-            createFile(targetFile);
-        }
-        File fileToWrite = new File(targetFile.getPath());
-        try {
-            ByteArrayOutputStream convertToBytes = new ByteArrayOutputStream();
-            FileOutputStream fileWriter = new FileOutputStream(fileToWrite);
-            for(String s: data) {
-                s += System.lineSeparator();
-                convertToBytes.write(s.getBytes());
-            }
-            fileWriter.write(convertToBytes.toByteArray());
-            System.out.printf("File: %s Successfully Wrote Data\n", targetFile.getPath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Will create a new File if no file at the given path exists otherwise it does nothing.
-     * @param path the target path to create a new file, will do nothing if a file already exists
-     */
-    public static void createFile(URI path) {
-        File file = new File(path);
-        try {
-            if(file.createNewFile()) {
-                System.out.printf("File: %s Has Been Created!\n", path);
-            } else {
-                System.out.printf("File: %s Already Exists!\n", path);
-            }
+            toReturn = Files.readAllLines(Path.of(targetFile)).toArray(new String[0]);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return toReturn;
     }
 
 }

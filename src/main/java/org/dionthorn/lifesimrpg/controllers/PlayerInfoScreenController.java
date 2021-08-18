@@ -103,26 +103,9 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
 
     // Screen changers need to think of way to abstract this
 
+    @Override
     @FXML public void onPlayerInfo() {
         updateAll();
-    }
-
-    @FXML public void onJobInfo() {
-        // load fxml for JobInfoScreen.fxml
-        try {
-            Engine.loadFXML("JobInfoScreen.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML public void onMapInfo() {
-        // load fxml for MapInfoScreen.fxml
-        try {
-            Engine.loadFXML("MapInfoScreen.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

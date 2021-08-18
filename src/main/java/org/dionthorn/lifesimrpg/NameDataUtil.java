@@ -31,12 +31,7 @@ public class NameDataUtil {
      */
     public static String getRandomFirstName() {
         if(firstNames.size() == 0) {
-            String[] names;
-            if(FileOpUtil.JRT) {
-                names = FileOpUtil.getFileLines(URI.create(FileOpUtil.jrtBaseURI + "AI/" + "firstName.dat"));
-            } else {
-                names = FileOpUtil.getFileLines(URI.create(App.class.getResource("/AI") + "firstName.dat"));
-            }
+            String[] names = FileOpUtil.getFileLines(URI.create(FileOpUtil.NAME_PATH + "firstName.dat"));
             Collections.addAll(firstNames, names);
         }
         return firstNames.get(rand.nextInt(firstNames.size()));
@@ -48,12 +43,7 @@ public class NameDataUtil {
      */
     public static String getRandomLastName() {
         if(lastNames.size() == 0) {
-            String[] names;
-            if(FileOpUtil.JRT) {
-                names = FileOpUtil.getFileLines(URI.create(FileOpUtil.jrtBaseURI + "AI/" + "lastName.dat"));
-            } else {
-                names = FileOpUtil.getFileLines(URI.create(App.class.getResource("/AI") + "lastName.dat"));
-            }
+            String[] names = FileOpUtil.getFileLines(URI.create(FileOpUtil.NAME_PATH + "lastName.dat"));
             Collections.addAll(lastNames, names);
         }
         return lastNames.get(rand.nextInt(lastNames.size()));

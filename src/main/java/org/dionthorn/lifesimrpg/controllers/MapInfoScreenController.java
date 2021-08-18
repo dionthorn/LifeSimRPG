@@ -9,7 +9,6 @@ import org.dionthorn.lifesimrpg.entities.AICharacter;
 import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import org.dionthorn.lifesimrpg.entities.Place;
 import org.dionthorn.lifesimrpg.entities.PlayerCharacter;
-
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -64,12 +63,12 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         GridPane.setConstraints(currentLocationLbl, 0,0, 4, 1);
 
         // generate the Label and Button for each connecting location
-        int lastYindex = generatePlaceBtnsAndLbls(player);
+        int lastYIndex = generatePlaceBtnsAndLbls(player);
 
         // generate the Label and Button for each character in the current location
-        generateTalkBtnsAndLbls(player, lastYindex);
+        generateTalkBtnsAndLbls(player, lastYIndex);
 
-        // check if we currently are in a SCHOOL type Place and add the courses button to rightBar
+        // If in a SCHOOL Place then set the coursesInfo button to visible
         coursesInfoBtn.setVisible(Engine.gameState.getPlayer().getCurrentLocation().getType() == Place.PLACE_TYPE.SCHOOL);
 
         updateDateLbl();
@@ -82,7 +81,7 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         connectingPlaceBtns.clear(); // and do .setText() calls instead of generating new in the below loop?
 
         // some tracking variables
-        int lastYindex = 0;
+        int lastYIndex = 0;
         int xCap = 0;
         int yCap = 1;
 
@@ -103,7 +102,7 @@ public class MapInfoScreenController extends AbstractGameScreenController {
             centerGridPane.getChildren().addAll(connectingPlaceLbls.get(i), connectingPlaceBtns.get(i));
 
             // tracking
-            lastYindex = yCap;
+            lastYIndex = yCap;
             xCap += 2;
             if(xCap == 6) {
                 xCap = 0;
@@ -113,21 +112,21 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         }
 
         // setup character label and buttons
-        GridPane.setConstraints(currentPeopleLbl, 0, lastYindex + 1);
+        GridPane.setConstraints(currentPeopleLbl, 0, lastYIndex + 1);
         centerGridPane.getChildren().addAll(currentPeopleLbl);
 
         // we return the last Y index used for placing nodes
         // on the GridPane used by the generateTalkBtnsAndLbls method
-        return lastYindex;
+        return lastYIndex;
     }
 
-    public void generateTalkBtnsAndLbls(AbstractCharacter player, int lastYindex) {
+    public void generateTalkBtnsAndLbls(AbstractCharacter player, int lastYIndex) {
         // clear arrays
         charLbls.clear();
         talkBtns.clear();
 
         // tracking variables
-        lastYindex = lastYindex + 2;
+        lastYIndex = lastYIndex + 2;
         AbstractCharacter targetChar;
         int xCap = 0;
         int yCap = 0;
@@ -138,8 +137,8 @@ public class MapInfoScreenController extends AbstractGameScreenController {
             targetChar = player.getCurrentLocation().getCharacters().get(i);
             charLbls.add(new Label(String.format("%s %s", targetChar.getFirstName(), targetChar.getLastName())));
             talkBtns.add(new Button("Talk To"));
-            GridPane.setConstraints(charLbls.get(i), xCap, lastYindex + yCap);
-            GridPane.setConstraints(talkBtns.get(i), xCap, lastYindex + yCap + 1);
+            GridPane.setConstraints(charLbls.get(i), xCap, lastYIndex + yCap);
+            GridPane.setConstraints(talkBtns.get(i), xCap, lastYIndex + yCap + 1);
 
             // setup buttons
             AbstractCharacter finalTargetChar = targetChar;
@@ -175,34 +174,17 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         }
     }
 
-    // Screen changers different for each screen
+    // FXML Button press methods
 
-    public void onPlayerInfo() {
-        // load fxml for PlayerInfoScreen.fxml
-        try {
-            Engine.loadFXML("PlayerInfoScreen.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onJobInfo() {
-        // load fxml for JobInfoScreen.fxml
-        try {
-            Engine.loadFXML("JobInfoScreen.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onMapInfo() {
+    @Override
+    @FXML public void onMapInfo() {
         updateAll();
     }
 
-    public void onCoursesInfo() {
+    @FXML public void onCoursesInfo() {
         // load fxml for CourseInfoScreen.fxml
         try {
-            Engine.loadFXML("CoursesInfoScreen.fxml");
+            Engine.loadMapFXML("CoursesInfoScreen.fxml");
         } catch (Exception e) {
             e.printStackTrace();
         }

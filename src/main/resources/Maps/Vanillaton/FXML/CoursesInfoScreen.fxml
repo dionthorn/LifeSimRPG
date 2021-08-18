@@ -23,7 +23,6 @@
         <GridPane fx:id="centerGridPane" hgap="10" vgap="10">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
             <Label fx:id="currentCourseLbl" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-            <Button fx:id="checkTitleBtn" onAction="#onCheckTitle" text="Check Title" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
             <Label fx:id="currentCourseStatLbl" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
             <Label fx:id="coursesLbl" text="Courses Available:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         </GridPane>

@@ -5,14 +5,12 @@ import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.net.URI;
 import java.net.URL;
 
@@ -43,11 +41,12 @@ public class Engine {
     public static final int SCREEN_WIDTH = 1024;
     public static final int SCREEN_HEIGHT = 768;
 
-    // Access these from any controller or entity
+    // Access these directly for convenience
     public static SCREEN CURRENT_SCREEN = SCREEN.BOOT;
-    public static Stage rootStage;
-    public static FXMLLoader rootLoader;
-    public static GameState gameState;
+    public static GameState gameState; // manage game object data
+
+    // Private rootStage reference
+    private static Stage rootStage;
 
     /**
      * Essentially our constructor we take it the Stage object from App.start() call
@@ -66,9 +65,13 @@ public class Engine {
             }
         });
 
+        // Set JRT flag and then set initial paths
+        FileOpUtil.checkJRT();
+        FileOpUtil.initializePaths();
+
         // Load the StartScreen
         try{
-            loadFXML("StartScreen.fxml");
+            loadGameFXML("StartScreen.fxml");
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -76,22 +79,31 @@ public class Engine {
 
     // utility methods
 
+    public static void initializeGameState(String firstName, String lastName, LocalDate birthday) {
+        gameState = new GameState(firstName, lastName, birthday);
+    }
+
     /**
-     * Will find the FXML file if in JRT or not and use FXMLLoader.load(URL) to load the new Scene
+     * Will find the game level FXML file if in JRT or not and use FXMLLoader.load(URL) to load the new Scene
      * We use the static rootStage object and setScene() on the result of the .load()
      * @param fileName String the target filename ex: "StartScreen.fxml"
-     * @throws Exception Exception representing either an IO or File error, shouldn't happen,
+     * @throws Exception the Exception representing either an IO or File error, shouldn't happen,
      * but we print stack trace in a try catch anytime we call this method just in case.
      */
-    public static void loadFXML(String fileName) throws Exception {
-        FileOpUtil.checkJRT();
-        URL test;
-        if(FileOpUtil.JRT) {
-            test = URI.create(FileOpUtil.jrtBaseURI + "FXML/" + fileName).toURL();
-        } else {
-            test = Objects.requireNonNull(App.class.getResource("/FXML/" + fileName)).toURI().toURL();
-        }
-        Parent root = FXMLLoader.load(test);
+    public static void loadGameFXML(String fileName) throws Exception {
+        Parent root = FXMLLoader.load(URI.create(FileOpUtil.GAME_FXML_PATH + fileName).toURL());
+        Scene rootScene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
+        rootStage.setScene(rootScene);
+    }
+
+    /**
+     * Will find map specific FXML files whether in JRT or not.
+     * @param fileName String representing the target FXML file ex: Maps/{mapName}/FXML/CharacterCreationScreen.fxml
+     * @throws Exception the Exception representing either an IO or File error, shouldn't happen,
+     * but we print stack trace in a try catch anytime we call this method just in case.
+     */
+    public static void loadMapFXML(String fileName) throws Exception {
+        Parent root = FXMLLoader.load(new URL(FileOpUtil.MAP_FXML_PATH + fileName));
         Scene rootScene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
         rootStage.setScene(rootScene);
     }

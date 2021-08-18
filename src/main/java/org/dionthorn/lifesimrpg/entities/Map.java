@@ -28,12 +28,7 @@ public class Map extends AbstractEntity {
 
         // load map data from resources ex input: Vanillaton
         this.name = mapName;
-        String[] fileLines;
-        if(FileOpUtil.JRT) {
-            fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/" + mapName + ".map"));
-        } else {
-            fileLines = FileOpUtil.getFileLines(URI.create(getClass().getResource("/Maps") + mapName + "/" + mapName + ".map"));
-        }
+        String[] fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.MAP_PATH + "/" + mapName + ".map"));
         Place target = null;
 
         // loop through all fileLines
@@ -53,11 +48,7 @@ public class Map extends AbstractEntity {
 
                 // if this Place is new then add it to the places reference
                 if(isNew) {
-                    if(FileOpUtil.JRT) {
-                        target = new Place(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/" + targetName);
-                    } else {
-                        target = new Place(getClass().getResource("/Maps") + mapName + "/" + targetName);
-                    }
+                    target = new Place(FileOpUtil.MAP_PATH + targetName);
                     this.places.add(target);
                 }
             } else {
@@ -80,12 +71,7 @@ public class Map extends AbstractEntity {
 
                     // if new add connection and to places reference
                     if(isNew && target != null) {
-                        Place newPlace;
-                        if(FileOpUtil.JRT) {
-                            newPlace = new Place(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/" + line);
-                        } else {
-                            newPlace = new Place(getClass().getResource("/Maps") + mapName + "/" + line);
-                        }
+                        Place newPlace = new Place(FileOpUtil.MAP_PATH + line);
                         this.places.add(newPlace);
                         target.addConnection(newPlace);
                         newPlace.addConnection(target);
@@ -98,16 +84,9 @@ public class Map extends AbstractEntity {
             }
         }
 
-        // Load Course data for this map from /Maps/{mapName}/Courses/
         // Pass each Course its parent mapName
-        URI targetURI;
-        if(FileOpUtil.JRT) {
-            targetURI = URI.create(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/Courses");
-        } else {
-            targetURI = URI.create(String.valueOf(getClass().getResource("/Maps/" + mapName + "/Courses")));
-        }
-        for(String fileName: FileOpUtil.getFileNamesFromDirectory(targetURI)) {
-            this.courses.add(new Course(fileName, this.name));
+        for(String fileName: FileOpUtil.getFileNamesFromDirectory(FileOpUtil.MAP_COURSES_PATH)) {
+            this.courses.add(new Course(fileName));
         }
     }
 

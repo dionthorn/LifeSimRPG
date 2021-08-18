@@ -19,19 +19,13 @@ public class Course extends AbstractEntity {
     /**
      * Course constructor will locate the Course data in /Maps/{mapName}/Course/{courseName}.course
      * @param courseName String representing this Course name
-     * @param mapName String representing this Course respective map folder
      */
-    public Course(String courseName, String mapName) {
+    public Course(String courseName) {
         super();
 
         // set name and check JRT for fileLines
         this.courseName = courseName.split("\\.")[0];
-        String[] fileLines;
-        if(FileOpUtil.JRT) {
-            fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/Courses/" + courseName));
-        } else {
-            fileLines = FileOpUtil.getFileLines(URI.create(getClass().getResource("/Maps/" + mapName + "/Courses") + courseName));
-        }
+        String[] fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.MAP_COURSES_PATH + courseName));
 
         // loop through all file lines and process using a 3 state machine
         boolean TI = false, RQ = false, SG = false;

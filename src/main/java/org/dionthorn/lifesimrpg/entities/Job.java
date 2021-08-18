@@ -54,18 +54,13 @@ public class Job extends AbstractEntity {
     /**
      * Will load a job from file targeting /Maps/{MapName}/Jobs/{JobName}.job
      * @param jobName String representing the jobName to target
-     * @param mapName String representing the mapName to target
      */
-    public Job(String jobName, String mapName) {
+    public Job(String jobName) {
         super();
         this.isFromFile = true;
         this.name = jobName.split("\\.")[0];
-        String[] fileLines;
-        if(FileOpUtil.JRT) {
-            fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.jrtBaseURI + "Maps/" + mapName + "/Jobs/" + jobName));
-        } else {
-            fileLines = FileOpUtil.getFileLines(URI.create(getClass().getResource("/Maps/" + mapName + "/Jobs") + jobName));
-        }
+        String[] fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.MAP_JOBS_PATH + jobName));
+
         boolean TR = false, SR = false, JT = false, PA = false, DA = false; // 5 state machine
         for(String line: fileLines) {
             if(line.contains(":TITLE_REQUIREMENTS:")) {
@@ -149,7 +144,7 @@ public class Job extends AbstractEntity {
                 this.currentTitle = this.jobTitles[newRank];
             } else {
                 // max rank so give raise
-                this.dailyPayRate = this.dailyPayRate + (int)(0.5 * (this.dailyPayRate * 1.1));
+                this.dailyPayRate = this.dailyPayRate + (int)(0.5 * (this.dailyPayRate * 0.5));
             }
             payout = (this.daysWorked - this.daysPaidOut) * this.dailyPayRate;
             this.daysWorked = 0;

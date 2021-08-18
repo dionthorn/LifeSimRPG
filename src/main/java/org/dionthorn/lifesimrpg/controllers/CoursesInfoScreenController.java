@@ -13,7 +13,6 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
 
     @FXML public Label coursesLbl;
     @FXML public Label currentCourseLbl;
-    @FXML public Button checkTitleBtn;
     @FXML public Label currentCourseStatLbl;
 
     @Override
@@ -38,7 +37,7 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
                     )
             );
         }
-        centerGridPane.getChildren().addAll(currentCourseLbl, currentCourseStatLbl, coursesLbl, checkTitleBtn);
+        centerGridPane.getChildren().addAll(currentCourseLbl, currentCourseStatLbl, coursesLbl);
 
         // update currentCourseLbl
         if(player.hasCourse()) {
@@ -65,38 +64,9 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
         updateMoneyLbl();
     }
 
-    // Screen changers different for each screen
+    // FXML Buttons
 
-    public void onPlayerInfo() {
-        // load fxml for PlayerInfoScreen.fxml
-        try {
-            Engine.loadFXML("PlayerInfoScreen.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onJobInfo() {
-        // load fxml for JobInfoScreen.fxml
-        try {
-            Engine.loadFXML("JobInfoScreen.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onMapInfo() {
-        // load fxml for JobInfoScreen.fxml
-        try {
-            Engine.loadFXML("MapInfoScreen.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // other buttons
-
-    public void onTakeCourse(String courseName) {
+    @FXML public void onTakeCourse(String courseName) {
         AbstractCharacter player = Engine.gameState.getPlayer();
         if(player.getCurrentCourse() == null) {
             for(Course course: Engine.gameState.getCurrentMap().getCourses()) {
@@ -106,10 +76,6 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
             }
         }
         updateAll();
-    }
-
-    public void onCheckTitle() {
-        updateTitle(true);
     }
 
 }

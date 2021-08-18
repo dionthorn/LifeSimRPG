@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.GameState;
-
 import java.time.LocalDate;
 
 public class CharacterCreationScreenController extends AbstractScreenController {
@@ -28,6 +27,13 @@ public class CharacterCreationScreenController extends AbstractScreenController 
     @Override
     public void initialize() {
         Engine.CURRENT_SCREEN = Engine.SCREEN.CHARACTER_CREATION;
+        // Finally, direct user to Create Player button
+        console.setText(
+                """
+                Please enter all required information
+                Then press the "Create Player" button on the right bar
+                """
+        );
     }
 
     public void onCreatePlayer() {
@@ -56,12 +62,11 @@ public class CharacterCreationScreenController extends AbstractScreenController 
             );
         } else {
             // if birthday is valid then create a new GameState and display the main screen
-            Engine.gameState = new GameState(firstName, lastName, birthday);
-            System.out.println(Engine.gameState.getPlayer().getFirstName());
+            Engine.initializeGameState(firstName, lastName, birthday);
 
             // load fxml for PlayerInfoScreen.fxml
             try {
-                Engine.loadFXML("PlayerInfoScreen.fxml");
+                Engine.loadMapFXML("PlayerInfoScreen.fxml");
             } catch (Exception e) {
                 e.printStackTrace();
             }

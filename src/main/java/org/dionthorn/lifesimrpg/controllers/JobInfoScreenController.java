@@ -142,27 +142,9 @@ public class JobInfoScreenController extends AbstractGameScreenController {
     }
 
     // Screen changers different for each screen
-
-    public void onPlayerInfo() {
-        // load fxml for PlayerInfoScreen.fxml
-        try {
-            Engine.loadFXML("PlayerInfoScreen.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onJobInfo() {
+    @Override
+    @FXML public void onJobInfo() {
         updateAll();
-    }
-
-    public void onMapInfo() {
-        // load fxml for MapInfoScreen.fxml
-        try {
-            Engine.loadFXML("MapInfoScreen.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

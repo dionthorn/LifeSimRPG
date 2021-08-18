@@ -1,8 +1,6 @@
 package org.dionthorn.lifesimrpg;
 
 import org.dionthorn.lifesimrpg.entities.*;
-
-import java.net.URI;
 import java.time.LocalDate;
 
 /**
@@ -23,10 +21,10 @@ public class GameState {
     // Game Variables
     private LocalDate currentDate = LocalDate.of(1990,1,1).minusDays(1);
     private final PlayerCharacter player;
-    private final Map currentMap; // if we add more maps won't be final
+    private final Map currentMap; // the Map manages Place objects
 
     /**
-     * GameState constructor will clear the AbstractEntity.entities master reference,
+     * GameState constructor will clear the AbstractEntity entities master reference,
      * in case this is starting a new game after having already played.
      * It will also generate the Map object, will add ability to change name later on
      * Sets up the default player state as well as AI state, loads job data, and generates homes
@@ -35,11 +33,11 @@ public class GameState {
      * @param birthday LocalDate representing the players chosen birthday
      */
     public GameState(String firstName, String lastName, LocalDate birthday) {
-        // New Game is just a fresh GameState
+        // Clear entities reference as this is a 'New Game' state
         AbstractEntity.entities.clear();
 
-        // load map
-        currentMap = new Map("Vanillaton");
+        // Load the map that was selected on the StartScreen
+        currentMap = new Map(FileOpUtil.START_SCREEN_MAP_NAME);
 
         // generate homes for all AI in the ResidentialZone
         currentMap.getPlaces().stream().filter(p -> p.getType() == Place.PLACE_TYPE.RESIDENTIAL_ZONE).forEach(p -> p.getCharacters().forEach(c -> {
@@ -79,22 +77,13 @@ public class GameState {
         }
 
         // load job info
-        String[] jobs;
-        if(FileOpUtil.JRT) {
-            jobs = FileOpUtil.getFileNamesFromDirectory(
-                    URI.create(FileOpUtil.jrtBaseURI + "Maps/Vanillaton/Jobs")
-            );
-        } else {
-            jobs = FileOpUtil.getFileNamesFromDirectory(
-                    URI.create(String.valueOf(getClass().getResource("/Maps/Vanillaton/Jobs")))
-            );
-        }
+        String[] jobs = FileOpUtil.getFileNamesFromDirectory(FileOpUtil.MAP_JOBS_PATH);
         for(String fileName: jobs) {
-            new Job(fileName, currentMap.getName());
+            new Job(fileName);
         }
     }
 
-    // getters and setters
+    // Pure getters and setters
 
     public PlayerCharacter getPlayer() {
         return player;

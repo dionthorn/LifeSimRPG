@@ -57,6 +57,33 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
         update();
     }
 
+    @FXML public void onPlayerInfo() {
+        // load fxml for PlayerInfoScreen.fxml
+        try {
+            Engine.loadMapFXML("PlayerInfoScreen.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML public void onJobInfo() {
+        // load fxml for JobInfoScreen.fxml
+        try {
+            Engine.loadMapFXML("JobInfoScreen.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML public void onMapInfo() {
+        // load fxml for JobInfoScreen.fxml
+        try {
+            Engine.loadMapFXML("MapInfoScreen.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // Logical
 
     /**
@@ -298,7 +325,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
 
                 // setup game over screen, we leave console output
                 try{
-                    Engine.loadFXML("GameOverScreen.fxml");
+                    Engine.loadMapFXML("GameOverScreen.fxml");
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
