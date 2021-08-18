@@ -19,7 +19,7 @@ public class FileOpUtil {
 
     // static flag and URI reference for JRT when in JLink/JPackage distribution
     public static boolean JRT = false;
-    public static URI jrtBaseURI;
+    public static URI jrtBaseURI; // jrt:/LifeSimRPG/
 
     // Constants that mark folder locations
     public static URI NAME_PATH; // LifeSimRPG/NameData/
@@ -45,9 +45,9 @@ public class FileOpUtil {
 
     public static void initializePaths() {
         if(JRT) {
-            NAME_PATH = URI.create(FileOpUtil.jrtBaseURI + "NameData");
-            GAME_FXML_PATH = URI.create(FileOpUtil.jrtBaseURI + "FXML");
-            GAME_MAP_PATH = URI.create(FileOpUtil.jrtBaseURI + "Maps");
+            NAME_PATH = URI.create(FileOpUtil.jrtBaseURI + "NameData/");
+            GAME_FXML_PATH = URI.create(FileOpUtil.jrtBaseURI + "FXML/");
+            GAME_MAP_PATH = URI.create(FileOpUtil.jrtBaseURI + "Maps/");
         } else {
             NAME_PATH = URI.create(String.valueOf(App.class.getResource("/NameData")));
             GAME_FXML_PATH = URI.create(String.valueOf(App.class.getResource("/FXML")));
@@ -113,8 +113,28 @@ public class FileOpUtil {
     }
 
     public static String[] getFolderNamesFromDirectory(URI targetDirectory) {
-        File[] directories = new File(targetDirectory).listFiles(File::isDirectory);
+        File[] directories = null;
         String[] folderNames = new String[0];
+        ArrayList<String> folderNamesList = new ArrayList<>();
+        if(targetDirectory.getScheme().equals("jrt")) {
+            Path path = Path.of(targetDirectory);
+            assert(Files.exists(path));
+            FileSystem jrtFS = FileSystems.getFileSystem(URI.create("jrt:/"));
+            assert(Files.exists(jrtFS.getPath(path.toString())));
+            try {
+                DirectoryStream<Path> stream = Files.newDirectoryStream(jrtFS.getPath(path.toString()));
+                for(Path entry: stream) {
+                    if(Files.isDirectory(entry)) {
+                        folderNamesList.add(entry.getFileName().toString());
+                    }
+                }
+                folderNames = folderNamesList.toArray(new String[0]);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            directories = new File(targetDirectory).listFiles(File::isDirectory);
+        }
         if(directories != null) {
             folderNames = new String[directories.length];
             for(int i=0; i<directories.length; i++) {
