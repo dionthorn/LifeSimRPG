@@ -1,8 +1,6 @@
 package org.dionthorn.lifesimrpg;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -11,9 +9,6 @@ import java.util.ArrayList;
 
 /**
  * Dedicated class for static methods related to file operations
- * Please note this class references the Run.programLogger for logging messages.
- * If you wish to use this class in another project simply replace those lines with your own Logger or with
- * System.err.println() calls or your preferred method.
  */
 public class FileOpUtil {
 
@@ -21,7 +16,7 @@ public class FileOpUtil {
     public static boolean JRT = false;
     public static URI jrtBaseURI; // jrt:/LifeSimRPG/
 
-    // Constants that mark folder locations
+    // Paths that mark folder locations
     public static URI NAME_PATH; // LifeSimRPG/NameData/
     public static URI GAME_MAP_PATH; // LifeSimRPG/Maps/
     public static URI GAME_FXML_PATH; // LifeSimRPG/FXML/
@@ -43,6 +38,9 @@ public class FileOpUtil {
         }
     }
 
+    /**
+     * Will set the game level Paths
+     */
     public static void initializePaths() {
         if(JRT) {
             NAME_PATH = URI.create(FileOpUtil.jrtBaseURI + "NameData/");
@@ -55,6 +53,10 @@ public class FileOpUtil {
         }
     }
 
+    /**
+     * Will set map level Paths based on provided mapName
+     * @param mapName String representing the folder to target
+     */
     public static void initializeMapPaths(String mapName) {
         START_SCREEN_MAP_NAME = mapName;
         MAP_PATH = URI.create(GAME_MAP_PATH + mapName + "/");
@@ -112,6 +114,11 @@ public class FileOpUtil {
         return fileNames;
     }
 
+    /**
+     * Will return a String[] containing the names of all folders in targetDirectory
+     * @param targetDirectory URI representing the target folder to pull child dir names from
+     * @return String[] representing the child folder names inside targetDirectory
+     */
     public static String[] getFolderNamesFromDirectory(URI targetDirectory) {
         File[] directories = null;
         String[] folderNames = new String[0];

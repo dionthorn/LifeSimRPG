@@ -5,20 +5,29 @@ import javafx.scene.control.Label;
 import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.GameState;
 import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
-
 import java.util.Map;
 
+/**
+ * Will manage the player info screen
+ */
 public class PlayerInfoScreenController extends AbstractGameScreenController {
 
+    // FXML variables
     @FXML public Label playerNameLbl;
     @FXML public Label currentLocationLbl;
     @FXML public Label currentHouseInfoLbl;
     @FXML public Label currentStatsLbl;
     @FXML public Label currentTitlesLbl;
 
+    /**
+     * Override will allow us to set the screen flag,
+     * advance a day if on the very start of game,
+     * append text to console
+     * and do screen specific updateAll()
+     */
     @Override
     public void initialize() {
-        Engine.CURRENT_SCREEN = Engine.SCREEN.PLAYER_INFO;
+        Engine.currentScreen = Engine.SCREEN.PLAYER_INFO;
         if(Engine.gameState.getCurrentDate().isEqual(GameState.DAY_ONE.minusDays(1))) {
             nextDay();
         } else {
@@ -27,9 +36,12 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
         updateAll();
     }
 
+    /**
+     * Override allows us to do player info screen specific updates
+     */
     @Override
     public void updateAll() {
-        if(Engine.CURRENT_SCREEN != Engine.SCREEN.PLAYER_INFO) {
+        if(Engine.currentScreen != Engine.SCREEN.PLAYER_INFO) {
             console.appendText(getDateString());
         }
         // update variable texts
@@ -69,8 +81,6 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
                 )
         );
 
-        // might want region here so dynamic labels are moved to bottom and look ordered
-
         // show player stats
         StringBuilder sb = new StringBuilder();
         sb.append("Stats:\n");
@@ -101,8 +111,9 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
         updateMoneyLbl();
     }
 
-    // Screen changers need to think of way to abstract this
-
+    /**
+     * Override FXML Button then we can update instead of Engine.loadMapFXML("PlayerInfoScreen.fxml");
+     */
     @Override
     @FXML public void onPlayerInfo() {
         updateAll();

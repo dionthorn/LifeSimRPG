@@ -17,6 +17,9 @@ public abstract class AbstractStartScreenController extends AbstractScreenContro
     @FXML public Label chooseMapLbl;
     @FXML public ComboBox<String> selectMapBox;
 
+    /**
+     * FXML button to load the CharacterCreationScreen
+     */
     @FXML public void onStartGame() {
         FileOpUtil.initializeMapPaths(selectMapBox.getSelectionModel().getSelectedItem());
         // load fxml for characterCreation.fxml
@@ -27,6 +30,9 @@ public abstract class AbstractStartScreenController extends AbstractScreenContro
         }
     }
 
+    /**
+     * Will populate the selectMapBox with directory names in the GAME_MAP_PATH
+     */
     public void populateMapBox() {
         String[] mapNames = FileOpUtil.getFolderNamesFromDirectory(FileOpUtil.GAME_MAP_PATH);
         for(String mapName: mapNames) {

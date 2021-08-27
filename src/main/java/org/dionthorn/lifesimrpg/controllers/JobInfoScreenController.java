@@ -10,8 +10,12 @@ import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import org.dionthorn.lifesimrpg.entities.AbstractEntity;
 import org.dionthorn.lifesimrpg.entities.Job;
 
+/**
+ * Will manage the job info screen
+ */
 public class JobInfoScreenController extends AbstractGameScreenController {
 
+    // FXML variables
     @FXML public ComboBox<String> jobOptions;
     @FXML public Label currentJobLbl;
     @FXML public Label currentDaysWorkedLbl;
@@ -19,16 +23,23 @@ public class JobInfoScreenController extends AbstractGameScreenController {
     @FXML public Button applyBtn;
     @FXML public Region vRegion3;
 
+    /**
+     * Override will allow us to set the screen flag, console text
+     * and update after loading FXML variables
+     */
     @Override
     public void initialize() {
-        Engine.CURRENT_SCREEN = Engine.SCREEN.JOB_INFO;
+        Engine.currentScreen = Engine.SCREEN.JOB_INFO;
         console.appendText(getDateString());
         updateAll();
     }
 
+    /**
+     * Override will allow us to do Job Info screen specific updates
+     */
     @Override
     public void updateAll() {
-        if(Engine.CURRENT_SCREEN != Engine.SCREEN.JOB_INFO) {
+        if(Engine.currentScreen != Engine.SCREEN.JOB_INFO) {
             console.appendText(getDateString());
         }
         // update variable texts
@@ -80,7 +91,10 @@ public class JobInfoScreenController extends AbstractGameScreenController {
         updateMoneyLbl();
     }
 
-    public void onApply() {
+    /**
+     * FXML Button will check if player meets job requirements
+     */
+    @FXML public void onApply() {
         // Get the selection
         String selection = jobOptions.getSelectionModel().getSelectedItem();
         String jobName = selection.split("\\$")[0].replaceAll(" ", "");
@@ -141,7 +155,10 @@ public class JobInfoScreenController extends AbstractGameScreenController {
         updateAll();
     }
 
-    // Screen changers different for each screen
+    /**
+     * Override FXML Button from AbstractGameScreenController
+     * Will allow us to just updateAll() on a nextDay() call instead of Engine.loadMapFXML("JobInfoScreen.fxml");
+     */
     @Override
     @FXML public void onJobInfo() {
         updateAll();

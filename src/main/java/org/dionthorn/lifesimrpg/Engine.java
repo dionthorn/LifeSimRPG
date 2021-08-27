@@ -1,30 +1,27 @@
 package org.dionthorn.lifesimrpg;
 
 import org.dionthorn.lifesimrpg.entities.*;
-import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.net.URI;
 import java.net.URL;
 
 /**
- * The Engine class will manage the GameState, FXMLLoader
- * And which screen we are on, it is essentially the interface between the
- * controllers and the entities packages. All variables and methods are public static
- * Engine.loadFXML(String fileName) can be used to load a different screen from any controller object
+ * The Engine class will manage the GameState, FXMLLoader and which screen we are on,
+ * it is essentially the interface between the controllers and the entities packages.
+ * All variables and methods are public static except the rootStage.
+ * Engine.loadFXML(String fileName) can be used to load a different screen from any controller object.
  */
 public class Engine {
 
     /**
-     * SCREEN enum is used to flag which screen we should be currently on
-     * for example when you press next day, if you are on mapInfo it will just update mapInfo
+     * SCREEN enum is used to flag which screen we should be currently on.
+     * for example when you press the next day button,
+     * and you are on MAP_INFO it will just update the screen
      * instead of reloading it.
      */
     public enum SCREEN {
@@ -42,7 +39,7 @@ public class Engine {
     public static final int SCREEN_HEIGHT = 768;
 
     // Access these directly for convenience
-    public static SCREEN CURRENT_SCREEN = SCREEN.BOOT;
+    public static SCREEN currentScreen = SCREEN.BOOT;
     public static GameState gameState; // manage game object data
 
     // Private rootStage reference
@@ -54,16 +51,10 @@ public class Engine {
      * Then we loadFXML for the StartScreen.fxml
      * @param stage Stage representing the root Stage object for the program to be statically referenced
      */
-    public static void setStage(Stage stage) {
+    public static void initialize(Stage stage) {
         // setup rootStage and Key Handlers
         rootStage = stage;
-        rootStage.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
-            if(key.getCode() == KeyCode.ESCAPE) {
-                rootStage.close();
-            } else if(key.getCode() == KeyCode.F7) {
-                dumpEntityData();
-            }
-        });
+        initializeKeyHandlers();
 
         // Set JRT flag and then set initial paths
         FileOpUtil.checkJRT();
@@ -79,8 +70,29 @@ public class Engine {
 
     // utility methods
 
+    /**
+     * Will create a fresh GameState using user provided data from the Character Creation screen.
+     * @param firstName String representing the user provided first name
+     * @param lastName String representing the user provided last name
+     * @param birthday LocalDate created from user provided int values
+     */
     public static void initializeGameState(String firstName, String lastName, LocalDate birthday) {
         gameState = new GameState(firstName, lastName, birthday);
+    }
+
+    /**
+     * Will assign Key Listeners to the rootStage
+     * ESC -> closes the program via Stage.close()
+     * F7 -> will dump entity data to System.out
+     */
+    public static void initializeKeyHandlers() {
+        rootStage.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+            if(key.getCode() == KeyCode.ESCAPE) {
+                rootStage.close();
+            } else if(key.getCode() == KeyCode.F7) {
+                dumpEntityData();
+            }
+        });
     }
 
     /**
@@ -91,7 +103,7 @@ public class Engine {
      * but we print stack trace in a try catch anytime we call this method just in case.
      */
     public static void loadGameFXML(String fileName) throws Exception {
-        Parent root = FXMLLoader.load(URI.create(FileOpUtil.GAME_FXML_PATH + fileName).toURL());
+        Parent root = FXMLLoader.load(new URL(FileOpUtil.GAME_FXML_PATH + fileName));
         Scene rootScene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
         rootStage.setScene(rootScene);
     }
@@ -112,8 +124,8 @@ public class Engine {
      * This will dump AbstractEntity related data into System.out
      */
     public static void dumpEntityData() {
-        ArrayList<AbstractEntity> entities = AbstractEntity.entities; // get quick dump of entity data
-        for(AbstractEntity e : entities) {
+        // get quick dump of entity data
+        for(AbstractEntity e : AbstractEntity.entities) {
             if (e instanceof Job) {
                 Job temp = ((Job) e);
                 System.out.print("Job UID:" + temp.getUID());

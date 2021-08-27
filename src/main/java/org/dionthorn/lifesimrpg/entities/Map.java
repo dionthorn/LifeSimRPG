@@ -84,7 +84,7 @@ public class Map extends AbstractEntity {
             }
         }
 
-        // Pass each Course its parent mapName
+        // load courses
         for(String fileName: FileOpUtil.getFileNamesFromDirectory(FileOpUtil.MAP_COURSES_PATH)) {
             this.courses.add(new Course(fileName));
         }
@@ -97,7 +97,9 @@ public class Map extends AbstractEntity {
      * @return ArrayList representing all characters in every Place reference this Map has
      */
     public ArrayList<AbstractCharacter> getAllCharacters() {
-        return this.places.stream().flatMap(p -> p.getCharacters().stream()).collect(Collectors.toCollection(ArrayList::new));
+        return this.places.stream().flatMap(
+                p -> p.getCharacters().stream()
+        ).collect(Collectors.toCollection(ArrayList::new));
     }
 
     // Pure getters

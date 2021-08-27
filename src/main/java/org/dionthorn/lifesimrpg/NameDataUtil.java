@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+/**
+ * Static utility class for generating random names
+ */
 public class NameDataUtil {
 
     // static used for storing firstNames/lastNames data for AI and the random object

@@ -25,7 +25,7 @@ public abstract class AbstractScreenController {
     /**
      * All ScreenControllers must have an initialize method for the FXML
      * Child classes can override it to do things right after the FXML.load is done setting up nodes
-     * for things like setting the CURRENT_SCREEN flag
+     * for things like setting the currentScreen flag
      */
     protected void initialize() {
         // All ScreenControllers must have an initialize method for the FXML
@@ -34,7 +34,7 @@ public abstract class AbstractScreenController {
 
     /**
      * Will return a String representing the current date formatted for human readability
-     * ex: Monday: January 1, 1972
+     * ex: MONDAY: JANUARY 1, 1972
      * @return String representing the current date formatted for human readability
      */
     protected static String getDateString() {

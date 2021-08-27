@@ -8,8 +8,10 @@ import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.GameState;
 import java.time.LocalDate;
 
+/**
+ * Will manage the character creation screen
+ */
 public class CharacterCreationScreenController extends AbstractScreenController {
-
 
     @FXML public Label enterFirstNameLbl;
     @FXML public Label enterLastNameLbl;
@@ -24,9 +26,12 @@ public class CharacterCreationScreenController extends AbstractScreenController 
     @FXML public TextField monthInput;
     @FXML public TextField yearInput;
 
+    /**
+     * Override so after loading FXML variables we can set the currentScreen flag and console text
+     */
     @Override
     public void initialize() {
-        Engine.CURRENT_SCREEN = Engine.SCREEN.CHARACTER_CREATION;
+        Engine.currentScreen = Engine.SCREEN.CHARACTER_CREATION;
         // Finally, direct user to Create Player button
         console.setText(
                 """
@@ -36,7 +41,10 @@ public class CharacterCreationScreenController extends AbstractScreenController 
         );
     }
 
-    public void onCreatePlayer() {
+    /**
+     * FXML button will pull data from fields to create a new GameState
+     */
+    @FXML public void onCreatePlayer() {
         // pull data from text fields
         String firstName = firstNameInput.getText();
         String lastName = lastNameInput.getText();

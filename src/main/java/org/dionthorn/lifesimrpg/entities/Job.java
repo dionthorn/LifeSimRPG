@@ -120,39 +120,19 @@ public class Job extends AbstractEntity {
 
     // Logical
 
-    /**
-     * Will return an int value representing the amount paid out on this call,
-     * Will check the daysWorked and daysPaidOut variables to determine pay along with dailyPayRate
-     * Will change those variables as needed. On the oneYearAni of this job will also give a raise,
-     * or raise title
-     * @param currentDate String representing the current date used to calculate pay
-     * @return int representing the amount paid out on this call
-     */
-    public int payout(LocalDate currentDate) {
-        int payout = (this.daysWorked - this.daysPaidOut) * this.dailyPayRate;
-        LocalDate oneYearAni = this.oneYearDateTracker.plusYears(1);
-        if(currentDate.isEqual(oneYearAni) || currentDate.isAfter(oneYearAni)) {
-            int newRank = 0;
-            for(int i = 0; i< this.jobTitles.length; i++) {
-                if(this.jobTitles[i].equals(this.currentTitle)) {
-                    newRank = i + 1;
-                }
+    public int getCurrentRank() {
+        for (int i = 0; i < jobTitles.length; i++) {
+            String title = jobTitles[i];
+            if (currentTitle.equals(title)) {
+                return i;
             }
-            if(newRank<this.titlesPay.length) {
-                // new rank
-                this.dailyPayRate = this.titlesPay[newRank];
-                this.currentTitle = this.jobTitles[newRank];
-            } else {
-                // max rank so give raise
-                this.dailyPayRate = this.dailyPayRate + (int)(0.5 * (this.dailyPayRate * 0.5));
-            }
-            payout = (this.daysWorked - this.daysPaidOut) * this.dailyPayRate;
-            this.daysWorked = 0;
-            this.daysPaidOut = 0;
-            this.yearsWorked++;
-            this.oneYearDateTracker = oneYearAni;
         }
-        return payout;
+        return -1;
+    }
+
+    public void rankUp(int newRank) {
+        this.dailyPayRate = this.titlesPay[newRank];
+        this.currentTitle = this.jobTitles[newRank];
     }
 
     /**
@@ -223,6 +203,10 @@ public class Job extends AbstractEntity {
         return this.dailyPayRate;
     }
 
+    public void setDailyPayRate(int dailyPayRate) {
+        this.dailyPayRate = dailyPayRate;
+    }
+
     /**
      * Will return an int representing this Job daysWorked
      * @return int representing this Job daysWorked
@@ -231,12 +215,24 @@ public class Job extends AbstractEntity {
         return this.daysWorked;
     }
 
+    public void setDaysWorked(int daysWorked) {
+        this.daysWorked = daysWorked;
+    }
+
+    public int getDaysPaidOut() {
+        return this.daysPaidOut;
+    }
+
     /**
      * Will return an int representing this Job yearsWorked
      * @return int representing this Job yearsWorked
      */
     public int getYearsWorked() {
         return this.yearsWorked;
+    }
+
+    public void setYearsWorked(int yearsWorked) {
+        this.yearsWorked = yearsWorked;
     }
 
     /**
@@ -287,4 +283,7 @@ public class Job extends AbstractEntity {
         return this.workDays;
     }
 
+    public String[] getJobTitles() {
+        return jobTitles;
+    }
 }

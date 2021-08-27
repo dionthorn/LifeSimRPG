@@ -57,6 +57,9 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
         update();
     }
 
+    /**
+     * FXML button that should be overridden if the screen change is unneeded.
+     */
     @FXML public void onPlayerInfo() {
         // load fxml for PlayerInfoScreen.fxml
         try {
@@ -66,6 +69,9 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
         }
     }
 
+    /**
+     * FXML button that should be overridden if the screen change is unneeded.
+     */
     @FXML public void onJobInfo() {
         // load fxml for JobInfoScreen.fxml
         try {
@@ -75,6 +81,9 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
         }
     }
 
+    /**
+     * FXML button that should be overridden if the screen change is unneeded.
+     */
     @FXML public void onMapInfo() {
         // load fxml for JobInfoScreen.fxml
         try {
@@ -229,7 +238,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                 }
 
                 // get the player payout up to the current date
-                int payout = playerJob.payout(currentDate);
+                int payout = player.payout(currentDate);
 
                 // inform them of what they've been paid
                 this.console.appendText(
@@ -271,7 +280,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                 player.setMoney(player.getMoney() - rentCost);
                 this.console.appendText(
                         """
-                        %s paid $%d in rentPerDay!
+                        %s paid $%d in rent!
                         """.formatted(
                                 player.getFirstName(),
                                 rentCost
@@ -282,7 +291,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                 int rentIncrease = (rentCost / rentPeriod) / 12;
                 this.console.appendText(
                         """
-                        %s couldn't pay rentPerDay! An increase of $%d per day has been added
+                        %s couldn't pay rent! An increase of $%d per day has been added
                         """.formatted(
                                 player.getFirstName(),
                                 rentIncrease

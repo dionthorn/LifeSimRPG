@@ -58,6 +58,55 @@ public abstract class AbstractCharacter extends AbstractEntity {
     }
 
     /**
+     * Will return an int value representing the amount paid out on this call,
+     * Will check the daysWorked and daysPaidOut variables to determine pay along with dailyPayRate
+     * Will change those variables as needed. On the oneYearAni of this job will also give a raise,
+     * or raise title
+     * @param currentDate String representing the current date used to calculate pay
+     * @return int representing the amount paid out on this call
+     */
+    public int payout(LocalDate currentDate) {
+        int payout = (this.job.getDaysWorked() - this.job.getDaysPaidOut()) * this.job.getDailyPayRate();
+        LocalDate oneYearAni = this.job.getOneYearDateTracker().plusYears(1);
+        if(currentDate.isEqual(oneYearAni) || currentDate.isAfter(oneYearAni)) {
+            int newRank = 0;
+            for(int i = 0; i< this.job.getJobTitles().length; i++) {
+                if(this.job.getJobTitles()[i].equals(this.job.getCurrentTitle())) {
+                    newRank = i + 1;
+                }
+            }
+            if(newRank<this.job.getTitlesPay().length) {
+                //check if the newRank is qualified check Job Title Requirements against Player Titles
+                if(this.job.getTitleRequirements()[job.getCurrentRank() + 1].equals("")) {
+                    // if the next rank has to requirement then rank up
+                    this.job.rankUp(newRank);
+                } else {
+                    if(titles.size() == 0) {
+                        System.out.println("not qualified - no titles");
+                    } else {
+                        String target = this.job.getTitleRequirements()[job.getCurrentRank() + 1];
+                        if(titles.contains(target)) {
+                            System.out.println("QUALIFIED");
+                            this.job.rankUp(newRank);
+                        } else {
+                            System.out.println("Don't Have required title");
+                        }
+                    }
+                }
+            } else {
+                // max rank so give raise
+                this.job.setDailyPayRate(this.job.getDailyPayRate() + (int)(0.5 * (this.job.getDailyPayRate() * 0.5)));
+            }
+            payout = (this.job.getDaysWorked() - this.job.getDaysPaidOut()) * this.job.getDailyPayRate();
+            this.job.setDaysWorked(0);
+            this.job.setDaysPaidOut(0);
+            this.job.setYearsWorked(this.job.getYearsWorked() + 1);
+            this.job.setOneYearDateTracker(oneYearAni);
+        }
+        return payout;
+    }
+
+    /**
      * Relocates this AbstractCharacter to target Place and removes from previous Place
      * @param target the Place that this AbstractCharacter will move to
      */

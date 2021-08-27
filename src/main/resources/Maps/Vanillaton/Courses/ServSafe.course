@@ -1,0 +1,6 @@
+:TITLES:
+ServSafe Participant,ServSafe Certified,
+:REQUIREMENTS:
+FoodSafety:0,FoodSafety:80,
+:STAT_GAIN:
+FoodSafety:0.1,FoodSafety:0.2,

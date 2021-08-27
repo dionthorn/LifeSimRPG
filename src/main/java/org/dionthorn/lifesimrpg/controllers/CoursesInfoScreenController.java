@@ -9,18 +9,28 @@ import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import org.dionthorn.lifesimrpg.entities.Course;
 import org.dionthorn.lifesimrpg.entities.Map;
 
+/**
+ * Will manage the courses info screen
+ */
 public class CoursesInfoScreenController extends AbstractGameScreenController {
 
+    // FXML variables
     @FXML public Label coursesLbl;
     @FXML public Label currentCourseLbl;
     @FXML public Label currentCourseStatLbl;
 
+    /**
+     * Override so we can set the Screen flag and update after loading FXML variables
+     */
     @Override
     public void initialize() {
-        Engine.CURRENT_SCREEN = Engine.SCREEN.COURSES_INFO;
+        Engine.currentScreen = Engine.SCREEN.COURSES_INFO;
         updateAll();
     }
 
+    /**
+     * Override so we can do Course Info specific updates
+     */
     @Override
     public void updateAll() {
         centerGridPane.getChildren().clear();
@@ -58,15 +68,24 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
             GridPane.setConstraints(courseName, xCap, yCap);
             GridPane.setConstraints(takeCourse, xCap + 1, yCap);
             centerGridPane.getChildren().addAll(courseName, takeCourse);
+            yCap++;
+            if(yCap > 4) {
+                yCap = 0;
+                xCap++;
+            }
         }
 
         updateDateLbl();
         updateMoneyLbl();
     }
 
-    // FXML Buttons
+    // Dynamic Buttons
 
-    @FXML public void onTakeCourse(String courseName) {
+    /**
+     * Take Course dynamic buttons will set the players course
+     * @param courseName String representing the target course
+     */
+    public void onTakeCourse(String courseName) {
         AbstractCharacter player = Engine.gameState.getPlayer();
         if(player.getCurrentCourse() == null) {
             for(Course course: Engine.gameState.getCurrentMap().getCourses()) {

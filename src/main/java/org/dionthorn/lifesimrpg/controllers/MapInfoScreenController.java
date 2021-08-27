@@ -12,31 +12,42 @@ import org.dionthorn.lifesimrpg.entities.PlayerCharacter;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Will manage the map info screen
+ */
 public class MapInfoScreenController extends AbstractGameScreenController {
 
+    // Lists used to store the dynamically generated place and char labels and buttons
     private static final ArrayList<Label> connectingPlaceLbls = new ArrayList<>();
     private static final ArrayList<Button> connectingPlaceBtns = new ArrayList<>();
     private static final ArrayList<Label> charLbls = new ArrayList<>();
     private static final ArrayList<Button> talkBtns = new ArrayList<>();
 
+    // FXML variables
     @FXML public Label currentLocationLbl;
     @FXML public Label currentPeopleLbl;
     @FXML public Button coursesInfoBtn;
 
+    /**
+     * Override allows us to set the screen flag and append text to the console
+     * as well as a screen specific updateAll() after FXML variables load
+     */
     @Override
     public void initialize() {
-        Engine.CURRENT_SCREEN = Engine.SCREEN.MAP_INFO;
+        Engine.currentScreen = Engine.SCREEN.MAP_INFO;
         console.appendText(getDateString());
         updateAll();
     }
 
-    // essentially a refresh method
+    /**
+     * Override allows us to do map info screen specific updates
+     */
     @Override
     public void updateAll() {
-        if(Engine.CURRENT_SCREEN != Engine.SCREEN.MAP_INFO) {
+        if(Engine.currentScreen != Engine.SCREEN.MAP_INFO) {
             console.appendText(getDateString());
         }
-        if(Engine.CURRENT_SCREEN == Engine.SCREEN.MAP_INFO || Engine.CURRENT_SCREEN == Engine.SCREEN.DEAD) {
+        if(Engine.currentScreen == Engine.SCREEN.MAP_INFO || Engine.currentScreen == Engine.SCREEN.DEAD) {
             centerGridPane.getChildren().clear();
         }
         // update variable texts
@@ -75,6 +86,11 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         updateMoneyLbl();
     }
 
+    /**
+     * Will generate place Buttons and Labels
+     * @param player AbstractCharacter representing the player
+     * @return int representing the last y index used
+     */
     public int generatePlaceBtnsAndLbls(AbstractCharacter player) {
         // clear arrays
         connectingPlaceLbls.clear(); // maybe instead we setup these with default buttons/labels on first pass
@@ -120,6 +136,11 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         return lastYIndex;
     }
 
+    /**
+     * Will generate talk Buttons and Labels
+     * @param player AbstractCharacter representing the player
+     * @param lastYIndex int representing the last y index used
+     */
     public void generateTalkBtnsAndLbls(AbstractCharacter player, int lastYIndex) {
         // clear arrays
         charLbls.clear();
@@ -176,11 +197,18 @@ public class MapInfoScreenController extends AbstractGameScreenController {
 
     // FXML Button press methods
 
+    /**
+     * Override FXML Button from AbstractGameScreenController
+     * Will allow us to just updateAll() on a nextDay() call instead of Engine.loadMapFXML("MapInfoScreen.fxml");
+     */
     @Override
     @FXML public void onMapInfo() {
         updateAll();
     }
 
+    /**
+     * FXML button will load the CourseInfoScreen
+     */
     @FXML public void onCoursesInfo() {
         // load fxml for CourseInfoScreen.fxml
         try {
