@@ -125,6 +125,12 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
             }
             if(currentLevel < player.getCurrentCourse().getCourseLevel()) {
                 this.console.appendText("You increased in title to: %s\n".formatted(newTitle));
+                // make sure to remove the first course level as that is usually just 'student' or 'participant' etc
+                System.out.println(player.getCurrentCourse().getCourseLevel());
+                System.out.println(player.getCurrentCourse().getTitles()[0]);
+                if(player.getCurrentCourse().getCourseLevel() == 2) {
+                    player.getTitles().remove(player.getCurrentCourse().getTitles()[0]);
+                }
             } else {
                 if(isButton) {
                     this.console.appendText("You are not yet qualified for the next title\n");

@@ -77,19 +77,27 @@ public abstract class AbstractCharacter extends AbstractEntity {
             }
             if(newRank<this.job.getTitlesPay().length) {
                 //check if the newRank is qualified check Job Title Requirements against Player Titles
-                if(this.job.getTitleRequirements()[job.getCurrentRank() + 1].equals("")) {
-                    // if the next rank has to requirement then rank up
+
+                //does job have title requirements?
+                if(this.job.getTitleRequirements().length == 1 && this.job.getTitleRequirements()[0].equals("")) {
+                    // no title requirements
+                    System.out.println("Job has no title requirements ranking up");
                     this.job.rankUp(newRank);
                 } else {
-                    if(titles.size() == 0) {
-                        System.out.println("not qualified - no titles");
+                    if(this.job.getTitleRequirements()[job.getCurrentRank() + 1].equals("")) {
+                        // if the next rank has no requirement then rank up
+                        this.job.rankUp(newRank);
                     } else {
-                        String target = this.job.getTitleRequirements()[job.getCurrentRank() + 1];
-                        if(titles.contains(target)) {
-                            System.out.println("QUALIFIED");
-                            this.job.rankUp(newRank);
+                        if(titles.size() == 0) {
+                            System.out.println("not qualified - no titles");
                         } else {
-                            System.out.println("Don't Have required title");
+                            String target = this.job.getTitleRequirements()[job.getCurrentRank() + 1];
+                            if(titles.contains(target)) {
+                                System.out.println("QUALIFIED");
+                                this.job.rankUp(newRank);
+                            } else {
+                                System.out.println("Don't Have required title");
+                            }
                         }
                     }
                 }

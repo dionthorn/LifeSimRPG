@@ -18,7 +18,7 @@ public class App extends Application {
         stage.sizeToScene();
         stage.setResizable(false);
         stage.setTitle("LifeSimRPG " + PROGRAM_VERSION);
-        stage.show();
+        stage.show(); // we show the stage after all Engine.initialize() are done
     }
 
 }

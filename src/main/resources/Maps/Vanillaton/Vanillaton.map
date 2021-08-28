@@ -1,5 +1,5 @@
 :CONNECTIONS
-$ResidentialZone
+$Suburbs
 CommunityCollege
 Park
 MainStreet
@@ -10,14 +10,14 @@ Park
 $CommunityCollege
 MainStreet
 Park
-ResidentialZone
+Suburbs
 Realtor
 $Park
-ResidentialZone
+Suburbs
 CommunityCollege
 University
 $MainStreet
-ResidentialZone
+Suburbs
 CommunityCollege
 $Realtor
 CommunityCollege

@@ -16,7 +16,7 @@ import java.net.URL;
  * All variables and methods are public static except the rootStage.
  * Engine.loadFXML(String fileName) can be used to load a different screen from any controller object.
  */
-public class Engine {
+public final class Engine {
 
     /**
      * SCREEN enum is used to flag which screen we should be currently on.
@@ -32,6 +32,13 @@ public class Engine {
         MAP_INFO,
         COURSES_INFO,
         DEAD
+    }
+
+    private Engine() {
+        // This is a static utility class that is not intended to be instantiated,
+        // therefore we create a private constructor,
+        // and declare the class as final, so it cannot be extended.
+        // all calls should be of the form Engine.functionName()
     }
 
     // Constants

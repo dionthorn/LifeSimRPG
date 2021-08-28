@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Dedicated class for static methods related to file operations
  */
-public class FileOpUtil {
+public final class FileOpUtil {
 
     // static flag and URI reference for JRT when in JLink/JPackage distribution
     public static boolean JRT = false;
@@ -25,6 +25,13 @@ public class FileOpUtil {
     public static URI MAP_COURSES_PATH; // LifeSimRPG/Maps/{CurrentMap}/Courses
     public static URI MAP_JOBS_PATH; // LifeSimRPG/Maps/{CurrentMap}/Jobs
     public static URI MAP_FXML_PATH; // LifeSimRPG/Maps/{CurrentMap}/FXML
+
+    private FileOpUtil() {
+        // This is a static utility class that is not intended to be instantiated,
+        // therefore we create a private constructor,
+        // and declare the class as final, so it cannot be extended.
+        // all calls should be of the form FileOpUtil.functionName()
+    }
 
     /**
      * Will test if we are in a JRT distribution and set the JRT flag

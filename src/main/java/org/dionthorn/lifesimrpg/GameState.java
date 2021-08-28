@@ -6,10 +6,10 @@ import java.time.LocalDate;
 /**
  * GameState will manage the currentMap, the player, and the currentDate references,
  * Thus this manages the 'state' of the game objects
- *      currentMap - Hold references to all the Place objects, and each place object
- *                   holds the references to all AbstractCharacter objects amongst them.
- *                   currentMap.getAllCharacters() displays the relationship.
- *      player - AbstractCharacter reference of the player
+ *      currentMap  - Hold references to all the Place objects, and each place object
+ *                    holds the references to all AbstractCharacter objects amongst them.
+ *                    currentMap.getAllCharacters() displays the relationship.
+ *      player      - PlayerCharacter reference of the player
  *      currentDate - LocalDate to manage game time
  */
 public class GameState {

@@ -11,12 +11,19 @@ import java.util.Random;
 /**
  * Static utility class for generating random names
  */
-public class NameDataUtil {
+public final class NameDataUtil {
 
     // static used for storing firstNames/lastNames data for AI and the random object
     public static final ArrayList<String> firstNames = new ArrayList<>();
     public static final ArrayList<String> lastNames = new ArrayList<>();
     public static final Random rand = new Random();
+
+    private NameDataUtil() {
+        // This is a static utility class that is not intended to be instantiated,
+        // therefore we create a private constructor,
+        // and declare the class as final, so it cannot be extended.
+        // all calls should be of the form NameDataUtil.functionName()
+    }
 
     /**
      * Will return a LocalDate representing a random valid Date between 1/1/1960 and gameState.AGE_CAP

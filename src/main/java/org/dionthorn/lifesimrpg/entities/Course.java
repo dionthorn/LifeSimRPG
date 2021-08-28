@@ -9,12 +9,12 @@ import java.net.URI;
 public class Course extends AbstractEntity {
 
     // Course variables
-    public String courseName;
-    public int courseLevel = 0;
-    public String[] titles;
-    public String statName;
-    public double[] titleRequirements;
-    public double[] statGains;
+    private final String courseName;
+    private int courseLevel = 0;
+    private String[] titles;
+    private String statName;
+    private double[] titleRequirements;
+    private double[] statGains;
 
     /**
      * Course constructor will locate the Course data in /Maps/{mapName}/Course/{courseName}.course
