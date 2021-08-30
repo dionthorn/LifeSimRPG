@@ -156,7 +156,7 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         for(int i=0; i<player.getCurrentLocation().getCharacters().size(); i++) {
             // add character name labels and talk to buttons
             targetChar = player.getCurrentLocation().getCharacters().get(i);
-            charLbls.add(new Label(String.format("%s %s", targetChar.getFirstName(), targetChar.getLastName())));
+            charLbls.add(new Label(targetChar.getName()));
             talkBtns.add(new Button("Talk To"));
             GridPane.setConstraints(charLbls.get(i), xCap, lastYIndex + yCap);
             GridPane.setConstraints(talkBtns.get(i), xCap, lastYIndex + yCap + 1);

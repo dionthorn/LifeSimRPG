@@ -38,7 +38,7 @@ public final class FileOpUtil {
      * As well as the jrtBaseURI, so we can access resources in JLink and JPackage
      */
     public static void checkJRT() {
-        URL resource = App.class.getClassLoader().getResource("credits.txt");
+        URL resource = App.class.getClassLoader().getResource("Credits.txt");
         if(resource == null) {
             FileOpUtil.JRT = true;
             jrtBaseURI = URI.create("jrt:/LifeSimRPG/");

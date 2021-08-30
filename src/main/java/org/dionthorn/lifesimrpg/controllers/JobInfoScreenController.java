@@ -70,6 +70,7 @@ public class JobInfoScreenController extends AbstractGameScreenController {
         );
 
         // Show Job Options
+        jobOptions.getItems().clear();
         for(AbstractEntity e: AbstractEntity.entities) {
             if(e instanceof Job && ((Job)e).isFromFile()) {
                 Job target = (Job) e;

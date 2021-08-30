@@ -51,12 +51,11 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
         AbstractCharacter player = Engine.gameState.getPlayer();
         playerNameLbl.setText(
                 """
-                Player: %s %s Health: %.2f/%.2f
+                Player: %s Health: %.2f/%.2f
                 """.formatted(
-                        player.getFirstName(),
-                        player.getLastName(),
+                        player.getName(),
                         player.getHealth(),
-                        player.getMaxHealth()
+                        AbstractCharacter.MAX_ATTRIBUTE
                 )
         );
 
@@ -75,7 +74,7 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
                 Total Rent Unpaid: $%d
                 """.formatted(
                         player.getHome().getRentPerDay(),
-                        player.getFoodCost(),
+                        player.getFoodCostPerDay(),
                         player.getHome().getMonthsUnpaid(),
                         player.getHome().getTotalUnpaid()
                 )

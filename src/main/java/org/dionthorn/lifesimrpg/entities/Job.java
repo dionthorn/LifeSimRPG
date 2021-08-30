@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Job manages either a default job or a job loaded from .job files
+ * Job manages either a default Job or a Job loaded from .job files
  * ex: /Maps/{MapName}/Jobs/{JobName}.job
  */
 public class Job extends AbstractEntity {
@@ -25,11 +25,10 @@ public class Job extends AbstractEntity {
     private String[] jobTitles;
     private String[] titleRequirements;
     private String currentTitle;
-    private final String name;
     private final boolean isFromFile; // used to distinguish default jobs from jobs loaded from .job files
 
     /**
-     * Will generate a default job with isFromFile set to false,
+     * Will generate a default Job with isFromFile set to false,
      * used for salary person and unemployed default jobs.
      * @param name String representing the default name
      * @param dailyPayRate int representing the default pay rate
@@ -52,7 +51,7 @@ public class Job extends AbstractEntity {
     }
 
     /**
-     * Will load a job from file targeting /Maps/{MapName}/Jobs/{JobName}.job
+     * Will load a Job from file targeting /Maps/{MapName}/Jobs/{JobName}.job
      * @param jobName String representing the jobName to target
      */
     public Job(String jobName) {
@@ -61,22 +60,22 @@ public class Job extends AbstractEntity {
         this.name = jobName.split("\\.")[0];
         String[] fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.MAP_JOBS_PATH + jobName));
 
-        boolean TR = false, SR = false, JT = false, PA = false, DA = false; // 5 state machine
+        boolean TR = false, SR = false, TI = false, PA = false, DA = false; // 5 state machine
         for(String line: fileLines) {
             if(line.contains(":TITLE_REQUIREMENTS:")) {
-                SR = JT = PA = DA = false;
+                SR = TI = PA = DA = false;
                 TR = true;
             } else if(line.contains(":STAT_REQUIREMENTS:")) {
-                TR = JT = PA = DA = false;
+                TR = TI = PA = DA = false;
                 SR = true;
             } else if(line.contains(":TITLE:")) {
                 SR = TR = PA = DA = false;
-                JT = true;
+                TI = true;
             } else if(line.contains(":PAY:")) {
-                SR = TR = JT = DA = false;
+                SR = TR = TI = DA = false;
                 PA = true;
             } else if(line.contains(":DAYS:")) {
-                SR = TR = JT = PA = false;
+                SR = TR = TI = PA = false;
                 DA = true;
             } else {
                 if(TR) {
@@ -95,7 +94,7 @@ public class Job extends AbstractEntity {
                             this.statRQValues[i] = Double.parseDouble(temp2[1]);
                         }
                     }
-                } else if(JT) {
+                } else if(TI) {
                     String[] temp = line.split(",");
                     this.jobTitles = new String[temp.length];
                     System.arraycopy(temp, 0, this.jobTitles, 0, temp.length);
@@ -120,16 +119,27 @@ public class Job extends AbstractEntity {
 
     // Logical
 
+    /**
+     * Will determine the current rank of this Job based on the currentTitle
+     * by checking against jobTitles
+     * @return int representing the current 'rank' of this Job
+     */
     public int getCurrentRank() {
         for (int i = 0; i < jobTitles.length; i++) {
             String title = jobTitles[i];
-            if (currentTitle.equals(title)) {
+            if(currentTitle.equals(title)) {
                 return i;
             }
         }
         return -1;
     }
 
+    /**
+     * Will set new values
+     * for  dailyPayRate       and currentTitle
+     * from titlesPay[newRank] and jobTitles[newRank] respectively
+     * @param newRank int representing the new rank of this Job will set the dailyPayRate and currentTitle
+     */
     public void rankUp(int newRank) {
         this.dailyPayRate = this.titlesPay[newRank];
         this.currentTitle = this.jobTitles[newRank];
@@ -145,9 +155,9 @@ public class Job extends AbstractEntity {
     // Qualified boolean
 
     /**
-     * Will return a boolean representing whether this job defines the provided dayOfWeek as a work day
+     * Will return a boolean representing whether this Job defines the provided dayOfWeek as a work day
      * @param dayOfWeek int representing the current day of week monday = 1
-     * @return boolean representing whether this job defines the provided dayOfWeek as a work day
+     * @return boolean representing whether this Job defines the provided dayOfWeek as a work day
      */
     public boolean isWorkDay(int dayOfWeek) {
         return Arrays.stream(this.workDays).anyMatch(i -> i == dayOfWeek);
@@ -156,8 +166,8 @@ public class Job extends AbstractEntity {
     // Pure getters and setters and boolean
 
     /**
-     * Will return a boolean representing whether this job is loaded from file
-     * @return boolean representing whether this job is loaded from file
+     * Will return a boolean representing whether this Job is loaded from file
+     * @return boolean representing whether this Job is loaded from file
      */
     public boolean isFromFile() {
         return this.isFromFile;
@@ -188,14 +198,6 @@ public class Job extends AbstractEntity {
     }
 
     /**
-     * Will return a String representing this Job name
-     * @return String representing this Job name
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
      * Will return an int representing this Job dailyPayRate
      * @return int representing this Job dailyPayRate
      */
@@ -203,6 +205,10 @@ public class Job extends AbstractEntity {
         return this.dailyPayRate;
     }
 
+    /**
+     * Will set this Job dailyPayRate to the provided int
+     * @param dailyPayRate int representing the new value to set this Job dailyPayRate
+     */
     public void setDailyPayRate(int dailyPayRate) {
         this.dailyPayRate = dailyPayRate;
     }
@@ -215,10 +221,18 @@ public class Job extends AbstractEntity {
         return this.daysWorked;
     }
 
+    /**
+     * Will set this Job daysWorked to the provided int
+     * @param daysWorked int representing the new value to set this Job daysWorked
+     */
     public void setDaysWorked(int daysWorked) {
         this.daysWorked = daysWorked;
     }
 
+    /**
+     * Will return an int representing this Job daysPaidOut
+     * @return int representing this Job daysPaidOut
+     */
     public int getDaysPaidOut() {
         return this.daysPaidOut;
     }
@@ -231,6 +245,10 @@ public class Job extends AbstractEntity {
         return this.yearsWorked;
     }
 
+    /**
+     * Will set this Job yearsWorked to the provided int
+     * @param yearsWorked int representing the new value to set this Job yearsWorked
+     */
     public void setYearsWorked(int yearsWorked) {
         this.yearsWorked = yearsWorked;
     }
@@ -283,7 +301,12 @@ public class Job extends AbstractEntity {
         return this.workDays;
     }
 
+    /**
+     * Will return a String[] representing this Job Titles where each String is a potential 'rank' or 'title'
+     * @return String[] representing this Job Titles where each String is a potential 'rank' or 'title'
+     */
     public String[] getJobTitles() {
         return jobTitles;
     }
+
 }

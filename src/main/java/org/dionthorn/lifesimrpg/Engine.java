@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import java.net.URI;
 import java.time.LocalDate;
 import java.net.URL;
 
@@ -42,14 +43,14 @@ public final class Engine {
     }
 
     // Constants
-    public static final int SCREEN_WIDTH = 1024;
-    public static final int SCREEN_HEIGHT = 768;
+    public static int SCREEN_WIDTH;
+    public static int SCREEN_HEIGHT;
 
     // Access these directly for convenience
     public static SCREEN currentScreen = SCREEN.BOOT;
     public static GameState gameState; // manage game object data
 
-    // Private rootStage reference
+    // Private root Stage reference
     private static Stage rootStage;
 
     /**
@@ -59,13 +60,14 @@ public final class Engine {
      * @param stage Stage representing the root Stage object for the program to be statically referenced
      */
     public static void initialize(Stage stage) {
-        // setup rootStage and Key Handlers
-        rootStage = stage;
-        initializeKeyHandlers();
-
         // Set JRT flag and then set initial paths
         FileOpUtil.checkJRT();
         FileOpUtil.initializePaths();
+
+        // setup rootStage initialize Settings.ini and Key Handlers
+        rootStage = stage;
+        initializeSettings();
+        initializeKeyHandlers();
 
         // Load the StartScreen
         try{
@@ -88,9 +90,30 @@ public final class Engine {
     }
 
     /**
+     * Will check the LifeSimRPG/Setting.ini file for SCREEN_WIDTH and SCREEN_HEIGHT values
+     */
+    private static void initializeSettings() {
+        String[] settings;
+        if(FileOpUtil.JRT) {
+            settings = FileOpUtil.getFileLines(URI.create(FileOpUtil.jrtBaseURI + "Settings.ini"));
+        } else {
+            settings = FileOpUtil.getFileLines(URI.create(
+                    String.valueOf(App.class.getClassLoader().getResource("Settings.ini"))
+            ));
+        }
+        for(String line: settings) {
+            if(line.contains("SCREEN_WIDTH")) {
+                SCREEN_WIDTH = Integer.parseInt(line.split("=")[1]);
+            } else if(line.contains("SCREEN_HEIGHT")) {
+                SCREEN_HEIGHT = Integer.parseInt(line.split("=")[1]);
+            }
+        }
+    }
+
+    /**
      * Will assign Key Listeners to the rootStage
-     * ESC -> closes the program via Stage.close()
-     * F7 -> will dump entity data to System.out
+     *  ESC -> closes the program via Stage.close()
+     *  F7 -> will dump entity data to System.out
      */
     public static void initializeKeyHandlers() {
         rootStage.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {

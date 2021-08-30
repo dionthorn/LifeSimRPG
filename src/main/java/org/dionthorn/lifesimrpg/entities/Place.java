@@ -28,7 +28,6 @@ public class Place extends AbstractEntity {
     // Variables
     private final ArrayList<AbstractCharacter> characters = new ArrayList<>();
     private final ArrayList<Place> connections = new ArrayList<>();
-    private final String name;
     private PLACE_TYPE type;
 
     /**
@@ -85,6 +84,10 @@ public class Place extends AbstractEntity {
 
     // Logical
 
+    /**
+     * Will add a Place to this Place connections list
+     * @param place representing the Place to add to this Place connections list
+     */
     public void addConnection(Place place) {
         if(!this.connections.contains(place)) {
             this.connections.add(place);
@@ -93,18 +96,27 @@ public class Place extends AbstractEntity {
 
     // Pure getters
 
-    public String getName() {
-        return this.name;
-    }
-
+    /**
+     * Will return an ArrayList of all AbstractCharacter objects at this Place
+     * @return ArrayList representing all AbstractCharacter objects at this Place
+     */
     public ArrayList<AbstractCharacter> getCharacters() {
         return this.characters;
     }
 
+    /**
+     * Will return an ArrayList of all Place objects connected to this Place
+     * @return ArrayList representing all Place objects connected to this Place
+     */
     public ArrayList<Place> getConnections() {
         return this.connections;
     }
 
+    /**
+     * Will return a PLACE_TYPE of this Place type determines behaviour of the game/GUI
+     * depending on type of Place
+     * @return PLACE_TYPE representing this Place type
+     */
     public PLACE_TYPE getType() {
         return this.type;
     }

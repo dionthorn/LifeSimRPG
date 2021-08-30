@@ -7,7 +7,7 @@ import java.util.HashMap;
 /**
  * The AbstractCharacter object will manage all entities that are inhabitants of a Place object,
  * has an associated Job object, manages relationships with other Characters,
- * has various attributes like health, money, foodCost, daysWithoutFood.
+ * has various attributes like health
  */
 public abstract class AbstractCharacter extends AbstractEntity {
 
@@ -16,23 +16,35 @@ public abstract class AbstractCharacter extends AbstractEntity {
     protected final HashMap<String, Double> stats = new HashMap<>();
     protected final ArrayList<String> titles = new ArrayList<>();
     protected final ArrayList<AbstractCharacter> talkedToToday = new ArrayList<>();
+
+    // information variables
     protected String firstName;
     protected String lastName;
     protected LocalDate birthday;
-    protected double maxHealth = 100.00;
-    protected double health = 100.00;
-    protected int money = 200;
-    protected int foodCost = 14; // $14 a day in food = $98 per week
     protected int daysWithoutFood = 0; // 23 days in a row will kill you if you start with max health
+    protected int foodCostPerDay = 14; // $14 a day in food = $98 per week
+    protected int money = 200;
+
+    // attribute variables
+    public final static double MAX_ATTRIBUTE = 100.00; // constant attribute cap
+    protected double health = 100.00; // HP
+    protected double strength = 5.00; // three physical
+    protected double constitution = 5.00;
+    protected double dexterity = 5.00;
+    protected double intelligence = 5.00; // three mental
+    protected double wisdom = 5.00;
+    protected double charisma = 5.00;
+
+    // has a relationship object references
     protected Job job;
     protected Residence home;
     protected Place currentLocation;
-    protected Course currentCourse;
+    protected Course currentCourse; // can be null
 
     /**
      * Abstract constructor
      */
-    public AbstractCharacter() {
+    protected AbstractCharacter() {
         super();
     }
 
@@ -43,7 +55,7 @@ public abstract class AbstractCharacter extends AbstractEntity {
      * @return String representing the course title currently qualified for
      */
     public String checkTitle() {
-        String toReturn = "Not Qualified - " + this.currentCourse.getCourseName();
+        String toReturn = "Not Qualified - " + this.currentCourse.getName();
         if(this.hasCourse() && this.getStats().size() > 0) {
             if(this.getStats().get(this.currentCourse.getStatName()) >= this.currentCourse.getCurrentTitleRequirement()) {
                 if(this.currentCourse.getCourseLevel() > this.currentCourse.getTitles().length - 1) {
@@ -77,26 +89,19 @@ public abstract class AbstractCharacter extends AbstractEntity {
             }
             if(newRank<this.job.getTitlesPay().length) {
                 //check if the newRank is qualified check Job Title Requirements against Player Titles
-
                 //does job have title requirements?
                 if(this.job.getTitleRequirements().length == 1 && this.job.getTitleRequirements()[0].equals("")) {
                     // no title requirements
-                    System.out.println("Job has no title requirements ranking up");
                     this.job.rankUp(newRank);
                 } else {
                     if(this.job.getTitleRequirements()[job.getCurrentRank() + 1].equals("")) {
                         // if the next rank has no requirement then rank up
                         this.job.rankUp(newRank);
                     } else {
-                        if(titles.size() == 0) {
-                            System.out.println("not qualified - no titles");
-                        } else {
+                        if(titles.size() != 0) {
                             String target = this.job.getTitleRequirements()[job.getCurrentRank() + 1];
                             if(titles.contains(target)) {
-                                System.out.println("QUALIFIED");
                                 this.job.rankUp(newRank);
-                            } else {
-                                System.out.println("Don't Have required title");
                             }
                         }
                     }
@@ -280,7 +285,17 @@ public abstract class AbstractCharacter extends AbstractEntity {
      * @param health double to set this AbstractCharacter health to will cap at max_health
      */
     public void setHealth(double health) {
-        this.health = Math.min(health, this.maxHealth);
+        this.health = Math.min(health, MAX_ATTRIBUTE);
+    }
+
+    /**
+     * Override AbstractEntity.getName for AbstractCharacter it will return
+     * "{firstName} {lastName}" as a String when calling getName()
+     * @return String formatted as "{firstName} {lastName}" of this AbstractCharacter
+     */
+    @Override
+    public String getName() {
+        return "%s %s".formatted(this.firstName, this.lastName);
     }
 
     // pure getters and setters, these do no qualifications just pure return or assignment
@@ -351,19 +366,19 @@ public abstract class AbstractCharacter extends AbstractEntity {
     }
 
     /**
-     * Will set the int value for this AbstractCharacter foodCost
-     * @param foodCost int representing the daily money worth of food this AbstractCharacter eats
+     * Will set the int value for this AbstractCharacter foodCostPerDay
+     * @param foodCostPerDay int representing the daily money worth of food this AbstractCharacter eats
      */
-    public void setFoodCost(int foodCost) {
-        this.foodCost = foodCost;
+    public void setFoodCostPerDay(int foodCostPerDay) {
+        this.foodCostPerDay = foodCostPerDay;
     }
 
     /**
      * Will return an int representing this AbstractCharacter daily money worth of food eaten
      * @return int representing this AbstractCharacter daily money worth of food eaten
      */
-    public int getFoodCost() {
-        return this.foodCost;
+    public int getFoodCostPerDay() {
+        return this.foodCostPerDay;
     }
 
     /**
@@ -372,14 +387,6 @@ public abstract class AbstractCharacter extends AbstractEntity {
      */
     public double getHealth() {
         return this.health;
-    }
-
-    /**
-     * Will return a double representing this character maxHealth
-     * @return double representing this character maxHealth
-     */
-    public double getMaxHealth() {
-        return this.maxHealth;
     }
 
     /**

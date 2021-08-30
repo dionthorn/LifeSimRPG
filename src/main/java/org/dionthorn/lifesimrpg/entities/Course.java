@@ -9,7 +9,6 @@ import java.net.URI;
 public class Course extends AbstractEntity {
 
     // Course variables
-    private final String courseName;
     private int courseLevel = 0;
     private String[] titles;
     private String statName;
@@ -17,15 +16,15 @@ public class Course extends AbstractEntity {
     private double[] statGains;
 
     /**
-     * Course constructor will locate the Course data in /Maps/{mapName}/Course/{courseName}.course
-     * @param courseName String representing this Course name
+     * Course constructor will locate the Course data in /Maps/{mapName}/Course/{name}.course
+     * @param name String representing this Course name
      */
-    public Course(String courseName) {
+    public Course(String name) {
         super();
 
         // set name and check JRT for fileLines
-        this.courseName = courseName.split("\\.")[0];
-        String[] fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.MAP_COURSES_PATH + courseName));
+        this.name = name.split("\\.")[0];
+        String[] fileLines = FileOpUtil.getFileLines(URI.create(FileOpUtil.MAP_COURSES_PATH + name));
 
         // loop through all file lines and process using a 3 state machine
         boolean TI = false, RQ = false, SG = false;
@@ -97,14 +96,6 @@ public class Course extends AbstractEntity {
     }
 
     // Pure getters
-
-    /**
-     * Will return a String representing this Course courseName
-     * @return String representing this Course courseName
-     */
-    public String getCourseName() {
-        return this.courseName;
-    }
 
     /**
      * Will return a String representing this Course required statName

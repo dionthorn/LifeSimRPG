@@ -14,8 +14,8 @@ import java.util.Random;
 public final class NameDataUtil {
 
     // static used for storing firstNames/lastNames data for AI and the random object
-    public static final ArrayList<String> firstNames = new ArrayList<>();
-    public static final ArrayList<String> lastNames = new ArrayList<>();
+    private static final ArrayList<String> firstNames = new ArrayList<>();
+    private static final ArrayList<String> lastNames = new ArrayList<>();
     public static final Random rand = new Random();
 
     private NameDataUtil() {
@@ -26,8 +26,8 @@ public final class NameDataUtil {
     }
 
     /**
-     * Will return a LocalDate representing a random valid Date between 1/1/1960 and gameState.AGE_CAP
-     * @return LocalDate representing a random valid Date between 1/1/1960 and gameState.AGE_CAP
+     * Will return a LocalDate representing a random valid Date between 1/1/1960 and GameState.AGE_CAP
+     * @return LocalDate representing a random valid Date between 1/1/1960 and GameState.AGE_CAP
      */
     public static LocalDate getRandomDate() {
         LocalDate start = LocalDate.of(1960, Month.JANUARY, 1);

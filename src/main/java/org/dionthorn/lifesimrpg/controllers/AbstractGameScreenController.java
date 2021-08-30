@@ -104,18 +104,18 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
     }
 
     /**
-     * Will updateTitle(false) and updateAll() this is called after every nextDay and nextWeek
+     * Will updateCourseTitle(false) and updateAll() this is called after every nextDay and nextWeek
      */
     protected void update() {
-        updateTitle(false);
+        updateCourseTitle();
         updateAll();
     }
 
     /**
      * Will update the player Course title if applicable and append relevant text to console
-     * @param isButton boolean representing if the caller is a Button reaction or not
+     *
      */
-    protected void updateTitle(boolean isButton) {
+    protected void updateCourseTitle() {
         AbstractCharacter player = Engine.gameState.getPlayer();
         if(player.hasCourse()) {
             int currentLevel = player.getCurrentCourse().getCourseLevel();
@@ -126,22 +126,8 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
             if(currentLevel < player.getCurrentCourse().getCourseLevel()) {
                 this.console.appendText("You increased in title to: %s\n".formatted(newTitle));
                 // make sure to remove the first course level as that is usually just 'student' or 'participant' etc
-                System.out.println(player.getCurrentCourse().getCourseLevel());
-                System.out.println(player.getCurrentCourse().getTitles()[0]);
                 if(player.getCurrentCourse().getCourseLevel() == 2) {
                     player.getTitles().remove(player.getCurrentCourse().getTitles()[0]);
-                }
-            } else {
-                if(isButton) {
-                    this.console.appendText("You are not yet qualified for the next title\n");
-                    this.console.appendText(
-                            """
-                            You need %s stat to be %s
-                            """.formatted(
-                                    player.getCurrentCourse().getStatName(),
-                                    player.getCurrentCourse().getCurrentTitleRequirement()
-                            )
-                    );
                 }
             }
         }
@@ -276,12 +262,12 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
         Residence playerHome = player.getHome();
         playerHome.onNextDay();
 
-        // pay rentPerDay on the first of the month
+        // pay rent on the first of the month
         if(currentDate.getDayOfMonth() == 1) {
             int rentPeriod = playerHome.getDaysInPeriod();
             int rentCost = playerHome.getRentPeriodCost();
 
-            // check if player can pay rentPerDay
+            // check if player can pay rent
             if(player.getMoney() - rentCost >= 0) {
                 player.setMoney(player.getMoney() - rentCost);
                 this.console.appendText(
@@ -293,7 +279,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                         )
                 );
             } else {
-                // maybe set rentPerDay higher based on 12 month rentPerDay distributed?
+                // set rent higher based on 12 month distributed?
                 int rentIncrease = (rentCost / rentPeriod) / 12;
                 this.console.appendText(
                         """
@@ -304,7 +290,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                         )
                 );
 
-                // set rentPerDay and calculate rentPerDay debt
+                // set rent and calculate rent debt
                 playerHome.setRentPerDay(player.getHome().getRentPerDay() + rentIncrease);
                 playerHome.setMonthsUnpaid(player.getHome().getMonthsUnpaid() + 1);
                 playerHome.setTotalUnpaid(rentCost);
@@ -321,8 +307,8 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
         }
 
         // eat food logic
-        if(player.getMoney() - player.getFoodCost() >= 0) {
-            player.setMoney(player.getMoney() - player.getFoodCost());
+        if(player.getMoney() - player.getFoodCostPerDay() >= 0) {
+            player.setMoney(player.getMoney() - player.getFoodCostPerDay());
             player.setDaysWithoutFood(0);
             player.setHealth(player.getHealth() + 0.5);
         } else {

@@ -51,6 +51,7 @@ public class CharacterCreationScreenController extends AbstractScreenController 
         int day = Integer.parseInt(dayInput.getText());
         int month = Integer.parseInt(monthInput.getText());
         int year = Integer.parseInt(yearInput.getText());
+
         // try to make a LocalDate from the birthday
         LocalDate birthday = null;
         try {
@@ -58,6 +59,7 @@ public class CharacterCreationScreenController extends AbstractScreenController 
         } catch(Exception e) {
             // suppress exception if invalid date
         }
+
         // if the birthday is invalid or after the age cap will warn in console
         if(birthday == null || birthday.isAfter(GameState.AGE_CAP)) {
             console.clear();

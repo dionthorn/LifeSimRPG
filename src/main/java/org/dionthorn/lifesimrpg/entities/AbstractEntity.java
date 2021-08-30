@@ -16,6 +16,9 @@ public abstract class AbstractEntity {
     private static int GEN_COUNT = 0;
     protected final int UID = GEN_COUNT++;
 
+    // Every extension has some form of 'name' in game so far at least
+    protected String name;
+
     /**
      * Default AbstractEntity Constructor will assign the entity a unique id then increment the GEN_COUNT that's it.
      */
@@ -31,6 +34,14 @@ public abstract class AbstractEntity {
      */
     public int getUID() {
         return this.UID;
+    }
+
+    /**
+     * Will return this AbstractEntity assigned name, this should be assigned by extending classes.
+     * @return String representing this AbstractEntity assigned name, assigned by child classes.
+     */
+    public String getName() {
+        return this.name;
     }
 
 }

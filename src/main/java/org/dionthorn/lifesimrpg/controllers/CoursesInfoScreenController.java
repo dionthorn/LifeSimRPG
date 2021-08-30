@@ -51,7 +51,7 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
 
         // update currentCourseLbl
         if(player.hasCourse()) {
-            currentCourseLbl.setText("Current Course: " + player.getCurrentCourse().getCourseName());
+            currentCourseLbl.setText("Current Course: " + player.getCurrentCourse().getName());
         } else {
             currentCourseLbl.setText("Current Course: NONE");
         }
@@ -62,9 +62,9 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
         Map map = Engine.gameState.getCurrentMap();
         for(Course course: map.getCourses()) {
             // for each course make a label and button and add to center grid pane
-            Label courseName = new Label(course.getCourseName());
+            Label courseName = new Label(course.getName());
             Button takeCourse = new Button("Take Course");
-            takeCourse.setOnAction(ActionEvent -> onTakeCourse(course.getCourseName()));
+            takeCourse.setOnAction(ActionEvent -> onTakeCourse(course.getName()));
             GridPane.setConstraints(courseName, xCap, yCap);
             GridPane.setConstraints(takeCourse, xCap + 1, yCap);
             centerGridPane.getChildren().addAll(courseName, takeCourse);
@@ -89,7 +89,7 @@ public class CoursesInfoScreenController extends AbstractGameScreenController {
         AbstractCharacter player = Engine.gameState.getPlayer();
         if(player.getCurrentCourse() == null) {
             for(Course course: Engine.gameState.getCurrentMap().getCourses()) {
-                if(course.getCourseName().equals(courseName)) {
+                if(course.getName().equals(courseName)) {
                     player.setCurrentCourse(course);
                 }
             }

@@ -60,7 +60,7 @@ public class GameState {
     /**
      * Will load and create Job objects from file
      */
-    public void loadJobInfo() {
+    private void loadJobInfo() {
         String[] jobs = FileOpUtil.getFileNamesFromDirectory(FileOpUtil.MAP_JOBS_PATH);
         for(String fileName: jobs) {
             new Job(fileName);
@@ -71,8 +71,8 @@ public class GameState {
      * Will find the residential zone and
      * for every AbstractCharacter present it will assign them a new Residence
      */
-    public void generateAIResidence() {
-        currentMap.getPlaces().stream().filter(
+    private void generateAIResidence() {
+        this.currentMap.getPlaces().stream().filter(
                 p -> p.getType() == Place.PLACE_TYPE.RESIDENTIAL_ZONE
         ).forEach(
                 p -> p.getCharacters().forEach(
@@ -90,7 +90,7 @@ public class GameState {
      * create a new Residence for the player
      * will also move the player to the home
      */
-    public void generatePlayerResidence() {
+    private void generatePlayerResidence() {
         Residence defaultHome = null;
         Place resZone;
         for(Place check: this.currentMap.getPlaces()) {
@@ -115,12 +115,12 @@ public class GameState {
      * Will find Residence not associated with currentMap and
      * add them to the currentMap places
      */
-    public void associateNewResidence() {
+    private void associateNewResidence() {
         for(AbstractEntity e: AbstractEntity.entities) {
             if(e instanceof Residence) {
                 Residence newRes = (Residence) e;
-                if(!(currentMap.getPlaces().contains(newRes))) {
-                    currentMap.getPlaces().add(newRes);
+                if(!(this.currentMap.getPlaces().contains(newRes))) {
+                    this.currentMap.getPlaces().add(newRes);
                 }
             }
         }
@@ -133,7 +133,7 @@ public class GameState {
      * @return PlayerCharacter representing the current player
      */
     public PlayerCharacter getPlayer() {
-        return player;
+        return this.player;
     }
 
     /**
@@ -141,7 +141,7 @@ public class GameState {
      * @return LocalDate representing the current date
      */
     public LocalDate getCurrentDate() {
-        return currentDate;
+        return this.currentDate;
     }
 
     /**
@@ -149,7 +149,7 @@ public class GameState {
      * @return Map representing the current map
      */
     public Map getCurrentMap() {
-        return currentMap;
+        return this.currentMap;
     }
 
     /**

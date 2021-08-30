@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class Map extends AbstractEntity {
 
     // Map variables for tracking Place and Course objects as well as the name for reference
-    private final String name;
     private final ArrayList<Place> places = new ArrayList<>();
     private final ArrayList<Course> courses = new ArrayList<>();
 
@@ -110,14 +109,6 @@ public class Map extends AbstractEntity {
      */
     public ArrayList<Course> getCourses() {
         return this.courses;
-    }
-
-    /**
-     * Will return a String representing this Map name
-     * @return String representing this Map name
-     */
-    public String getName() {
-        return this.name;
     }
 
     /**
