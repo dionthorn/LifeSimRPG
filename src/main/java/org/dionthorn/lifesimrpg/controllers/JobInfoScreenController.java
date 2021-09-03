@@ -6,9 +6,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import org.dionthorn.lifesimrpg.Engine;
-import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import org.dionthorn.lifesimrpg.entities.AbstractEntity;
 import org.dionthorn.lifesimrpg.entities.Job;
+import org.dionthorn.lifesimrpg.entities.PlayerCharacter;
 
 /**
  * Will manage the job info screen
@@ -42,11 +42,14 @@ public class JobInfoScreenController extends AbstractGameScreenController {
         if(Engine.currentScreen != Engine.SCREEN.JOB_INFO) {
             console.appendText(getDateString());
         }
+
+        // get a player reference
+        PlayerCharacter player = Engine.gameState.getPlayer();
+
         // update variable texts
-        playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
+        playerInfoBtn.setText(String.format("%s Info", player.getFirstName()));
 
         // Show Current Job Info
-        AbstractCharacter player = Engine.gameState.getPlayer();
         currentJobLbl.setText(
                 """
                 Current Job: %s Current Salary: %d
@@ -100,13 +103,13 @@ public class JobInfoScreenController extends AbstractGameScreenController {
         String selection = jobOptions.getSelectionModel().getSelectedItem();
         String jobName = selection.split("\\$")[0].replaceAll(" ", "");
         Job target;
-        AbstractCharacter player = Engine.gameState.getPlayer();
+        PlayerCharacter player = Engine.gameState.getPlayer();
         // loop through entities and find the target job
         for(AbstractEntity e: AbstractEntity.entities) {
             // make sure it is from file and not a default job
             if(e instanceof Job && ((Job)e).isFromFile()) {
                 // make sure the name matches
-                if(((Job)e).getName().equals(jobName)) {
+                if(e.getName().equals(jobName)) {
                     target = (Job) e;
                     // check if player already has this job
                     if(player.hasJob() && player.getJob().isFromFile()) {

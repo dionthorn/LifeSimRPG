@@ -50,13 +50,16 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         if(Engine.currentScreen == Engine.SCREEN.MAP_INFO || Engine.currentScreen == Engine.SCREEN.DEAD) {
             centerGridPane.getChildren().clear();
         }
+
+        // get a player reference
+        PlayerCharacter player = Engine.gameState.getPlayer();
+
         // update variable texts
-        playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
+        playerInfoBtn.setText(String.format("%s Info", player.getFirstName()));
 
         // Move all characters around if user press the mapInfoBtn
-        PlayerCharacter player = Engine.gameState.getPlayer();
         for(AbstractCharacter c: Engine.gameState.getCurrentMap().getAllCharacters()) {
-            if(!(c == player)) {
+            if(c instanceof AICharacter) {
                 ((AICharacter) c).moveRandom();
             }
         }
@@ -80,7 +83,7 @@ public class MapInfoScreenController extends AbstractGameScreenController {
         generateTalkBtnsAndLbls(player, lastYIndex);
 
         // If in a SCHOOL Place then set the coursesInfo button to visible
-        coursesInfoBtn.setVisible(Engine.gameState.getPlayer().getCurrentLocation().getType() == Place.PLACE_TYPE.SCHOOL);
+        coursesInfoBtn.setVisible(player.getCurrentLocation().getType() == Place.PLACE_TYPE.SCHOOL);
 
         updateDateLbl();
         updateMoneyLbl();
@@ -93,7 +96,7 @@ public class MapInfoScreenController extends AbstractGameScreenController {
      */
     public int generatePlaceBtnsAndLbls(AbstractCharacter player) {
         // clear arrays
-        connectingPlaceLbls.clear(); // maybe instead we setup these with default buttons/labels on first pass
+        connectingPlaceLbls.clear(); // maybe instead we set up these with default buttons/labels on first pass
         connectingPlaceBtns.clear(); // and do .setText() calls instead of generating new in the below loop?
 
         // some tracking variables

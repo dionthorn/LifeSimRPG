@@ -55,7 +55,7 @@ public class GameState {
         this.loadJobInfo();
     }
 
-    // Logical
+    // Constructor helpers
 
     /**
      * Will load and create Job objects from file
@@ -125,6 +125,30 @@ public class GameState {
             }
         }
     }
+
+    // Game Methods
+
+    public void updateCharacters() {
+        // update entities for now this is just sending them home on the new day
+        for(AbstractEntity e: AbstractEntity.entities) {
+            if(e instanceof AbstractCharacter) {
+                ((AbstractCharacter) e).update();
+            }
+        }
+    }
+
+    public LocalDate plusDay() {
+        setCurrentDate(this.currentDate.plusDays(1));
+        return currentDate;
+    }
+
+    public void playerDailyStatUpdate() {
+        Course playerCourse = player.getCurrentCourse();
+        if(playerCourse != null) {
+            player.addStat(playerCourse.getStatName(), playerCourse.getCurrentStatGain());
+        }
+    }
+
 
     // Pure getters and setters
 

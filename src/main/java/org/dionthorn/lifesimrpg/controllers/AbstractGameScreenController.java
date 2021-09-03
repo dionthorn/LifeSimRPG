@@ -116,7 +116,7 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
      *
      */
     protected void updateCourseTitle() {
-        AbstractCharacter player = Engine.gameState.getPlayer();
+        PlayerCharacter player = Engine.gameState.getPlayer();
         if(player.hasCourse()) {
             int currentLevel = player.getCurrentCourse().getCourseLevel();
             String newTitle = player.checkTitle();
@@ -177,31 +177,35 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
      * This is the core of the game loop
      */
     public void nextDay() {
-        // update entities for now this is just sending them home on the new day
-        for(AbstractEntity e: AbstractEntity.entities) {
-            if(e instanceof AbstractCharacter) {
-                ((AbstractCharacter) e).update();
-            }
-        }
+        // call all AbstractCharacter .update()
+        Engine.gameState.updateCharacters();
 
-        // advance a day
-        LocalDate currentDate = Engine.gameState.getCurrentDate();
-        Engine.gameState.setCurrentDate(currentDate.plusDays(1));
-        currentDate = Engine.gameState.getCurrentDate();
+        // advance a day and get the current date
+        LocalDate currentDate = Engine.gameState.plusDay();
         this.console.appendText(getDateString());
 
+        // Grab a player reference
+        PlayerCharacter player = Engine.gameState.getPlayer();
+
         // birthday check
-        AbstractCharacter player = Engine.gameState.getPlayer();
         if(player.isBirthday(currentDate)) {
             this.console.appendText("Happy Birthday!\n");
         }
 
         // do Course stat gain logic
-        Course playerCourse = player.getCurrentCourse();
-        if(playerCourse != null) {
-            player.addStat(playerCourse.getStatName(), playerCourse.getCurrentStatGain());
-        }
+        Engine.gameState.playerDailyStatUpdate();
 
+        // do Job logic
+        playerJobUpdate(player, currentDate);
+
+        // do player home logic
+        playerHomeUpdate(player, currentDate);
+
+        // eat food logic
+        playerFoodUpdate(player);
+    }
+
+    private void playerJobUpdate(PlayerCharacter player, LocalDate currentDate) {
         // do Job logic
         Job playerJob = player.getJob();
         if(playerJob.getDailyPayRate() != 0) {
@@ -257,7 +261,9 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                 }
             }
         }
+    }
 
+    private void playerHomeUpdate(PlayerCharacter player, LocalDate currentDate) {
         // residence update
         Residence playerHome = player.getHome();
         playerHome.onNextDay();
@@ -305,7 +311,9 @@ public abstract class AbstractGameScreenController extends AbstractScreenControl
                 );
             }
         }
+    }
 
+    private void playerFoodUpdate(PlayerCharacter player) {
         // eat food logic
         if(player.getMoney() - player.getFoodCostPerDay() >= 0) {
             player.setMoney(player.getMoney() - player.getFoodCostPerDay());

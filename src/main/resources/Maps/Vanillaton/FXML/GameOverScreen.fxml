@@ -9,28 +9,28 @@
 
 <BorderPane fx:controller="org.dionthorn.lifesimrpg.controllers.GameOverScreenController" xmlns:fx="http://javafx.com/fxml">
     <top>
-        <HBox fx:id="topBar" style="-fx-background-color: #336699;" minHeight="32"/>
+        <HBox fx:id="topBar" style="-fx-background-color: #336699; -fx-font: 28 Consolas;" minHeight="32"/>
     </top>
     <center>
-        <GridPane fx:id="centerGridPane" hgap="10" vgap="10">
+        <GridPane fx:id="centerGridPane" hgap="10" vgap="10" style="-fx-font: 12 Consolas;">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
             <Label fx:id="chooseMapLbl" text="Choose a Map:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <ComboBox fx:id="selectMapBox" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
         </GridPane>
     </center>
     <left>
-        <VBox fx:id="leftBar" style="-fx-background-color: #336699;" minWidth="32">
+        <VBox fx:id="leftBar" style="-fx-background-color: #336699; -fx-font: 12 Consolas;" minWidth="32">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
         </VBox>
     </left>
     <right>
-        <VBox fx:id="rightBar" style="-fx-background-color: #336699;" minWidth="32">
+        <VBox fx:id="rightBar" style="-fx-background-color: #336699; -fx-font: 12 Consolas;" minWidth="32">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
             <Region fx:id="vRegion" VBox.vgrow="ALWAYS"/>
             <Button fx:id="startGameBtn" onAction="#onStartGame" text="Start Game"/>
         </VBox>
     </right>
     <bottom>
-        <TextArea fx:id="console" prefWidth="1024" prefHeight="192"/>
+        <TextArea fx:id="console" prefWidth="1024" prefHeight="192" style="-fx-font: 12 Consolas;"/>
     </bottom>
 </BorderPane>

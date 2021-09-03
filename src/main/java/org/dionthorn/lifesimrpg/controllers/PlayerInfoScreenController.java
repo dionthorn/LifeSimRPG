@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.GameState;
 import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
+import org.dionthorn.lifesimrpg.entities.PlayerCharacter;
 import java.util.Map;
 
 /**
@@ -18,6 +19,7 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
     @FXML public Label currentHouseInfoLbl;
     @FXML public Label currentStatsLbl;
     @FXML public Label currentTitlesLbl;
+    @FXML public Label playerAttributesLbl;
 
     /**
      * Override will allow us to set the screen flag,
@@ -44,11 +46,14 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
         if(Engine.currentScreen != Engine.SCREEN.PLAYER_INFO) {
             console.appendText(getDateString());
         }
+
+        // get player reference
+        PlayerCharacter player = Engine.gameState.getPlayer();
+
         // update variable texts
-        playerInfoBtn.setText(String.format("%s Info", Engine.gameState.getPlayer().getFirstName()));
+        playerInfoBtn.setText(String.format("%s Info", player.getFirstName()));
 
         // update player name label
-        AbstractCharacter player = Engine.gameState.getPlayer();
         playerNameLbl.setText(
                 """
                 Player: %s Health: %.2f/%.2f
@@ -77,6 +82,25 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
                         player.getFoodCostPerDay(),
                         player.getHome().getMonthsUnpaid(),
                         player.getHome().getTotalUnpaid()
+                )
+        );
+
+        // update player attribute label
+        playerAttributesLbl.setText(
+                """
+                Strength:     %.2f
+                Constitution: %.2f
+                Dexterity:    %.2f
+                Intelligence: %.2f
+                Wisdom:       %.2f
+                Charisma:     %.2f
+                """.formatted(
+                        player.getStrength(),
+                        player.getConstitution(),
+                        player.getDexterity(),
+                        player.getIntelligence(),
+                        player.getWisdom(),
+                        player.getWisdom()
                 )
         );
 

@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public abstract class AbstractCharacter extends AbstractEntity {
 
-    // Attributes of an AbstractCharacter
+    // Reference lists for an AbstractCharacter
     protected final HashMap<Integer, Double> relationships = new HashMap<>();
     protected final HashMap<String, Double> stats = new HashMap<>();
     protected final ArrayList<String> titles = new ArrayList<>();
@@ -382,14 +382,6 @@ public abstract class AbstractCharacter extends AbstractEntity {
     }
 
     /**
-     * Will return a double representing this character health
-     * @return double representing this character health
-     */
-    public double getHealth() {
-        return this.health;
-    }
-
-    /**
      * Will return an int representing the days this AbstractCharacter has gone without eating food
      * @return int representing the days this AbstractCharacter has gone without eating food
      */
@@ -453,4 +445,46 @@ public abstract class AbstractCharacter extends AbstractEntity {
         this.currentCourse = currentCourse;
     }
 
+    /**
+     * Will return a double representing this character health
+     * @return double representing this character health
+     */
+    public double getHealth() {
+        return this.health;
+    }
+
+    public double[] getAttributes() {
+        return new double[] {
+                strength,
+                constitution,
+                dexterity,
+                intelligence,
+                wisdom,
+                charisma
+        };
+    }
+
+    public double getStrength() {
+        return strength;
+    }
+
+    public double getConstitution() {
+        return constitution;
+    }
+
+    public double getDexterity() {
+        return dexterity;
+    }
+
+    public double getIntelligence() {
+        return intelligence;
+    }
+
+    public double getWisdom() {
+        return wisdom;
+    }
+
+    public double getCharisma() {
+        return charisma;
+    }
 }

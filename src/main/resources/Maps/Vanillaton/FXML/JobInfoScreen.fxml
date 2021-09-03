@@ -3,25 +3,20 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.TextArea?>
-
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Button?>
+
 <BorderPane fx:controller="org.dionthorn.lifesimrpg.controllers.JobInfoScreenController" xmlns:fx="http://javafx.com/fxml">
     <top>
-        <HBox fx:id="topBar" style="-fx-background-color: #336699;" minHeight="32">
-            <Label fx:id="moneyLbl" text="Cash: $-0">
-                <font><Font name="Times New Roman" size="28"/></font>
-            </Label>
+        <HBox fx:id="topBar" style="-fx-background-color: #336699; -fx-font: 28 Consolas;" minHeight="32">
+            <Label fx:id="moneyLbl" text="Cash: $-0"/>
             <Region fx:id="hRegion" HBox.hgrow="ALWAYS"/>
-            <Label fx:id="currentDateLbl" text="Date: 0/0/0">
-                <font><Font name="Times New Roman" size="28"/></font>
-            </Label>
+            <Label fx:id="currentDateLbl" text="Date: 0/0/0"/>
         </HBox>
     </top>
     <center>
-        <GridPane fx:id="centerGridPane" hgap="10" vgap="10">
+        <GridPane fx:id="centerGridPane" hgap="10" vgap="10" style="-fx-font: 12 Consolas;">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
             <Label fx:id="currentJobLbl" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <Label fx:id="currentDaysWorkedLbl" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
@@ -32,7 +27,7 @@
         </GridPane>
     </center>
     <left>
-        <VBox fx:id="leftBar" style="-fx-background-color: #336699;" minWidth="32" spacing="10">
+        <VBox fx:id="leftBar" style="-fx-background-color: #336699; -fx-font: 12 Consolas;" minWidth="32" spacing="10">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
             <Button fx:id="playerInfoBtn" onAction="#onPlayerInfo" text="Player Info"/>
             <Button fx:id="jobInfoBtn" onAction="#onJobInfo" text="Job Info"/>
@@ -42,7 +37,7 @@
         </VBox>
     </left>
     <right>
-        <VBox fx:id="rightBar" style="-fx-background-color: #336699;" minWidth="32" spacing="10">
+        <VBox fx:id="rightBar" style="-fx-background-color: #336699; -fx-font: 12 Consolas;" minWidth="32" spacing="10">
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
             <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
             <Region fx:id="vRegion2" VBox.vgrow="ALWAYS"/>
@@ -51,6 +46,6 @@
         </VBox>
     </right>
     <bottom>
-        <TextArea fx:id="console" prefWidth="1024" prefHeight="192"/>
+        <TextArea fx:id="console" prefWidth="1024" prefHeight="192" style="-fx-font: 12 Consolas;"/>
     </bottom>
 </BorderPane>
