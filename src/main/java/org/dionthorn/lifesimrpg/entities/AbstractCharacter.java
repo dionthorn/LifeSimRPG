@@ -1,4 +1,5 @@
 package org.dionthorn.lifesimrpg.entities;
+import org.dionthorn.lifesimrpg.records.Attributes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,14 +27,9 @@ public abstract class AbstractCharacter extends AbstractEntity {
     protected int money = 200;
 
     // attribute variables
-    public final static double MAX_ATTRIBUTE = 100.00; // constant attribute cap
     protected double health = 100.00; // HP
-    protected double strength = 5.00; // three physical
-    protected double constitution = 5.00;
-    protected double dexterity = 5.00;
-    protected double intelligence = 5.00; // three mental
-    protected double wisdom = 5.00;
-    protected double charisma = 5.00;
+    protected Attributes attributes = new Attributes(5.0, 5.0, 5.0,
+            5.0, 5.0, 5.0);
 
     // has a relationship object references
     protected Job job;
@@ -285,7 +281,7 @@ public abstract class AbstractCharacter extends AbstractEntity {
      * @param health double to set this AbstractCharacter health to will cap at max_health
      */
     public void setHealth(double health) {
-        this.health = Math.min(health, MAX_ATTRIBUTE);
+        this.health = Math.min(health, Attributes.MAX_ATTRIBUTE);
     }
 
     /**
@@ -453,38 +449,8 @@ public abstract class AbstractCharacter extends AbstractEntity {
         return this.health;
     }
 
-    public double[] getAttributes() {
-        return new double[] {
-                strength,
-                constitution,
-                dexterity,
-                intelligence,
-                wisdom,
-                charisma
-        };
+    public Attributes getAttributes() {
+        return attributes;
     }
 
-    public double getStrength() {
-        return strength;
-    }
-
-    public double getConstitution() {
-        return constitution;
-    }
-
-    public double getDexterity() {
-        return dexterity;
-    }
-
-    public double getIntelligence() {
-        return intelligence;
-    }
-
-    public double getWisdom() {
-        return wisdom;
-    }
-
-    public double getCharisma() {
-        return charisma;
-    }
 }

@@ -6,6 +6,8 @@ import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.GameState;
 import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import org.dionthorn.lifesimrpg.entities.PlayerCharacter;
+import org.dionthorn.lifesimrpg.records.Attributes;
+
 import java.util.Map;
 
 /**
@@ -60,7 +62,7 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
                 """.formatted(
                         player.getName(),
                         player.getHealth(),
-                        AbstractCharacter.MAX_ATTRIBUTE
+                        Attributes.MAX_ATTRIBUTE
                 )
         );
 
@@ -95,12 +97,12 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
                 Wisdom:       %.2f
                 Charisma:     %.2f
                 """.formatted(
-                        player.getStrength(),
-                        player.getConstitution(),
-                        player.getDexterity(),
-                        player.getIntelligence(),
-                        player.getWisdom(),
-                        player.getWisdom()
+                        player.getAttributes().strength(),
+                        player.getAttributes().constitution(),
+                        player.getAttributes().dexterity(),
+                        player.getAttributes().intelligence(),
+                        player.getAttributes().wisdom(),
+                        player.getAttributes().charisma()
                 )
         );
 
