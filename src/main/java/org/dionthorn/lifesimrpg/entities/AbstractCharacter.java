@@ -28,6 +28,8 @@ public abstract class AbstractCharacter extends AbstractEntity {
 
     // attribute variables
     protected double health = 100.00; // HP
+
+    // This won't be a record cause no setters.
     protected Attributes attributes = new Attributes(5.0, 5.0, 5.0,
             5.0, 5.0, 5.0);
 
@@ -449,8 +451,5 @@ public abstract class AbstractCharacter extends AbstractEntity {
         return this.health;
     }
 
-    public Attributes getAttributes() {
-        return attributes;
-    }
 
 }

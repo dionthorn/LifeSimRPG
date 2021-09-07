@@ -39,7 +39,7 @@ public final class FileOpUtil {
      */
     public static void checkJRT() {
         URL resource = App.class.getClassLoader().getResource("Credits.txt");
-        if(resource == null) {
+        if(resource == null || resource.getProtocol().equals("jrt")) {
             FileOpUtil.JRT = true;
             jrtBaseURI = URI.create("jrt:/LifeSimRPG/");
         }

@@ -6,7 +6,7 @@
 
     <groupId>org.dionthorn</groupId>
     <artifactId>LifeSimRPG</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>LifeSimRPG</name>
 
     <properties>
@@ -25,26 +25,23 @@
             <artifactId>javafx-fxml</artifactId>
             <version>16</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.panteleyev</groupId>
-                <artifactId>jpackage-maven-plugin</artifactId>
-                <version>1.5.1</version>
-                <configuration>
-                    <name>LifeSimRPG</name>
-                    <appVersion>0.0.1</appVersion>
-                    <vendor>org.dionthorn</vendor>
-                    <destination>Runtime</destination>
-                    <module>LifeSimRPG/org.dionthorn.lifesimrpg.App</module>
-                    <runtimeImage>target/App</runtimeImage>
-                    <type>MSI</type>
-                    <winDirChooser>true</winDirChooser>
-                    <winShortcut>true</winShortcut>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -72,6 +69,22 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.5.1</version>
+                <configuration>
+                    <name>LifeSimRPG</name>
+                    <appVersion>0.0.1</appVersion>
+                    <vendor>org.dionthorn</vendor>
+                    <destination>Runtime</destination>
+                    <module>LifeSimRPG/org.dionthorn.lifesimrpg.App</module>
+                    <runtimeImage>target/App</runtimeImage>
+                    <type>MSI</type>
+                    <winDirChooser>true</winDirChooser>
+                    <winShortcut>true</winShortcut>
+                </configuration>
             </plugin>
         </plugins>
     </build>
