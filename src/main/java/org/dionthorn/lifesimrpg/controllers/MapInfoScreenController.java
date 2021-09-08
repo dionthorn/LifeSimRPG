@@ -5,12 +5,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import org.dionthorn.lifesimrpg.Engine;
+import org.dionthorn.lifesimrpg.data.Attributes;
+import org.dionthorn.lifesimrpg.data.Dice;
 import org.dionthorn.lifesimrpg.entities.AICharacter;
 import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
 import org.dionthorn.lifesimrpg.entities.Place;
 import org.dionthorn.lifesimrpg.entities.PlayerCharacter;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Will manage the map info screen
@@ -168,8 +169,12 @@ public class MapInfoScreenController extends AbstractGameScreenController {
             AbstractCharacter finalTargetChar = targetChar;
             talkBtns.get(i).setOnAction(ActionEvent -> {
                 if(!player.hasTalkedToToday(finalTargetChar)) {
-                    player.addRelationship(finalTargetChar, ThreadLocalRandom.current().nextDouble(0, 10));
-                    finalTargetChar.addRelationship(player, ThreadLocalRandom.current().nextDouble(0, 10));
+                    // roll 1d4 + charisma bonus can be negative
+                    Dice diceSet = new Dice(4);
+                    double playerBonus = Attributes.checkBonus(player.getAttributes().getCharisma());
+                    double targetBonus = Attributes.checkBonus(finalTargetChar.getAttributes().getCharisma());
+                    player.addRelationship(finalTargetChar, diceSet.roll() + targetBonus);
+                    finalTargetChar.addRelationship(player, diceSet.roll() + playerBonus);
                     String output =
                             """
                             %s talked with %s and have %.2f/100.00 relationship They like you %.2f/100.00
@@ -220,4 +225,5 @@ public class MapInfoScreenController extends AbstractGameScreenController {
             e.printStackTrace();
         }
     }
+
 }

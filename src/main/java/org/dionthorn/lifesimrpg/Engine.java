@@ -156,28 +156,34 @@ public final class Engine {
     public static void dumpEntityData() {
         // get quick dump of entity data
         for(AbstractEntity e : AbstractEntity.entities) {
-            if (e instanceof Job) {
-                Job temp = ((Job) e);
+            if (e instanceof Job temp) {
                 System.out.print("Job UID:" + temp.getUID());
                 System.out.print(" " + temp.getName());
                 System.out.println(" " + temp.getDailyPayRate());
-            } else if (e instanceof Map) {
-                Map temp = ((Map) e);
+            } else if (e instanceof Map temp) {
                 System.out.print("Map UID:" + temp.getUID());
                 System.out.print(" " + temp.getName());
                 System.out.println(" total places: " + temp.getPlaces().size());
-            } else if (e instanceof Place) {
-                Place temp = ((Place) e);
+            } else if (e instanceof Place temp) {
                 System.out.print("Place UID:" + temp.getUID());
                 System.out.print(" " + temp.getName());
                 System.out.println(" total connections: " + temp.getConnections().size());
-            } else if (e instanceof AbstractCharacter) {
-                AbstractCharacter temp = ((AbstractCharacter) e);
+            } else if (e instanceof AbstractCharacter temp) {
                 System.out.print("AbstractCharacter UID:" + temp.getUID());
                 System.out.print(" " + temp.getFirstName() + " " + temp.getLastName());
                 System.out.println(" is at: " + temp.getCurrentLocation().getName());
             }
         }
+        // dump URI info
+        System.out.println("### URI INFORMATION ###");
+        System.out.println(FileOpUtil.NAME_PATH);
+        System.out.println(FileOpUtil.GAME_MAP_PATH);
+        System.out.println(FileOpUtil.GAME_FXML_PATH);
+        System.out.println(FileOpUtil.START_SCREEN_MAP_NAME);
+        System.out.println(FileOpUtil.MAP_PATH);
+        System.out.println(FileOpUtil.MAP_COURSES_PATH);
+        System.out.println(FileOpUtil.MAP_JOBS_PATH);
+        System.out.println(FileOpUtil.MAP_FXML_PATH);
     }
 
 }

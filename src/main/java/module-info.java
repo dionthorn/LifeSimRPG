@@ -9,10 +9,10 @@ module LifeSimRPG {
     exports org.dionthorn.lifesimrpg;
     exports org.dionthorn.lifesimrpg.controllers;
     exports org.dionthorn.lifesimrpg.entities;
-    exports org.dionthorn.lifesimrpg.records;
+    exports org.dionthorn.lifesimrpg.data;
     opens org.dionthorn.lifesimrpg to javafx.graphics, javafx.fxml;
     opens org.dionthorn.lifesimrpg.controllers to javafx.fxml, javafx.graphics;
     opens org.dionthorn.lifesimrpg.entities to javafx.fxml, javafx.graphics;
-    opens org.dionthorn.lifesimrpg.records to javafx.fxml, javafx.graphics;
+    opens org.dionthorn.lifesimrpg.data to javafx.fxml, javafx.graphics;
 
 }

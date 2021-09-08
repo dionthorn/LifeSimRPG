@@ -117,8 +117,7 @@ public class GameState {
      */
     private void associateNewResidence() {
         for(AbstractEntity e: AbstractEntity.entities) {
-            if(e instanceof Residence) {
-                Residence newRes = (Residence) e;
+            if(e instanceof Residence newRes) {
                 if(!(this.currentMap.getPlaces().contains(newRes))) {
                     this.currentMap.getPlaces().add(newRes);
                 }
@@ -131,8 +130,8 @@ public class GameState {
     public void updateCharacters() {
         // update entities for now this is just sending them home on the new day
         for(AbstractEntity e: AbstractEntity.entities) {
-            if(e instanceof AbstractCharacter) {
-                ((AbstractCharacter) e).update();
+            if(e instanceof AbstractCharacter temp) {
+                temp.update();
             }
         }
     }

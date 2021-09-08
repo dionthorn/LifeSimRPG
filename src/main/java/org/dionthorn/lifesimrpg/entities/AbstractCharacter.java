@@ -1,5 +1,6 @@
 package org.dionthorn.lifesimrpg.entities;
-import org.dionthorn.lifesimrpg.records.Attributes;
+
+import org.dionthorn.lifesimrpg.data.Attributes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,9 +30,8 @@ public abstract class AbstractCharacter extends AbstractEntity {
     // attribute variables
     protected double health = 100.00; // HP
 
-    // This won't be a record cause no setters.
-    protected Attributes attributes = new Attributes(5.0, 5.0, 5.0,
-            5.0, 5.0, 5.0);
+    // Attributes data class for strength, constitution etc
+    protected Attributes attributes = new Attributes();
 
     // has a relationship object references
     protected Job job;
@@ -449,6 +449,10 @@ public abstract class AbstractCharacter extends AbstractEntity {
      */
     public double getHealth() {
         return this.health;
+    }
+
+    public Attributes getAttributes() {
+        return this.attributes;
     }
 
 

@@ -4,9 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import org.dionthorn.lifesimrpg.Engine;
 import org.dionthorn.lifesimrpg.GameState;
-import org.dionthorn.lifesimrpg.entities.AbstractCharacter;
+import org.dionthorn.lifesimrpg.data.Attributes;
 import org.dionthorn.lifesimrpg.entities.PlayerCharacter;
-import org.dionthorn.lifesimrpg.records.Attributes;
 
 import java.util.Map;
 
@@ -90,19 +89,25 @@ public class PlayerInfoScreenController extends AbstractGameScreenController {
         // update player attribute label
         playerAttributesLbl.setText(
                 """
-                Strength:     %.2f
-                Constitution: %.2f
-                Dexterity:    %.2f
-                Intelligence: %.2f
-                Wisdom:       %.2f
-                Charisma:     %.2f
+                Strength:     %5.2f %2d
+                Constitution: %5.2f %2d
+                Dexterity:    %5.2f %2d
+                Intelligence: %5.2f %2d
+                Wisdom:       %5.2f %2d
+                Charisma:     %5.2f %2d
                 """.formatted(
-                        player.getAttributes().strength(),
-                        player.getAttributes().constitution(),
-                        player.getAttributes().dexterity(),
-                        player.getAttributes().intelligence(),
-                        player.getAttributes().wisdom(),
-                        player.getAttributes().charisma()
+                        player.getAttributes().getStrength(),
+                        Attributes.checkBonus(player.getAttributes().getStrength()),
+                        player.getAttributes().getConstitution(),
+                        Attributes.checkBonus(player.getAttributes().getConstitution()),
+                        player.getAttributes().getDexterity(),
+                        Attributes.checkBonus(player.getAttributes().getDexterity()),
+                        player.getAttributes().getIntelligence(),
+                        Attributes.checkBonus(player.getAttributes().getIntelligence()),
+                        player.getAttributes().getWisdom(),
+                        Attributes.checkBonus(player.getAttributes().getWisdom()),
+                        player.getAttributes().getCharisma(),
+                        Attributes.checkBonus(player.getAttributes().getCharisma())
                 )
         );
 
